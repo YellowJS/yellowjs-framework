@@ -1,0 +1,47 @@
+.oo-list-wrapper {
+    overflow:hidden;
+}
+
+.oo-scroll-wrapper {
+    position: absolute;
+    z-index: 100;
+    width: 7px;
+    bottom: 2px;
+    top: 2px;
+    right: 1px;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.oo-scrollbar {
+    position: absolute;
+    z-index: 100;
+    background-image: initial;
+    background-attachment: initial;
+    background-origin: initial;
+    background-clip: initial;
+    background-color: rgba(0, 0, 0, 0.496094);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: rgba(255, 255, 255, 0.898438);
+    border-right-color: rgba(255, 255, 255, 0.898438);
+    border-bottom-color: rgba(255, 255, 255, 0.898438);
+    border-left-color: rgba(255, 255, 255, 0.898438);
+    -webkit-background-clip: padding-box;
+    box-sizing: border-box;
+    width: 100%;
+    border-top-left-radius: 3px 3px;
+    border-top-right-radius: 3px 3px;
+    border-bottom-right-radius: 3px 3px;
+    border-bottom-left-radius: 3px 3px;
+    pointer-events: none;
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-timing-function: cubic-bezier(0.33, 0.66, 0.66, 1);
+    -webkit-transition-duration: 0ms;
+}
