@@ -7,15 +7,14 @@
         method: oo.ajax.GET, 
         params: {}, 
         success: function (data) {
-            var obj = eval(data);
-            document.querySelector('div').innerHTML = data;
+            document.querySelector('div').innerHTML = data.text;
         }, 
         error: function () {
             alert('error');
         }
     });
     
-    oo.ajax.abortCall(id);
+    //oo.ajax.abortCall(id);
 </script>
 </head>
 <body>
