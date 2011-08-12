@@ -41,15 +41,44 @@ var oo = (function (oo) {
      **/
     Request = function Request (key, isPermanent, defaultParams) {
         
+        /**
+         * @var {String} url - the target url
+         **/
         this.url;
+        
+        /**
+         * @var {String} method - the http method used
+         **/
         this.method;
 
+        /**
+         * @var {object} defaultParams - params that will be used if none are provided when calling send method
+         **/
         this.defaultParams = {};
+
+        /**
+         * @var {Integer} key - the key reference into the ajaxPool
+         **/
         this.key = key;
+        
+        /**
+         * @var {Boolean} isPermanent - determine if the object is maintained after recieving the response
+         **/
         this.isPermanent = isPermanent;
+        
+        /**
+         * @var {XMLHttpRequest} xhr - the native xhr object
+         **/
         this.xhr = new XMLHttpRequest();
         
+        /**
+         * @var {Boolean} isOpen - determine if a connection has already been opened (not sure it's very usefull)
+         **/        
         this.isOpen = false;
+        
+        /**
+         * @var {Boolean} isLoading - is the request is running or not
+         **/        
         this.isLoading = false;
         var me = this;
 
@@ -122,7 +151,8 @@ var oo = (function (oo) {
         this.xhr.abort();
     }
 
-    var ajax = {
+    // static class
+    var Ajax = {
         // constant
         POST : 'POST',
         GET : 'GET',
@@ -193,14 +223,20 @@ var oo = (function (oo) {
          * to be a proxy for all ajax call, it is not recommended to use
          * a request object directly
          *
-         *@param {Integer} id - the id of the request
+         * @param {Integer} id - the id of the request
          **/
         getRequest: function (id) {
             return ajaxPool[id];
         },
         
+        getRequestStatus: function (id) {
+            return ajaxPool[id].isLoading;
+        },        
+        
         /**
          * abort a previously send request by its key
+         *
+         * @param {Integer} id - the id of the request
          **/
         abortCall: function (id) {
             if (ajaxPool[id]) {
@@ -221,7 +257,7 @@ var oo = (function (oo) {
         }
     };
 
-    oo.ajax = ajax;
+    oo.Ajax = Ajax;
     return oo;
 
 })(oo || {});
