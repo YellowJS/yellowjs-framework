@@ -2,9 +2,9 @@
 <head>
 <script type="text/javascript" src="../../js/ooajax.js"></script>
 <script>
-    var id = oo.ajax.ajaxCall({
+    var id = oo.Ajax.ajaxCall({
         url:'toto.json', 
-        method: oo.ajax.GET, 
+        method: oo.Ajax.GET, 
         params: {}, 
         success: function (data) {
             document.querySelector('div').innerHTML = data.text;
@@ -14,7 +14,7 @@
         }
     });
     
-    //oo.ajax.abortCall(id);
+    //oo.Ajax.abortCall(id);
 </script>
 </head>
 <body>
