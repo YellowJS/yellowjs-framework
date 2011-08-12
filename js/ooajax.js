@@ -57,7 +57,7 @@ var oo = (function (oo) {
             if (4 == me.xhr.readyState) {
                 me.isOpen = me.isLoading = false
                 if (200 == me.xhr.status) {
-                    me.successCallback(me.xhr.responseText);
+                    me.successCallback(me.parseJson(me.xhr.responseText));
                 } else {
                     me.errorCallback();
                 }
@@ -70,6 +70,13 @@ var oo = (function (oo) {
     };
     
     var rp = Request.prototype;
+
+    rp.parseJson = function (text) {
+        dataWrapper = '(function () { return %json%; })()';
+        var obj = eval(dataWrapper.replace('%json%', text));
+        
+        return obj;
+    }
     
     rp.destroy = function () {
          delete ajaxPool[this.key];
