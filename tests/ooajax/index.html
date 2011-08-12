@@ -2,16 +2,20 @@
 <head>
 <script type="text/javascript" src="../../js/ooajax.js"></script>
 <script>
-    oo.ajax.ajaxCall({
+    var id = oo.ajax.ajaxCall({
         url:'toto.json', 
-         method: oo.ajax.GET, 
-         params: {}, 
-         success: function (data) {
-             var obj = eval(data);
-             document.querySelector('div').innerHTML = data;
-         }, 
-         error: function () {}
+        method: oo.ajax.GET, 
+        params: {}, 
+        success: function (data) {
+            var obj = eval(data);
+            document.querySelector('div').innerHTML = data;
+        }, 
+        error: function () {
+            alert('error');
+        }
     });
+    
+    oo.ajax.abortCall(id);
 </script>
 </head>
 <body>
