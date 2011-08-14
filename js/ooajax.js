@@ -86,7 +86,8 @@ var oo = (function (oo) {
             if (4 == me.xhr.readyState) {
                 me.isOpen = me.isLoading = false
                 if (200 == me.xhr.status) {
-                    me.successCallback(me.parseJson(me.xhr.responseText));
+                    //me.successCallback(me.parseJson(me.xhr.responseText));
+                    me.successCallback(JSON.parse(me.xhr.responseText));
                 } else {
                     me.errorCallback();
                 }
