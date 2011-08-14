@@ -54,7 +54,7 @@ var oo = (function (oo) {
         /**
          * @var {object} defaultParams - params that will be used if none are provided when calling send method
          **/
-        this.defaultParams = {};
+        this.defaultParams = defaultParams;
 
         /**
          * @var {Integer} key - the key reference into the ajaxPool
