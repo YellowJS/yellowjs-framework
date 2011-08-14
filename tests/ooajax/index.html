@@ -3,9 +3,9 @@
 <script type="text/javascript" src="../../js/ooajax.js"></script>
 <script>
     var id = oo.Ajax.ajaxCall({
-        url:'toto.json', 
+        url:'post.php', 
         method: oo.Ajax.GET, 
-        params: {}, 
+        params: {param: 1, name: 'toto', firtname: 'tutu'}, 
         success: function (data) {
             document.querySelector('div').innerHTML = data.text;
         }, 

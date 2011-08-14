@@ -49,12 +49,12 @@ var oo = (function (oo) {
         /**
          * @var {String} method - the http method used
          **/
-        this.method;
+        this.method = Ajax.GET;
 
         /**
          * @var {object} defaultParams - params that will be used if none are provided when calling send method
          **/
-        this.defaultParams = {};
+        this.defaultParams = defaultParams;
 
         /**
          * @var {Integer} key - the key reference into the ajaxPool
@@ -86,7 +86,8 @@ var oo = (function (oo) {
             if (4 == me.xhr.readyState) {
                 me.isOpen = me.isLoading = false
                 if (200 == me.xhr.status) {
-                    me.successCallback(me.parseJson(me.xhr.responseText));
+                    //me.successCallback(me.parseJson(me.xhr.responseText));
+                    me.successCallback(JSON.parse(me.xhr.responseText));
                 } else {
                     me.errorCallback();
                 }
@@ -138,18 +139,37 @@ var oo = (function (oo) {
     };
     
     rp.send = function (params) {
+
         if (!this.isOpen) {
             this.open();
-        }    
-        params = params || this.defaultParams;
+        }
+
+        var paramsString = this.encodeParams(params || this.defaultParams);
+        
+        if (Ajax.POST == this.method) {
+            this.xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        }/* else {
+            this.urlParams = [this.url, '?', paramsSrting].join('');
+            paramsString = '';
+            this.isOpen = false;
+        }*/
+
         this.isLoading = true;
         
-        this.xhr.send(params);
+        this.xhr.send(paramsString);
+    };
+
+    rp.encodeParams = function encodeParams (params) {
+        var tmpArr = [];
+        for(var p in params) {
+            tmpArr.push([p, '=', params[p]].join(''));
+        }
+        return tmpArr.join('&');
     };
     
     rp.abort = function () {
         this.xhr.abort();
-    }
+    };
 
     // static class
     var Ajax = {
