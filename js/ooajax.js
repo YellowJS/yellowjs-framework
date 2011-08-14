@@ -49,7 +49,7 @@ var oo = (function (oo) {
         /**
          * @var {String} method - the http method used
          **/
-        this.method;
+        this.method = Ajax.GET;
 
         /**
          * @var {object} defaultParams - params that will be used if none are provided when calling send method
