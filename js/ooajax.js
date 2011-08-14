@@ -139,18 +139,37 @@ var oo = (function (oo) {
     };
     
     rp.send = function (params) {
+
         if (!this.isOpen) {
             this.open();
-        }    
-        params = params || this.defaultParams;
+        }
+
+        var paramsString = this.encodeParams(params || this.defaultParams);
+        
+        if (Ajax.POST == this.method) {
+            this.xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        }/* else {
+            this.urlParams = [this.url, '?', paramsSrting].join('');
+            paramsString = '';
+            this.isOpen = false;
+        }*/
+
         this.isLoading = true;
         
-        this.xhr.send(params);
+        this.xhr.send(paramsString);
+    };
+
+    rp.encodeParams = function encodeParams (params) {
+        var tmpArr = [];
+        for(var p in params) {
+            tmpArr.push([p, '=', params[p]].join(''));
+        }
+        return tmpArr.join('&');
     };
     
     rp.abort = function () {
         this.xhr.abort();
-    }
+    };
 
     // static class
     var Ajax = {
