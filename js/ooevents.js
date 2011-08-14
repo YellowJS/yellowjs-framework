@@ -6,10 +6,7 @@ var oo = (function (oo) {
     
     var global = this;
     
-    Events.addListener = function addListener (eventName, listener, sender) {
-        if (!listeners[eventName]){
-            listeners[eventName] = [];
-        }
+    var buildListenerConf = function (listener, sender) {
         var listenerConf;
         if (typeof listener == 'object' && listener.sc && listener.fn) {
             listenerConf = {fn:listener.fn, sc: listener.sc};
@@ -20,11 +17,29 @@ var oo = (function (oo) {
         if (sender) {
             listenerConf.se = sender;
         }
-        listeners[eventName].push(listenerConf);        
+        
+        return listenerConf;
+    }
+    
+    Events.addListener = function addListener (eventName, listener, sender) {
+        if (!listeners[eventName]){
+            listeners[eventName] = [];
+        }
+
+        var listenerConf = buildListenerConf(listener, sender);
+
+        listeners[eventName].push(listenerConf);
     };
     
     Events.removeListener = function removeLsitener (eventName, listener, sender) {
-        
+        if (listeners[eventName]){
+            var listenerConf = buildListenerConf(listener, sender);
+            
+            var index = listeners[eventName].indexOf(listenerConf);
+            if (-1 != index) {
+                listeners[eventName].splice(index, 1);
+            }
+        }
     };
     
     Events.triggerEvent = function addListener (eventName, sender, params) {
