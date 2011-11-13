@@ -4,9 +4,7 @@ var oo = (function (oo) {
         
     };    
 
-    var hasTouch = undefined !== window.ontouchstart ? true : false
-
-    var p = Touch.prototype;
+    var hasTouch = ontouchstart in window ? true : false
     
     var getPosition = function getPosition (e, index) {        
         if (hasTouch) {
