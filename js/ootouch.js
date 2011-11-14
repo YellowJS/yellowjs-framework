@@ -1,3 +1,11 @@
+/** 
+ * Contains static helper for touch management
+ * 
+ * @namespace oo
+ * @class Touch
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 var oo = (function (oo) {
 
     var Touch = function Touch () {

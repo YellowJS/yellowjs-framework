@@ -1,3 +1,11 @@
+/** 
+ * Contains class for event management
+ * 
+ * @namespace oo
+ * @class Touch
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 var oo = (function (oo) {
     
     var listeners = {};
