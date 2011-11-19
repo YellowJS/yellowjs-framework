@@ -1,3 +1,11 @@
+/** 
+ * Class lat's you transform any dom node into button and manage interaction
+ * 
+ * @namespace oo
+ * @class Button
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 var oo = (function (oo) {
 
     var Dom = oo.Dom, Touch = oo.Touch; Events = oo.Events;

@@ -1,3 +1,11 @@
+/** 
+ * Class let's you manage data with an single API for all storage managed
+ * 
+ * @namespace oo
+ * @class Store
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 var oo = (function (oo) {
 
     // shorthand

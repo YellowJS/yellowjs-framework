@@ -1,3 +1,11 @@
+/** 
+ * Class providing an easy way of doing AJAX query
+ * 
+ * @namespace oo
+ * @class Ajax
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 var oo = (function (oo) {
 
     /**

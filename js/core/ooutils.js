@@ -1,3 +1,11 @@
+/** 
+ * Class providing utils method
+ * mainly static method
+ * 
+ * @namespace oo
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 var oo = (function (oo) {
 
     var utils = (function () {
