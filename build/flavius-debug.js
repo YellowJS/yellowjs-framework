@@ -1610,6 +1610,11 @@ var oo = (function (oo) {
 
             return this;
         },
+        setTemplate : function setTemplate (tpl) {
+            this._template = tpl;
+
+            return this;
+        },
         render : function render (data, tpl, resetCache) {
           if (tpl) {
                this.setTemplate(tpl);

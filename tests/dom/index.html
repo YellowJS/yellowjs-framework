@@ -72,16 +72,16 @@
             domElem.translateTo({x:5,y:5}, 100, null, .5) //ok
         },false)
         
-        var datas = [{
-            data : 'data from json'
-        }];
+        var datas = {
+                        data : 'data from json'
+                    };
         
         var tpl = function tpl () {
             var template = '<p>{{data}}</p>';
             return template;
         };
         
-        //domElem.render(datas, tpl, false); // pb settemplate 
+        domElem.render(datas, tpl(), true); // pb settemplate 
     }
     window.addEventListener('load', init, false);
 </script> 
