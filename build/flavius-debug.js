@@ -67,6 +67,398 @@
     }
   };
 
+})();/*
+  mustache.js — Logic-less templates in JavaScript
+
+  See http://mustache.github.com/ for more info.
+*/
+
+var Mustache = function() {
+  var Renderer = function() {};
+
+  Renderer.prototype = {
+    otag: "{{",
+    ctag: "}}",
+    pragmas: {},
+    buffer: [],
+    pragmas_implemented: {
+      "IMPLICIT-ITERATOR": true
+    },
+    context: {},
+
+    render: function(template, context, partials, in_recursion) {
+      // reset buffer & set context
+      if(!in_recursion) {
+        this.context = context;
+        this.buffer = []; // TODO: make this non-lazy
+      }
+
+      // fail fast
+      if(!this.includes("", template)) {
+        if(in_recursion) {
+          return template;
+        } else {
+          this.send(template);
+          return;
+        }
+      }
+
+      template = this.render_pragmas(template);
+      var html = this.render_section(template, context, partials);
+      if(in_recursion) {
+        return this.render_tags(html, context, partials, in_recursion);
+      }
+
+      this.render_tags(html, context, partials, in_recursion);
+    },
+
+    /*
+      Sends parsed lines
+    */
+    send: function(line) {
+      if(line != "") {
+        this.buffer.push(line);
+      }
+    },
+
+    /*
+      Looks for %PRAGMAS
+    */
+    render_pragmas: function(template) {
+      // no pragmas
+      if(!this.includes("%", template)) {
+        return template;
+      }
+
+      var that = this;
+      var regex = new RegExp(this.otag + "%([\\w-]+) ?([\\w]+=[\\w]+)?" +
+            this.ctag);
+      return template.replace(regex, function(match, pragma, options) {
+        if(!that.pragmas_implemented[pragma]) {
+          throw({message: 
+            "This implementation of mustache doesn't understand the '" +
+            pragma + "' pragma"});
+        }
+        that.pragmas[pragma] = {};
+        if(options) {
+          var opts = options.split("=");
+          that.pragmas[pragma][opts[0]] = opts[1];
+        }
+        return "";
+        // ignore unknown pragmas silently
+      });
+    },
+
+    /*
+      Tries to find a partial in the curent scope and render it
+    */
+    render_partial: function(name, context, partials) {
+      name = this.trim(name);
+      if(!partials || partials[name] === undefined) {
+        throw({message: "unknown_partial '" + name + "'"});
+      }
+      if(typeof(context[name]) != "object") {
+        return this.render(partials[name], context, partials, true);
+      }
+      return this.render(partials[name], context[name], partials, true);
+    },
+
+    /*
+      Renders inverted (^) and normal (#) sections
+    */
+    render_section: function(template, context, partials) {
+      if(!this.includes("#", template) && !this.includes("^", template)) {
+        return template;
+      }
+
+      var that = this;
+      // CSW - Added "+?" so it finds the tighest bound, not the widest
+      var regex = new RegExp(this.otag + "(\\^|\\#)\\s*(.+)\\s*" + this.ctag +
+              "\n*([\\s\\S]+?)" + this.otag + "\\/\\s*\\2\\s*" + this.ctag +
+              "\\s*", "mg");
+
+      // for each {{#foo}}{{/foo}} section do...
+      return template.replace(regex, function(match, type, name, content) {
+        var value = that.find(name, context);
+        if(type == "^") { // inverted section
+          if(!value || that.is_array(value) && value.length === 0) {
+            // false or empty list, render it
+            return that.render(content, context, partials, true);
+          } else {
+            return "";
+          }
+        } else if(type == "#") { // normal section
+          if(that.is_array(value)) { // Enumerable, Let's loop!
+            return that.map(value, function(row) {
+              return that.render(content, that.create_context(row),
+                partials, true);
+            }).join("");
+          } else if(that.is_object(value)) { // Object, Use it as subcontext!
+            return that.render(content, that.create_context(value),
+              partials, true);
+          } else if(typeof value === "function") {
+            // higher order section
+            return value.call(context, content, function(text) {
+              return that.render(text, context, partials, true);
+            });
+          } else if(value) { // boolean section
+            return that.render(content, context, partials, true);
+          } else {
+            return "";
+          }
+        }
+      });
+    },
+
+    /*
+      Replace {{foo}} and friends with values from our view
+    */
+    render_tags: function(template, context, partials, in_recursion) {
+      // tit for tat
+      var that = this;
+
+      var new_regex = function() {
+        return new RegExp(that.otag + "(=|!|>|\\{|%)?([^\\/#\\^]+?)\\1?" +
+          that.ctag + "+", "g");
+      };
+
+      var regex = new_regex();
+      var tag_replace_callback = function(match, operator, name) {
+        switch(operator) {
+        case "!": // ignore comments
+          return "";
+        case "=": // set new delimiters, rebuild the replace regexp
+          that.set_delimiters(name);
+          regex = new_regex();
+          return "";
+        case ">": // render partial
+          return that.render_partial(name, context, partials);
+        case "{": // the triple mustache is unescaped
+          return that.find(name, context);
+        default: // escape the value
+          return that.escape(that.find(name, context));
+        }
+      };
+      var lines = template.split("\n");
+      for(var i = 0; i < lines.length; i++) {
+        lines[i] = lines[i].replace(regex, tag_replace_callback, this);
+        if(!in_recursion) {
+          this.send(lines[i]);
+        }
+      }
+
+      if(in_recursion) {
+        return lines.join("\n");
+      }
+    },
+
+    set_delimiters: function(delimiters) {
+      var dels = delimiters.split(" ");
+      this.otag = this.escape_regex(dels[0]);
+      this.ctag = this.escape_regex(dels[1]);
+    },
+
+    escape_regex: function(text) {
+      // thank you Simon Willison
+      if(!arguments.callee.sRE) {
+        var specials = [
+          '/', '.', '*', '+', '?', '|',
+          '(', ')', '[', ']', '{', '}', '\\'
+        ];
+        arguments.callee.sRE = new RegExp(
+          '(\\' + specials.join('|\\') + ')', 'g'
+        );
+      }
+      return text.replace(arguments.callee.sRE, '\\$1');
+    },
+
+    /*
+      find `name` in current `context`. That is find me a value
+      from the view object
+    */
+    find: function(name, context) {
+      name = this.trim(name);
+
+      // Checks whether a value is thruthy or false or 0
+      function is_kinda_truthy(bool) {
+        return bool === false || bool === 0 || bool;
+      }
+
+      var value;
+      if(is_kinda_truthy(context[name])) {
+        value = context[name];
+      } else if(is_kinda_truthy(this.context[name])) {
+        value = this.context[name];
+      }
+
+      if(typeof value === "function") {
+        return value.apply(context);
+      }
+      if(value !== undefined) {
+        return value;
+      }
+      // silently ignore unkown variables
+      return "";
+    },
+
+    // Utility methods
+
+    /* includes tag */
+    includes: function(needle, haystack) {
+      return haystack.indexOf(this.otag + needle) != -1;
+    },
+
+    /*
+      Does away with nasty characters
+    */
+    escape: function(s) {
+      s = String(s === null ? "" : s);
+      return s.replace(/&(?!\w+;)|["'<>\\]/g, function(s) {
+        switch(s) {
+        case "&": return "&amp;";
+        case "\\": return "\\\\";
+        case '"': return '&quot;';
+        case "'": return '&#39;';
+        case "<": return "&lt;";
+        case ">": return "&gt;";
+        default: return s;
+        }
+      });
+    },
+
+    // by @langalex, support for arrays of strings
+    create_context: function(_context) {
+      if(this.is_object(_context)) {
+        return _context;
+      } else {
+        var iterator = ".";
+        if(this.pragmas["IMPLICIT-ITERATOR"]) {
+          iterator = this.pragmas["IMPLICIT-ITERATOR"].iterator;
+        }
+        var ctx = {};
+        ctx[iterator] = _context;
+        return ctx;
+      }
+    },
+
+    is_object: function(a) {
+      return a && typeof a == "object";
+    },
+
+    is_array: function(a) {
+      return Object.prototype.toString.call(a) === '[object Array]';
+    },
+
+    /*
+      Gets rid of leading and trailing whitespace
+    */
+    trim: function(s) {
+      return s.replace(/^\s*|\s*$/g, "");
+    },
+
+    /*
+      Why, why, why? Because IE. Cry, cry cry.
+    */
+    map: function(array, fn) {
+      if (typeof array.map == "function") {
+        return array.map(fn);
+      } else {
+        var r = [];
+        var l = array.length;
+        for(var i = 0; i < l; i++) {
+          r.push(fn(array[i]));
+        }
+        return r;
+      }
+    }
+  };
+
+  return({
+    name: "mustache.js",
+    version: "0.3.1-dev",
+
+    /*
+      Turns a template and view into HTML
+    */
+    to_html: function(template, view, partials, send_fun) {
+      var renderer = new Renderer();
+      if(send_fun) {
+        renderer.send = send_fun;
+      }
+      renderer.render(template, view, partials);
+      if(!send_fun) {
+        return renderer.buffer.join("\n");
+      }
+    }
+  });
+}();
+/** 
+ * Private class providing utils method
+ * via a singleton instance
+ * 
+ * @namespace oo.core
+ * @private class
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
+(function () {
+
+
+    var Utils = my.Class({
+        /**
+         * use oo.core.utils.log instead of console.log
+         *
+         * @param {String} data - the data to log
+         *
+         * @return void
+         */
+        log: function log (data) {
+            if (window.console && window.console.log) {
+                console.log(data.toStirng());
+            }
+        },
+        /**
+         * create, if needed, and return a "namespaced object"
+         *
+         * @todo implement the base parameter
+         *
+         * @param {String} ns - the namespace name (with dot notation)
+         * @param {Object} base - the described namesape scope
+         * @return {Object}
+         */
+        getNS: function getNS (ns, base) {
+            var names = ns.split('.');
+            var parent = window;
+            for (var i=0, len=names.length; i<len; i++) {
+                    if ('object' != typeof(parent[names[i]]) ) {
+                            parent[names[i]] = {};
+                    }
+                    
+                    parent = parent[names[i]];
+            }
+            return parent;
+        },
+        /**
+         * bind a scope to a function
+         *
+         * @param {Function} fn - the function to be scoped
+         * @param {Object} sopce - the desired scope
+         * @return {Function}
+         */
+        bind: function bind (fn, scope) {
+            return function () {
+                return fn.apply(scope, arguments);
+            };
+        },
+        EmptyFn: function EmptyFn () {}
+    });
+
+    // export an instance of Utils class on the right namespace
+    var utils = new Utils();
+    var ns = utils.getNS('oo.core');
+    ns.utils = utils;
+    return oo;
+
 })();/** 
  * Contains class for event management
  * 
@@ -149,7 +541,7 @@ var oo = (function (oo) {
         
     };    
 
-    var hasTouch = ontouchstart in window ? true : false
+    var hasTouch = 'ontouchstart' in window ? true : false
     
     var getPosition = function getPosition (e, index) {        
         if (hasTouch) {
@@ -312,7 +704,7 @@ var oo = (function(oo){
     oo.Router = Router
     return oo;
 
-})(oo || {});
+})(oo || {});
 /** 
  * Class let's you manage data with an single API for all storage managed
  * 
@@ -460,7 +852,7 @@ var oo = (function (oo) {
     oo.Store = Store;
     return oo;
     
-})(oo || {});/** 
+})(oo || {});/** 
  * Class providing an easy way of doing AJAX query
  * 
  * @namespace oo
@@ -753,78 +1145,72 @@ var oo = (function (oo) {
 })(oo || {});var oo = (function (oo) {
     
     // private class
-    var ClassList = function ClassList (obj) {
-        this._dom = obj;
-        this._list = obj.className.split(' ');
-    };
-    
-    ClassList.prototype.destroy = function () {
-        this._dom = null;
-        this._list.splice(0);
-        this._list = null;
-    };
-    
-    // update the class list on the dom
-    ClassList.prototype._updateClassList = function _updateClassList () {
-        this._dom.className = this._list.join(' ');
-    };
-    
-    // remove one or more css class
-    ClassList.prototype.removeClass = function removeClass(clsName) {
-        if (typeof clsName == 'string') {
-            clsName = clsName.split(' ');
-        }
-        var updated = false;
-        var that = this;
-        clsName.forEach(function (element, index, array) {
-            var i = that._list.indexOf(element)
-            if (-1 !== i) {
-                that._list.splice(i, 1);
-                updated = true;
+    var ClassList = my.Class({
+        constructor : function constructor (obj){
+            this._dom = obj;
+            this._list = obj.className.split(' '); 
+        },
+        destroy : function destroy () {
+            this._dom = null;
+            this._list.splice(0);
+            this._list = null;
+        },
+        _updateClassList : function _updateClassList (){
+            this._dom.className = this._list.join(' ');
+        },
+        // remove one or more css class
+        removeClass : function removeClass (clsName) {
+            if (typeof clsName == 'string') {
+                clsName = clsName.split(' ');
             }
-        });
-        
-        if (updated) {
+            var updated = false;
+            var that = this;
+            clsName.forEach(function (element, index, array) {
+                var i = that._list.indexOf(element)
+                if (-1 !== i) {
+                    that._list.splice(i, 1);
+                    updated = true;
+                }
+            });
+
+            if (updated) {
+                this._updateClassList();
+            }
+        },
+        // add one or more css class
+        addClass : function addClass (clsName) {
+            if (typeof clsName == 'string') {
+                clsName = clsName.split(' ');
+            }
+            if (!this.hasClass(clsName)) {
+                clsName.splice(0, 0, 0, 0);
+                Array.prototype.splice.apply(this._list, clsName);
+                this._updateClassList();
+            }
+        },
+        // set one or more css class (clear all class previously present) 
+        setClass : function setClass (clsName) {
+            if (typeof clsName == 'string') {
+                clsName = clsName.split(' ');
+            }        
+            this._list = clsName;
             this._updateClassList();
+            
+        },
+        // check if it has the given class
+        hasClass : function hasClass(clsName) {
+            var i = this._list.indexOf(clsName)
+            if (-1 === i) {
+                return false;
+            } else {
+                return true;
+            }
+        },
+        getClasses : function getClasses (){
+            return this._list;
         }
-    };
-
-    // add one or more css class
-    ClassList.prototype.addClass = function addClass(clsName) {
-        if (typeof clsName == 'string') {
-            clsName = clsName.split(' ');
-        }
-        if (!this.hasClass(clsName)) {
-            clsName.splice(0, 0, 0, 0);
-            Array.prototype.splice.apply(this._list, clsName);
-            this._updateClassList();
-        }
-    };
+    });
     
-    // set one or more css class (clear all class previously present)
-    ClassList.prototype.setClass = function addClass(clsName) {
-        if (typeof clsName == 'string') {
-            clsName = clsName.split(' ');
-        }        
-        this._list = clsName;
-        this._updateClassList();
-    };    
-    
-    // check if it has the given class
-    ClassList.prototype.hasClass = function hasClass(clsName) {
-        var i = this._list.indexOf(clsName)
-        if (-1 === i) {
-            return false;
-        } else {
-            return true;
-        }        
-    }
-
-    // check if it has the given class
-    ClassList.prototype.getClasses = function getClasses(clsName) {
-        return this._list;
-    }
-
     // lists of attributes for wich accessors will be generated
     var prop = {
         readOnly: [],
@@ -832,444 +1218,422 @@ var oo = (function (oo) {
                     'webkitTransitionProperty', 'webkitTransitionTimingFunction', 'webkitTransitionDuration']
     };
 
-    // constructor
-    var Dom = function Dom (identifier) {
-        
-        /**
-         * underlying dom node object
-         */
-        this._dom;
 
-        /**
-         * internal cache
-         */
-        this._cached = {};
-        
-        this._template;
-        
-        this._cacheTpl;
-        
-        if (typeof identifier == 'string') {
-            this.setDomObject(document.querySelector(identifier));
-        }
-        else /*if (identifier instanceof DOMNode)*/ {
-            this.setDomObject(identifier);
-        }
-        
-        this.classList = new ClassList(this._dom);
-    };
+    var Dom = my.Class({
+        STATIC: {
+            CSSMATRIXPATTERN : /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/
+        },
+        constructor : function constructor (identifier) {
+            /**
+             * underlying dom node object
+             */
+            this._dom;
 
-    var p = Dom.prototype;
+            /**
+             * internal cache
+             */
+            this._cached = {};
 
-    // destructor
-    p.destroy = function destroy () {
-        this.classList.destroy();
-        
-        this.classList = null;
-        this._cached.splice(0);
-        this._cached = null;
-        
-        this._dom.removeEventListeners();
-        document.removeElement(this._dom);
-        this._dom = null;
-    }
+            this._template;
 
-    /**
-     * generates accessors fonction
-     */
-    for (var i=0, len=prop['readOnly'].length; i<len; i++) {
-        eval(['p.get', prop['readOnly'][i].charAt(0).toUpperCase(), prop['readOnly'][i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop['readOnly'][i], ' : (window.getComputedStyle(this._dom).', prop['readOnly'][i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop['readOnly'][i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
-    }
+            this._cacheTpl;
 
-    for (var i=0, len=prop['readWrite'].length; i<len; i++) {
-        eval(['p.get', prop['readWrite'][i].charAt(0).toUpperCase(), prop['readWrite'][i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop['readWrite'][i], ' : (window.getComputedStyle(this._dom).', prop['readWrite'][i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop['readWrite'][i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
-        eval(['p.set', prop['readWrite'][i].charAt(0).toUpperCase(), prop['readWrite'][i].slice(1), ' = function (val, unit) { if (this._cached[\'', prop['readWrite'][i], '\'] || this._cached[[\'', prop['readWrite'][i], '\', \'u\'].join(\'\')]) { this._cached[\'', prop['readWrite'][i], '\'] = this._cached[[\'', prop['readWrite'][i], '\', \'u\'].join(\'\')] = null; } this._dom.style.', prop['readWrite'][i], ' = [val, (undefined !== unit ? unit : \'\')].join(\'\'); return this };'].join(''));
-    }
-    
-    // read translation values from dom or from cache
-    var cssMatrixPattern = /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/;
-    // var cssMatrixPattern = /translate3d\((-?[0-9.]+)(px|%) *, *(-?[0-9.]+)(px|%) *, 0(px|%)\)/;
-    p.getTranslations = function getTranslations (noCache) {
-        if (!this._cached['webkitTranslations'] || noCache) {
-            var values = this.getWebkitTransform().match(cssMatrixPattern);
-            if (null === values) {
-                values = [0, 0, 0];
+            if (typeof identifier == 'string') {
+                this.setDomObject(document.querySelector(identifier));
             }
-            this._cached['webkitTranslations'] = [parseInt(values[1], 10), parseInt(values[2], 10)];
-            // this._cached['webkitTranslations'] = [parseInt(values[1], 10), parseInt(values[3], 10)];
-        }
-        return this._cached['webkitTranslations'];
-    };
-    
-    p.getWebkitTransform = function getWebkitTransform (noCache)
-    {
-        if (!this._cached['webkitTransform'] || noCache) {
-            this._cached['webkitTransform'] = window.getComputedStyle(this._dom).webkitTransform;
-        }        
-        return this._cached['webkitTransform'];
-    }
-    
-    p.setWebkitTransform = function setWebkitTransform (value) {
-        if (this._cached['webkitTransform'] || this._cached['webkitTranslations']) {
-            this._cached['webkitTransform'] = null;
-            this._cached['webkitTranslations'] = null;
-        }
-        
-        this._dom.style.webkitTransform = value;
-        
-        return this;
-    }
+            else /*if (identifier instanceof DOMNode)*/ {
+                this.setDomObject(identifier);
+            }
+            this.generateAccessor();
+            this.classList = new ClassList(this._dom); 
+        },
+        // destructor
+        destroy : function destroy (){
+            this.classList.destroy();
 
-    /// set translation values
-    p.setTranslations = function setTranslations (x, y, unit) {
-        unit = unit || 'px';
-        
-        this.setWebkitTransform(['translate3d(',  x , unit, ', ', y, unit, ', 0)'].join(''));
-        
-        return this;
-    };
+            this.classList = null;
+            this._cached.splice(0);
+            this._cached = null;
 
-    p.getTranslateX = function getTranslateX (unit, noCache) {
-        return (unit ? [this.getTranslations(noCache)[0],'px'].join('') : this.getTranslations(noCache)[0]);
-    };  
+            this._dom.removeEventListeners();
+            document.removeElement(this._dom);
+            this._dom = null;
+        },
+        generateAccessor : function generateAccessor (){
+            var p = this;
+            /**
+             * generates accessors fonction
+             */
+            for (var i=0, len=prop['readOnly'].length; i<len; i++) {
+                eval(['p.get', prop['readOnly'][i].charAt(0).toUpperCase(), prop['readOnly'][i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop['readOnly'][i], ' : (window.getComputedStyle(this._dom).', prop['readOnly'][i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop['readOnly'][i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
+            }
 
-    p.getTranslateY = function getTranslateY (unit, noCache) {
-        return (unit ? [this.getTranslations(noCache)[1],'px'].join('') : this.getTranslations(noCache)[1]);
-    };
+            for (var i=0, len=prop['readWrite'].length; i<len; i++) {
+                eval(['p.get', prop['readWrite'][i].charAt(0).toUpperCase(), prop['readWrite'][i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop['readWrite'][i], ' : (window.getComputedStyle(this._dom).', prop['readWrite'][i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop['readWrite'][i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
+                eval(['p.set', prop['readWrite'][i].charAt(0).toUpperCase(), prop['readWrite'][i].slice(1), ' = function (val, unit) { if (this._cached[\'', prop['readWrite'][i], '\'] || this._cached[[\'', prop['readWrite'][i], '\', \'u\'].join(\'\')]) { this._cached[\'', prop['readWrite'][i], '\'] = this._cached[[\'', prop['readWrite'][i], '\', \'u\'].join(\'\')] = null; } this._dom.style.', prop['readWrite'][i], ' = [val, (undefined !== unit ? unit : \'\')].join(\'\'); return this };'].join(''));
+            }
 
-    p.setTranslateX = function setTranslateX (val) {
-        var valY = this.getTranslateY();
-        this.setTranslations(val, valY);
-        
-        return this;
-    };
+            // read translation values from dom or from cache
+            //var cssMatrixPattern = /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/;
+            // var cssMatrixPattern = /translate3d\((-?[0-9.]+)(px|%) *, *(-?[0-9.]+)(px|%) *, 0(px|%)\)/;
 
-    p.setTranslateY = function setTranslateY (val) {
-        var valX = this.getTranslateX();
-        this.setTranslations(valX, val);
-        
-        return this;
-    };
+        },
+        getTranslations : function getTranslations (noCache){
+            if (!this._cached['webkitTranslations'] || noCache) {
+                var values = this.getWebkitTransform().match(Dom.CSSMATRIXPATTERN);
+                if (null === values) {
+                    values = [0, 0, 0];
+                }
+                this._cached['webkitTranslations'] = [parseInt(values[1], 10), parseInt(values[2], 10)];
+                // this._cached['webkitTranslations'] = [parseInt(values[1], 10), parseInt(values[3], 10)];
+            }
+            return this._cached['webkitTranslations'];
+        },
+        getWebkitTransform : function getWebkitTransform (noCache) {
+            if (!this._cached['webkitTransform'] || noCache) {
+                this._cached['webkitTransform'] = window.getComputedStyle(this._dom).webkitTransform;
+            }        
+            return this._cached['webkitTransform'];
+        },
+        setWebkitTransform : function setWebkitTransform (value) {
+            if (this._cached['webkitTransform'] || this._cached['webkitTranslations']) {
+                this._cached['webkitTransform'] = null;
+                this._cached['webkitTranslations'] = null;
+            }
 
-    /**
-     *
-     *  Secure Hash Algorithm (SHA1)
-     *  http://www.webtoolkit.info/
-     *
-     **/
-    p._generateId = function _generateId () {
+            this._dom.style.webkitTransform = value;
 
-        msg = [this._dom.tagName, (new Date).getTime(), Math.random().toString()].join('');
+            return this;
+        },
+        setTranslations : function setTranslations (x, y, unit){
+            unit = unit || 'px';
 
-    	function rotate_left(n,s) {
-    		var t4 = ( n<<s ) | (n>>>(32-s));
-    		return t4;
-    	};
+            this.setWebkitTransform(['translate3d(',  x , unit, ', ', y, unit, ', 0)'].join(''));
 
-    	function lsb_hex(val) {
-    		var str="";
-    		var i;
-    		var vh;
-    		var vl;
+            return this;
+        },
+        getTranslateX : function getTranslateX (unit, noCache) {
+            return (unit ? [this.getTranslations(noCache)[0],'px'].join('') : this.getTranslations(noCache)[0]); 
+        },
+        getTranslateY : function getTranslateY (unit, noCache) {
+            return (unit ? [this.getTranslations(noCache)[1],'px'].join('') : this.getTranslations(noCache)[1]);    
+        },
+        setTranslateX : function setTranslateX (val) {
+            var valY = this.getTranslateY();
+            this.setTranslations(val, valY);
 
-    		for( i=0; i<=6; i+=2 ) {
-    			vh = (val>>>(i*4+4))&0x0f;
-    			vl = (val>>>(i*4))&0x0f;
-    			str += vh.toString(16) + vl.toString(16);
-    		}
-    		return str;
-    	};
+            return this;
+        },
+        setTranslateY : function setTranslateY (val){
+            var valX = this.getTranslateX();
+            this.setTranslations(valX, val);
 
-    	function cvt_hex(val) {
-    		var str="";
-    		var i;
-    		var v;
+            return this;
+        },
+        /**
+         *
+         *  Secure Hash Algorithm (SHA1)
+         *  http://www.webtoolkit.info/
+         *
+         **/
+        _generateId : function _generateId () {
+             msg = [this._dom.tagName, (new Date).getTime(), Math.random().toString()].join('');
 
-    		for( i=7; i>=0; i-- ) {
-    			v = (val>>>(i*4))&0x0f;
-    			str += v.toString(16);
-    		}
-    		return str;
-    	};
-
-
-    	function Utf8Encode(string) {
-    		string = string.replace(/\r\n/g,"\n");
-    		var utftext = "";
-
-    		for (var n = 0; n < string.length; n++) {
-
-    			var c = string.charCodeAt(n);
-
-    			if (c < 128) {
-    				utftext += String.fromCharCode(c);
-    			}
-    			else if((c > 127) && (c < 2048)) {
-    				utftext += String.fromCharCode((c >> 6) | 192);
-    				utftext += String.fromCharCode((c & 63) | 128);
-    			}
-    			else {
-    				utftext += String.fromCharCode((c >> 12) | 224);
-    				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-    				utftext += String.fromCharCode((c & 63) | 128);
-    			}
-
-    		}
-
-    		return utftext;
-    	};
-
-    	var blockstart;
-    	var i, j;
-    	var W = new Array(80);
-    	var H0 = 0x67452301;
-    	var H1 = 0xEFCDAB89;
-    	var H2 = 0x98BADCFE;
-    	var H3 = 0x10325476;
-    	var H4 = 0xC3D2E1F0;
-    	var A, B, C, D, E;
-    	var temp;
-
-    	msg = Utf8Encode(msg);
-
-    	var msg_len = msg.length;
-
-    	var word_array = new Array();
-    	for( i=0; i<msg_len-3; i+=4 ) {
-    		j = msg.charCodeAt(i)<<24 | msg.charCodeAt(i+1)<<16 |
-    		msg.charCodeAt(i+2)<<8 | msg.charCodeAt(i+3);
-    		word_array.push( j );
-    	}
-
-    	switch( msg_len % 4 ) {
-    		case 0:
-    			i = 0x080000000;
-    		break;
-    		case 1:
-    			i = msg.charCodeAt(msg_len-1)<<24 | 0x0800000;
-    		break;
-
-    		case 2:
-    			i = msg.charCodeAt(msg_len-2)<<24 | msg.charCodeAt(msg_len-1)<<16 | 0x08000;
-    		break;
-
-    		case 3:
-    			i = msg.charCodeAt(msg_len-3)<<24 | msg.charCodeAt(msg_len-2)<<16 | msg.charCodeAt(msg_len-1)<<8	| 0x80;
-    		break;
-    	}
-
-    	word_array.push( i );
-
-    	while( (word_array.length % 16) != 14 ) { word_array.push( 0 ); };
-
-    	word_array.push( msg_len>>>29 );
-    	word_array.push( (msg_len<<3)&0x0ffffffff );
-
-
-    	for ( blockstart=0; blockstart<word_array.length; blockstart+=16 ) {
-
-    		for( i=0; i<16; i++ ) { W[i] = word_array[blockstart+i]; };
-    		for( i=16; i<=79; i++ ) { W[i] = rotate_left(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1) };
-
-    		A = H0;
-    		B = H1;
-    		C = H2;
-    		D = H3;
-    		E = H4;
-
-    		for( i= 0; i<=19; i++ ) {
-    			temp = (rotate_left(A,5) + ((B&C) | (~B&D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
-    			E = D;
-    			D = C;
-    			C = rotate_left(B,30);
-    			B = A;
-    			A = temp;
-    		}
-
-    		for( i=20; i<=39; i++ ) {
-    			temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
-    			E = D;
-    			D = C;
-    			C = rotate_left(B,30);
-    			B = A;
-    			A = temp;
-    		}
-
-    		for( i=40; i<=59; i++ ) {
-    			temp = (rotate_left(A,5) + ((B&C) | (B&D) | (C&D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
-    			E = D;
-    			D = C;
-    			C = rotate_left(B,30);
-    			B = A;
-    			A = temp;
-    		}
-
-    		for( i=60; i<=79; i++ ) {
-    			temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
-    			E = D;
-    			D = C;
-    			C = rotate_left(B,30);
-    			B = A;
-    			A = temp;
-    		}
-
-    		H0 = (H0 + A) & 0x0ffffffff;
-    		H1 = (H1 + B) & 0x0ffffffff;
-    		H2 = (H2 + C) & 0x0ffffffff;
-    		H3 = (H3 + D) & 0x0ffffffff;
-    		H4 = (H4 + E) & 0x0ffffffff;
-
-    	}
-
-    	var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
-
-    	return ['id-', temp.toLowerCase()].join('');
-    }
-
-    // setters for internal dom object
-    p.setDomObject = function setDomObject (domNode) {
-        this._dom = domNode;
-        
-        if (!this._dom.id) {
-            this._dom.id = this._generateId();
-        }
-        
-        return this;
-
-    };
-    
-    // getter for internal dom object
-    p.getDomObject = function getDomObject () {
-        return this._dom;
-    };
-    
-    // find a child element of the current node according to the given selector
-    p.find = function find (selector) {
-        return new Dom(this._dom.querySelector(selector));
-    };
-
-    p.findParentByCls = function (cls) {
-        var p = this._dom.parentNode;
-        var pattern = new RegExp(cls);
-        while (!pattern.test(p.className) && p) {
-            p = this._dom.parentNode;
-        }
-        if (p) {
-            return new Dom(p);
-        } else {
-            return false;
-        }      
-    };
-
-    // append a node to the current node children list
-    // wrapper for the native API
-    p.appendDomNode = function appendDomNode (domNode) {
-        this._dom.appendChild(domNode);
-        
-        return this;
-    };
-
-    // append a node to the current node children list
-    // can be a native DOMObject or a oo.Dom object
-    p.appendChild = function appendChild (node) {
-        if (node instanceof Dom)
-        {
-            this.appendDomNode(node.getDomObject());
-        } else {
-            this.appendDomNode(node);
-        }
-        
-        return this;
-    };
-
-    p.appendHtml = function appendHtml (html) {
-        this._dom.innerHTML = [this._dom.innerHTML, html].join('');
-        
-        return this;
-    };
-
-    p.clear = function clear () {
-        this._dom.innerHTML = '';
-        
-        return this;
-    }
-
-    // stop animation by setting the duration to 0
-    p.stopAnimation = function stopAnimation () {
-        this.setWebkitTransitionDuration(0, 'ms');
-        this._dom.removeEventListener('webkitTransitionEnd');
-        
-        return this;
-    };
-    
-    /**
-     * apply a translation on an object
-     * you may define a set of duration, animation end callback, for one shot
-     *
-     * @param coord {object}
-     * @param duration {int} in ms
-     * @param duration {Function}
-     * @param timingFunction {String}
-     **/
-    p.translateTo = function translateTo (coord, duration, listener, timingFunction) {
-
-        if (typeof coord === 'object') {
-            coord.x = undefined !== coord.x ? coord.x : this.getTranslateX();
-            coord.y = undefined !== coord.y ? coord.y : this.getTranslateY();
-        }
-        
-        // getWebkitTransitionDuration() returns a value in seconds
-        var currentTransitionDuration = (this.getWebkitTransitionDuration() * 1000);
-        duration = duration || 0;
-        this.setWebkitTransitionDuration(duration, 'ms');
-
-        var currentTimingFunction = this.getWebkitTransitionTimingFunction();
-        if (typeof timmingFunction === 'string') {
-            this.setWebkitTransitionTimingFunction(timingFunction, '');            
-        }
-        
-        var that = this, endListener = function endListener (e) {
-            that._dom.removeEventListener('webkitTransitionEnd', this);
-            that.setWebkitTransitionDuration(currentTransitionDuration, 'ms');
-            that.setWebkitTransitionTimingFunction(currentTimingFunction, '');
-            if (listener) {
-                listener.call(that, e);
+            function rotate_left(n,s) {
+                var t4 = ( n<<s ) | (n>>>(32-s));
+                return t4;
             };
-        }                
-        this._dom.addEventListener('webkitTransitionEnd', endListener, false);
 
-        this.setTranslations(coord.x, coord.y);
-        
-        return this;
-    };
-    
-    p.setTemplate = function setTemplate (tpl) {
-        this._template = tpl;
-        
-        return this;
-    };
-    
-    p.render = function render (data, tpl, resetCache) {
-        if (tpl) {
-            this.setTemplate(tpl);
-        }
+            function lsb_hex(val) {
+                var str="";
+                var i;
+                var vh;
+                var vl;
 
-        if (!this._cacheTpl || resetCache) {
-            data = data || {};
-            this._cacheTpl = Mustache.to_html(this._template, data);
-        }
-        
-        this.appendHtml(this._cacheTpl);
-        
-        return this;
-    };
+                for( i=0; i<=6; i+=2 ) {
+                    vh = (val>>>(i*4+4))&0x0f;
+                    vl = (val>>>(i*4))&0x0f;
+                    str += vh.toString(16) + vl.toString(16);
+                }
+                return str;
+            };
 
+            function cvt_hex(val) {
+                var str="";
+                var i;
+                var v;
+
+                for( i=7; i>=0; i-- ) {
+                    v = (val>>>(i*4))&0x0f;
+                    str += v.toString(16);
+                }
+                return str;
+            };
+
+
+            function Utf8Encode(string) {
+                string = string.replace(/\r\n/g,"\n");
+                var utftext = "";
+
+                for (var n = 0; n < string.length; n++) {
+
+                    var c = string.charCodeAt(n);
+
+                    if (c < 128) {
+                        utftext += String.fromCharCode(c);
+                    }
+                    else if((c > 127) && (c < 2048)) {
+                        utftext += String.fromCharCode((c >> 6) | 192);
+                        utftext += String.fromCharCode((c & 63) | 128);
+                    }
+                    else {
+                        utftext += String.fromCharCode((c >> 12) | 224);
+                        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                        utftext += String.fromCharCode((c & 63) | 128);
+                    }
+
+                }
+
+                return utftext;
+            };
+
+            var blockstart;
+            var i, j;
+            var W = new Array(80);
+            var H0 = 0x67452301;
+            var H1 = 0xEFCDAB89;
+            var H2 = 0x98BADCFE;
+            var H3 = 0x10325476;
+            var H4 = 0xC3D2E1F0;
+            var A, B, C, D, E;
+            var temp;
+
+            msg = Utf8Encode(msg);
+
+            var msg_len = msg.length;
+
+            var word_array = new Array();
+            for( i=0; i<msg_len-3; i+=4 ) {
+                j = msg.charCodeAt(i)<<24 | msg.charCodeAt(i+1)<<16 |
+                msg.charCodeAt(i+2)<<8 | msg.charCodeAt(i+3);
+                word_array.push( j );
+            }
+
+            switch( msg_len % 4 ) {
+                case 0:
+                    i = 0x080000000;
+                break;
+                case 1:
+                    i = msg.charCodeAt(msg_len-1)<<24 | 0x0800000;
+                break;
+
+                case 2:
+                    i = msg.charCodeAt(msg_len-2)<<24 | msg.charCodeAt(msg_len-1)<<16 | 0x08000;
+                break;
+
+                case 3:
+                    i = msg.charCodeAt(msg_len-3)<<24 | msg.charCodeAt(msg_len-2)<<16 | msg.charCodeAt(msg_len-1)<<8    | 0x80;
+                break;
+            }
+
+            word_array.push( i );
+
+            while( (word_array.length % 16) != 14 ) { word_array.push( 0 ); };
+
+            word_array.push( msg_len>>>29 );
+            word_array.push( (msg_len<<3)&0x0ffffffff );
+
+
+            for ( blockstart=0; blockstart<word_array.length; blockstart+=16 ) {
+
+                for( i=0; i<16; i++ ) { W[i] = word_array[blockstart+i]; };
+                for( i=16; i<=79; i++ ) { W[i] = rotate_left(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1) };
+
+                A = H0;
+                B = H1;
+                C = H2;
+                D = H3;
+                E = H4;
+
+                for( i= 0; i<=19; i++ ) {
+                    temp = (rotate_left(A,5) + ((B&C) | (~B&D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+                    E = D;
+                    D = C;
+                    C = rotate_left(B,30);
+                    B = A;
+                    A = temp;
+                }
+
+                for( i=20; i<=39; i++ ) {
+                    temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+                    E = D;
+                    D = C;
+                    C = rotate_left(B,30);
+                    B = A;
+                    A = temp;
+                }
+
+                for( i=40; i<=59; i++ ) {
+                    temp = (rotate_left(A,5) + ((B&C) | (B&D) | (C&D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+                    E = D;
+                    D = C;
+                    C = rotate_left(B,30);
+                    B = A;
+                    A = temp;
+                }
+
+                for( i=60; i<=79; i++ ) {
+                    temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+                    E = D;
+                    D = C;
+                    C = rotate_left(B,30);
+                    B = A;
+                    A = temp;
+                }
+
+                H0 = (H0 + A) & 0x0ffffffff;
+                H1 = (H1 + B) & 0x0ffffffff;
+                H2 = (H2 + C) & 0x0ffffffff;
+                H3 = (H3 + D) & 0x0ffffffff;
+                H4 = (H4 + E) & 0x0ffffffff;
+
+            }
+
+            var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
+
+            return ['id-', temp.toLowerCase()].join('');
+        },
+        // setters for internal dom object
+        setDomObject : function setDomObject (domNode) {
+            this._dom = domNode;
+
+            if (!this._dom.id) {
+                this._dom.id = this._generateId();
+            }
+
+            return this;
+        },
+        // getter for internal dom object
+        getDomObject : function getDomObject () {
+            return this._dom;
+        },
+        // find a child element of the current node according to the given selector
+        find : function find (selector) {
+            return new Dom(this._dom.querySelector(selector));
+        },
+        findParentByCls : function findParentByCls (cls) {
+            var p = this._dom.parentNode;
+            var pattern = new RegExp(cls);
+            while (!pattern.test(p.className) && p) {
+                p = this._dom.parentNode;
+            }
+            if (p) {
+                return new Dom(p);
+            } else {
+                return false;
+            }      
+        },
+        // append a node to the current node children list
+        // wrapper for the native API
+        appendDomNode : function appendDomNode (domNode) {
+            this._dom.appendChild(domNode);
+
+            return this;
+        },
+        // append a node to the current node children list
+        // can be a native DOMObject or a oo.Dom object
+        appendChild : function appendChild (node) {
+            if (node instanceof Dom)
+            {
+                this.appendDomNode(node.getDomObject());
+            } else {
+                this.appendDomNode(node);
+            }
+
+            return this;
+        },
+        appendHtml : function appendHtml (html) {
+            this._dom.innerHTML = [this._dom.innerHTML, html].join('');
+
+            return this;
+        },
+        clear : function clear () {
+            this._dom.innerHTML = '';
+
+            return this;
+        },
+        // stop animation by setting the duration to 0
+        stopAnimation : function stopAnimation () {
+            this.setWebkitTransitionDuration(0, 'ms');
+            this._dom.removeEventListener('webkitTransitionEnd');
+
+            return this;
+        },
+        
+        /**
+         * apply a translation on an object
+         * you may define a set of duration, animation end callback, for one shot
+         *
+         * @param coord {object}
+         * @param duration {int} in ms
+         * @param duration {Function}
+         * @param timingFunction {String}
+         **/
+        translateTo : function translateTo (coord, duration, listener, timingFunction) {
+
+            if (typeof coord === 'object') {
+                coord.x = undefined !== coord.x ? coord.x : this.getTranslateX();
+                coord.y = undefined !== coord.y ? coord.y : this.getTranslateY();
+            }
+
+            // getWebkitTransitionDuration() returns a value in seconds
+            var currentTransitionDuration = (this.getWebkitTransitionDuration() * 1000);
+            duration = duration || 0;
+            this.setWebkitTransitionDuration(duration, 'ms');
+
+            var currentTimingFunction = this.getWebkitTransitionTimingFunction();
+            if (typeof timmingFunction === 'string') {
+                this.setWebkitTransitionTimingFunction(timingFunction, '');            
+            }
+
+            var that = this, endListener = function endListener (e) {
+                that._dom.removeEventListener('webkitTransitionEnd', this);
+                that.setWebkitTransitionDuration(currentTransitionDuration, 'ms');
+                that.setWebkitTransitionTimingFunction(currentTimingFunction, '');
+                if (listener) {
+                    listener.call(that, e);
+                };
+            }                
+            this._dom.addEventListener('webkitTransitionEnd', endListener, false);
+
+            this.setTranslations(coord.x, coord.y);
+
+            return this;
+        },
+        render : function render (data, tpl, resetCache) {
+          if (tpl) {
+               this.setTemplate(tpl);
+           }
+
+           if (!this._cacheTpl || resetCache) {
+               data = data || {};
+               this._cacheTpl = Mustache.to_html(this._template, data);
+           }
+
+           this.appendHtml(this._cacheTpl);
+
+           return this;
+       }
+    });
     // static method
     
     // wrapper for createElement native functio`n
     Dom.createElement = function createElement (tag) { return new Dom(document.createElement(tag)) };
 
-    oo.Dom = Dom;
+    //oo.Dom = Dom;
+    var exports = oo.core.utils.getNS('oo.View');
+    exports.Dom = Dom;
+    
     return oo;
     
 })(oo || {});var oo = (function (oo) {
@@ -1374,7 +1738,7 @@ var oo = (function (oo) {
     p.getFocusedPanel = function getFocusedPanel (getIndex) {
         index = this._focusedStack[this._focusedStack.length - 1];
         if (getIndex) {
-            return undefined !== index ? index : false;
+            return undefined !== index ? index : false;
         } else {
             return this.getPanel(index);
         }
@@ -1626,7 +1990,7 @@ var oo = (function (oo) {
     oo.ButtonGroup = ButtonGroup;
     return oo;
     
-})(oo || {});var oo = (function (oo) {
+})(oo || {});var oo = (function (oo) {
 
     // shorthand
     var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils, Events = oo.Events, Store = oo.Store;
@@ -1742,7 +2106,7 @@ var oo = (function (oo) {
     oo.List = List;
     return oo;
     
-})(oo || {});var oo = (function (oo) {
+})(oo || {});var oo = (function (oo) {
 
     // shorthand
     var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils;

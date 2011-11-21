@@ -12,8 +12,12 @@
                     "path" : "../source/js/vendor/"
                 },
                 {
-                    "text" : "mustach.js",
+                    "text" : "mustache.js",
                     "path" : "../source/js/vendor/"
+                },
+                {
+                    "text" : "ooutils.js",
+                    "path" : "../source/js/core/"
                 },
                 {
                     "text" : "ooevents.js",
