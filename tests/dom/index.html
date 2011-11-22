@@ -51,8 +51,8 @@
         console.log(domElem.getTranslateX()); //ok
         console.log(domElem.getTranslateY()); //ok
         console.log(domElem.getTranslations()); //ok
-        console.log(domElem.getWebkitTransform()); //ok 
-        domElem.setWebkitTransform('matrix(1, 0, 0, 1, -400, 50)'); //ok
+        console.log(domElem.getWebkitTransform()); //wrapper native function 
+        domElem.setWebkitTransform('matrix(1, 0, 0, 1, -400, 50)'); //wrapper native function
         domElem.setTranslations(5.5, 7,'em'); //ok
         console.log(domElem.getTranslateX(true)); //ok
         console.log(domElem.getTranslateY(true)); //ok
