@@ -12,7 +12,7 @@ var oo = (function (oo) {
         
     };    
 
-    var hasTouch = ontouchstart in window ? true : false
+    var hasTouch = 'ontouchstart' in window ? true : false
     
     var getPosition = function getPosition (e, index) {        
         if (hasTouch) {

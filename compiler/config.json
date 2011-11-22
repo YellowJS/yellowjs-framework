@@ -1,0 +1,73 @@
+{
+    "projectName" : "flavius",
+    "deployDir" : "build",
+    "pkgs" : [
+        {
+            "name" : "flaviuspkg",
+            "file" : "flavius.js",
+            "isDebug" : true,
+            "fileIncludes" : [
+                {
+                    "text" : "my.class.js",
+                    "path" : "../source/js/vendor/"
+                },
+                {
+                    "text" : "mustache.js",
+                    "path" : "../source/js/vendor/"
+                },
+                {
+                    "text" : "ooutils.js",
+                    "path" : "../source/js/core/"
+                },
+                {
+                    "text" : "ooevents.js",
+                    "path" : "../source/js/core/"
+                },
+                {
+                    "text" : "ootouch.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oorouter.js",
+                    "path" : "../source/js/controller/"
+                },
+                {
+                    "text" : "oostore.js",
+                    "path" : "../source/js/model/"
+                },
+                {
+                    "text" : "ooajax.js",
+                    "path" : "../source/js/model/"
+                },
+                {
+                    "text" : "oodom.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooviewport.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oobutton.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oobuttongroup.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oolist.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooscroll.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oocarousel.js",
+                    "path" : "../source/js/view/"
+                }
+            ]
+        }
+    ]
+}
