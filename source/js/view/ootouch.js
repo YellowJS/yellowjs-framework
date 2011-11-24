@@ -8,12 +8,7 @@
  */
 var oo = (function (oo) {
 
-    var Touch = function Touch () {
-        
-    };    
-
-    var hasTouch = 'ontouchstart' in window ? true : false
-    
+    var hasTouch = 'ontouchstart' in window ? true : false;
     var getPosition = function getPosition (e, index) {        
         if (hasTouch) {
             index = index || 0;
@@ -30,20 +25,21 @@ var oo = (function (oo) {
         
     };
     
-    Touch.getPosition = getPosition;
+    var Touch = my.Class({
+        STATIC : {
+            getPosition : Touch.getPosition,
+            getPositionX : function getPositionX(e, index) {
+                return getPosition(e, index)[0];
+            },
+            getPositionY : function getPositionY(e, index){
+                return getPosition(e, index)[1];
+            },
+            getTarget : function getTarget(e, index) {
+                return e.touches[index || 0].target;
+            }
+        }
+    });
     
-    Touch.getPositionX = function getPositionX (e, index) {
-        return getPosition(e, index)[0];
-    };
-    
-    Touch.getPositionY = function getPositionX (e, index) {
-        return getPosition(e, index)[1];
-    };    
-    
-    Touch.getTarget = function getTarget (e, index) {
-        return e.touches[index || 0].target;
-    };
-
     if (!hasTouch) {
         Touch.EVENT_START = 'mousedown';
         Touch.EVENT_MOVE  = 'mousemove';
@@ -54,7 +50,9 @@ var oo = (function (oo) {
         Touch.EVENT_END   = 'touchend';        
     }
     
-    oo.Touch = Touch;
+    var exports = oo.Core.utils.getNS('oo');
+    exports.Touch = Touch;
+    
     return oo;
 
 })(oo || {});        
