@@ -231,6 +231,16 @@
             var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
 
             return ['id-', temp.toLowerCase()].join('');
+        },
+        //convert a Nodelist to an array of elements
+        collectionToArray: function collectionToArray(collection)  
+        {  
+            var ary = [];  
+            for(var i=0, len = collection.length; i < len; i++)  
+            {  
+                ary.push(collection[i]);  
+            }  
+            return ary;  
         }
     });
 
