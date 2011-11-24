@@ -24,7 +24,7 @@ var oo = (function (oo) {
             if (selector) {
                 this._dom = new Dom(selector);
             } else {
-                this._dom = Dom.creataElement('ul');
+                this._dom = Dom.createElement('ul');
             }
 
             this._initEvents();
