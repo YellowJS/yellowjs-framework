@@ -625,6 +625,16 @@ var Mustache = function() {
             var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
 
             return ['id-', temp.toLowerCase()].join('');
+        },
+        //convert a Nodelist to an array of elements
+        collectionToArray: function collectionToArray(collection)  
+        {  
+            var ary = [];  
+            for(var i=0, len = collection.length; i < len; i++)  
+            {  
+                ary.push(collection[i]);  
+            }  
+            return ary;  
         }
     });
 
@@ -712,12 +722,7 @@ var oo = (function (oo) {
  */
 var oo = (function (oo) {
 
-    var Touch = function Touch () {
-        
-    };    
-
-    var hasTouch = 'ontouchstart' in window ? true : false
-    
+    var hasTouch = 'ontouchstart' in window ? true : false;
     var getPosition = function getPosition (e, index) {        
         if (hasTouch) {
             index = index || 0;
@@ -734,20 +739,21 @@ var oo = (function (oo) {
         
     };
     
-    Touch.getPosition = getPosition;
+    var Touch = my.Class({
+        STATIC : {
+            getPosition : Touch.getPosition,
+            getPositionX : function getPositionX(e, index) {
+                return getPosition(e, index)[0];
+            },
+            getPositionY : function getPositionY(e, index){
+                return getPosition(e, index)[1];
+            },
+            getTarget : function getTarget(e, index) {
+                return e.touches[index || 0].target;
+            }
+        }
+    });
     
-    Touch.getPositionX = function getPositionX (e, index) {
-        return getPosition(e, index)[0];
-    };
-    
-    Touch.getPositionY = function getPositionX (e, index) {
-        return getPosition(e, index)[1];
-    };    
-    
-    Touch.getTarget = function getTarget (e, index) {
-        return e.touches[index || 0].target;
-    };
-
     if (!hasTouch) {
         Touch.EVENT_START = 'mousedown';
         Touch.EVENT_MOVE  = 'mousemove';
@@ -758,7 +764,9 @@ var oo = (function (oo) {
         Touch.EVENT_END   = 'touchend';        
     }
     
-    oo.Touch = Touch;
+    var exports = oo.Core.utils.getNS('oo.View');
+    exports.Touch = Touch;
+    
     return oo;
 
 })(oo || {});        /** 
@@ -891,140 +899,134 @@ var oo = (function(oo){
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.Dom, Touch = oo.Touch, Events = oo.Events;
+    var Dom = oo.View.Dom, Touch = oo.Touch, Events = oo.Events;
     
-    var Store = function Store (data) {
-        
-        this._data = data;
-        this._snapshot;
-        
-        this._orderByCol;
-        this._grouped;        
-        this._filterFn;
-    };
-    
-    Store.EVT_REFRESH = 'refresh';
-    
-    var p = Store.prototype;
+    var Store = my.Class({
+        STATIC : {
+            EVT_REFRESH : 'refresh'
+        },
+        constructor : function constructor(data) {
+            this._data = data;
+            this._snapshot = null;
 
-    p.setData = function setData (data) {
-        this._data = data;
-        
-        this._takeSnapshot();
-    };
-    
-    p.setFilter = function setFilter (fn) {
-        this._filterFn = fn;
-        
-        this._takeSnapshot();
-    };
-    
-    p.setNoFilter = function setNoFilter () {
-        this._filterFn = function () { return true; };
-        
-        this._takeSnapshot();
-    };    
-    
-    p.setOrderCol = function setOrderCol (col, grouped) {
-        this._orderByCol = col;
-        this._grouped = grouped;
-        
-        this._takeSnapshot();
-    };
+            this._orderByCol = null;
+            this._grouped = null;        
+            this._filterFn = null;
+        },
+        setData : function setData(data) {
+            this._data = data;
 
-    p._filter = function _filter (fn) {
-        if (fn) {
+            this._takeSnapshot();
+        },
+        setFilter : function setFilter(fn){
             this._filterFn = fn;
-        }
-        if (typeof this._filterFn == 'function') {
-            this._snapshot = this._data.filter(this._filterFn);
-            return true;
-        }
-        return false;
-    };
 
-    p._order = function _order () {
+            this._takeSnapshot();
+        },
+        setNoFilter : function setNoFilter(){
+            this._filterFn = function () { return true; };
 
-        if (this._orderByCol) {
-            var dest = [];
-            var that = this;
-            this._snapshot.forEach(function (element, index, array) {
-                var low = 0, high = dest.length;
-                while (low < high) {
-                    var mid = (low + high) >> 1;
-                    dest[mid][that._orderByCol] < element[that._orderByCol] ? low = mid + 1 : high = mid;
+            this._takeSnapshot();
+        },
+        setOrderCol : function setOrderCol(col, grouped){
+            this._orderByCol = col;
+            this._grouped = grouped;
+
+            this._takeSnapshot();
+        },
+        _filter : function _filter(fn){
+            if (fn) {
+                this._filterFn = fn;
+            }
+            if (typeof this._filterFn == 'function') {
+                this._snapshot = this._data.filter(this._filterFn);
+                return true;
+            }
+            return false;
+        },
+        _order : function _order() {
+            
+            if (this._orderByCol) {
+                var dest = [];
+                var that = this;
+                this._snapshot.forEach(function (element, index, array) {
+                    var low = 0, high = dest.length;
+                    while (low < high) {
+                        var mid = (low + high) >> 1;
+                        dest[mid][that._orderByCol] < element[that._orderByCol] ? low = mid + 1 : high = mid;
+                    }
+                    dest.splice(low, 0, element);
+                });
+
+                this._snapshot = dest;
+                return true;
+            }
+            return false;
+
+        },
+        _takeSnapshot : function _takeSnapshot(){
+            var filtered = this._filter();
+            var ordered = this._order();
+
+            if (filtered || ordered) {
+                Events.triggerEvent(Store.EVT_REFRESH, this);
+            } else {
+                this._snapshot = this._data;
+            }
+        },
+        getData : function getData(noCache) {
+            
+            var data = [];
+            if (null === this._snapshot || noCache) {
+                this._takeSnapshot();
+            }
+
+            data = this._snapshot;
+            if (this._grouped && this._orderByCol) {
+                data = [];
+
+                var prevLetter = '', curLetter = '';            
+                for (var i=0, len=this._snapshot.length; i<len; i++) {
+                    var el = this._snapshot[i];
+                    curLetter = el.nom.substring(0,1);
+                    if (prevLetter != curLetter) {
+                        data.push({id: 'separator', cropped: curLetter});
+                        prevLetter = curLetter;
+                    }
+                    data.push(el);
                 }
-                dest.splice(low, 0, element);
+            }
+
+            //return this._snapshot;
+            return data;
+        },
+        write : function write(data, where) {
+            var that = this;
+            var recordsIndex = [];
+            this._data.forEach(function (el, index) {
+                for (prop in where) {
+                    if (el[prop] !== where[prop]) {
+                        return false;
+                    }
+                }
+                recordsIndex.push(index);
+                return true;
             });
-        
-            this._snapshot = dest;
-            return true;
-        }
-        return false;
 
-    };
+            recordsIndex.forEach(function (i) {
+                for (prop in data) {
+                    that._data[i][prop] = data[prop];
+                }            
+            });
 
-    p._takeSnapshot = function _takeSnapshot () {
-        var filtered = this._filter();
-        var ordered = this._order();
-                
-        if (filtered || ordered) {
-            Events.triggerEvent(Store.EVT_REFRESH, this);
-        } else {
-            this._snapshot = this._data;
-        }
-    };
-    
-    p.getData = function getData (noCache) {
-
-        var data = [];
-        if (null == this._snapshot || noCache) {
             this._takeSnapshot();
         }
-
-        data = this._snapshot;
-        if (this._grouped && this._orderByCol) {
-            data = [];
-            
-            var prevLetter = '', curLetter = '';            
-            for (var i=0, len=this._snapshot.length; i<len; i++) {
-                var el = this._snapshot[i];
-                curLetter = el.nom.substring(0,1);
-                if (prevLetter != curLetter) {
-                    data.push({id: 'separator', cropped: curLetter});
-                    prevLetter = curLetter;
-                }
-                data.push(el);
-            }
-        }
-        
-        //return this._snapshot;
-        return data;
-    };
+    });    
     
-    p.write = function getData (data, where) {
-        var that = this;
-        var recordsIndex = [];
-        this._data.forEach(function (el, index) {
-            for (prop in where) {
-                if (el[prop] !== where[prop]) {
-                    return false;
-                }
-            }
-            recordsIndex.push(index);
-            return true;
-        });
-        
-        recordsIndex.forEach(function (i) {
-            for (prop in data) {
-                that._data[i][prop] = data[prop];
-            }            
-        });
-        
-        this._takeSnapshot();
-    };    
     
-    oo.Store = Store;
+    var exports = oo.core.utils.getNS('oo.Model');
+    exports.Store = Store;
+    
     return oo;
     
 })(oo || {});/** 
@@ -1646,225 +1648,208 @@ var oo = (function (oo) {
 })(oo || {});var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils, Events = oo.Events;
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.Core.utils, Events = oo.Events;
     
-    var Viewport = function (root) {
-        root = root || 'body';
-        
-        this._root = new Dom(root);
-        
-        // give access to classList of the root node
-        this.classList = this._root.classList;
-        
-        this._panels = [];
-        this._panelsDic = [];
-        this._enabledPanels = [];        
-        this._focusedStack = [];
-    };
-    
-    Viewport.ANIM_RTL = 'rtl';
-    Viewport.ANIM_LTR = 'ltr';
-    Viewport.NO_ANIM = 'none';
+    var Viewport = my.Class({
+        STATIC : {
+            ANIM_RTL : 'rtl',
+            ANIM_LTR : 'ltr',
+            NO_ANIM : 'none',
+            ANIM_DURATION : 500
+        },
+        constructor : function constructor(root){
+            root = root || 'body';
+
+            this._root = new Dom(root);
+
+            // give access to classList of the root node
+            this.classList = this._root.classList;
+
+            this._panels = [];
+            this._panelsDic = [];
+            this._enabledPanels = [];        
+            this._focusedStack = [];
+        },
+        /**
+         * return true if the panel has already been added
+         * @param panel {String} identifier as string or index
+         **/
+        hasPanel : function hasPanel(panel) {
+           return -1 != this._panelsDic.indexOf(panel) ? true : false; 
+        },
+        /**
+         * add a panel to the viewport
+         * @param view {string} a template string
+         * @param identifier {string} a name that will be used as reference to the panel
+         * @autoShow {bool} will render/show the panel directly after adding it
+         * @autoRender {bool|string} will render the panel directly after adding - if the autoShow param is set to true then it is used as animDirection
+         * @animDirection {string} define an animation (use constant)
+         **/
+         addPanel : function addPanel(view, identifier, autoShow, autoRender, animDirection){
+             var p = new Dom.createElement('div');
+             p.getDomObject().id = identifier;
+             p.classList.addClass('oo-panel');
+
+             var template = view;
+             var dataTpl = {};
+             if (typeof view == 'object' && view.template) {
+                 template = view.template;
+                 dataTpl = view.data || {};
+             }
+             p.setTemplate (template);
+
+             this._panels.push(p);
+             this._panelsDic.push(identifier);
+
+             if (autoShow) {
+                 animDirection = autoRender || animDirection;
+                 p.render(dataTpl);
+                 this.showPanel(identifier, animDirection);
+             } else {
+                 if (autoRender) {
+                     p.render(dataTpl);
+                 }
+             }
+         },
+         _identifierToIndex : function _identifierToIndex(identifier){
+             var index = identifier;
+             if (typeof index == 'string') {
+                 index = this._panelsDic.indexOf(index);
+             }
+             return index;
+         },
+         _indexToIdentifier : function _indexToIdentifier(index){
+             return index = this._panelsDic[index];
+         },
+         _enablePanel : function _enablePanel(identifier){
+             var index = this._identifierToIndex(identifier);
+
+             this._root.appendChild(this._panels[index]);
+
+             this._enabledPanels.push(index);
+
+             // hook to initialize view components such as vscroll or carousel
+             // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way    
+             Events.triggerEvent('onEnablePanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
+         },
+         getFocusedPanel : function getFocusedPanel(getIndex){
+             index = this._focusedStack[this._focusedStack.length - 1];
+             if (getIndex) {
+                 return undefined !== index ? index : false;
+             } else {
+                 return this.getPanel(index);
+             }
+         },
+         /**
+          * return the Panel as a oo.Dom object 
+          **/
+         getPanel : function getPanel(identifier) {
+             return this._panels[this._identifierToIndex(identifier)] || false;
+         },
+         panelIsEnable : function panelIsEnable(identifier) {
+             return (-1 != this._enabledPanels.indexOf(this._identifierToIndex(identifier)) ? true : false);
+         },
+         removePanel : function removePanel(panel) {
+             var index = this._identifierToIndex(panel);
+
+             // event ?
+             this._panels[index].destroy();
+
+             this._panels.slice(index, 1);
+             this._panelsDic.slice(index, 1);
+         },
+         /**
+          * show a panel with a optional animation
+          * @param {string|int} the panel string identifier or index
+          * @param {direction} Right To Left or Left To Right or no anim (use constant)
+          **/
+         showPanel : function showPanel(panel, direction) {
+             var index = this._identifierToIndex(panel);
+
+             direction = direction || Viewport.ANIM_RTL;
+
+             var anim_duration = 0;
+             if (direction !== Viewport.NO_ANIM) {
+                 // prepare transition
+                 var translateDist = this._root.getWidth() * (direction == Viewport.ANIM_RTL ? 1 : -1);
+                 this.getPanel(index).setTranslateX(translateDist);
+                 // this.getPanel(index).setDisplay('', '');
+                 anim_duration = Viewport.ANIM_DURATION;
+             }
+
+             if (!this.panelIsEnable(index)) {
+                 this._enablePanel(index);
+             }
+
+             // transition
+             // this.getPanel(index).setZIndex(5, '');
+             this.getPanel(index).translateTo({x:0}, anim_duration);
+
+             this._focusedStack.push(index);
+
+             // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way
+             Events.triggerEvent('onShowPanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
+         },
+         hidePanel : function hidePanel(panel, direction, destroy) {
+             var index = this._identifierToIndex(panel);
+
+             direction = direction || Viewport.ANIM_RTL;
+
+             var anim_duration = 0;
+             if (direction !== Viewport.NO_ANIM) {
+                 anim_duration = Viewport.ANIM_DURATION;
+             }
+
+             // transition
+             var translateDist = this._root.getWidth() * (direction == Viewport.ANIM_RTL ? -1 : 1);
+             // this.getPanel(index).setZIndex(3, '');
+             var that = this;
+             this.getPanel(index).translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
+                 // that.getPanel(index).setDisplay('none');
+                 that.getPanel(index).stopAnimation();
+             });
+
+             if (index == this.getFocusedPanel(true)) {
+                 this._focusedStack.pop();
+             }
+
+             Events.triggerEvent('onHidePanel', this, [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
+         },
+         /**
+          * show the newPanel and hide the oldPanel
+          * this method usualy takes three parameter, you may pass only two (first as the new Panel, and second
+          * as the direction of the animation) the current panel will be auto hidden
+          * @param oldPanel the panel to hide
+          * @param newPanel the panel to show
+          * @param define an animation for both hide and show transitions (use constant)
+          **/
+          switchPanel : function switchPanel(oldPanel, newPanel, direction) {
+              var dir, oldP, newP;
+
+              if (typeof arguments[1] == 'string' || 1 == arguments.length) {
+                  dir = newPanel;
+                  newP = oldPanel;
+                  oldP = this.getFocusedPanel(true)
+              } else {
+                  oldP = oldPanel;
+                  newP = newPanel;
+                  dir = direction;
+              }
+
+              this.showPanel(newP, dir);
+
+              if (false !== oldP) {
+                  this.hidePanel(oldP, dir);
+              }
+          }
+    });
+
     // Viewport.ANIM_RTL_[...] = '...';    
+    var exports = oo.core.utils.getNS('oo.View');
+    exports.Viewport = Viewport;
     
-    Viewport.ANIM_DURATION = 500;
-    
-    var p = Viewport.prototype;
-    
-    /**
-     * return true if the panel has already been added
-     * @param panel {String} identifier as string or index
-     **/
-    p.hasPanel = function hasPanel (panel) {
-        return -1 != this._panelsDic.indexOf(panel) ? true : false;
-    };
-    
-    /**
-     * add a panel to the viewport
-     * @param view {string} a template string
-     * @param identifier {string} a name that will be used as reference to the panel
-     * @autoShow {bool} will render/show the panel directly after adding it
-     * @autoRender {bool|string} will render the panel directly after adding - if the autoShow param is set to true then it is used as animDirection
-     * @animDirection {string} define an animation (use constant)
-     **/
-    p.addPanel = function addPanel (view, identifier, autoShow, autoRender, animDirection) {
-        
-        var p = new Dom.createElement('div');
-        p.getDomObject().id = identifier;
-        p.classList.addClass('oo-panel');
-        
-        var template = view;
-        var dataTpl = {};
-        if (typeof view == 'object' && view.template) {
-            template = view.template;
-            dataTpl = view.data || {};
-        }
-        p.setTemplate (template);
-        
-        this._panels.push(p);
-        this._panelsDic.push(identifier);
-        
-        if (autoShow) {
-            animDirection = autoRender || animDirection;
-            p.render(dataTpl);
-            this.showPanel(identifier, animDirection);
-        } else {
-            if (autoRender) {
-                p.render(dataTpl);
-            }
-        }
-    };
-    
-    p._identifierToIndex = function _identifierToIndex (identifier) {
-        var index = identifier;
-        if (typeof index == 'string') {
-            index = this._panelsDic.indexOf(index);
-        }
-        return index;
-    };
-
-    p._indexToIdentifier = function _identifierToIndex (index) {
-        return index = this._panelsDic[index];
-    };
-
-    p._enablePanel = function _enablePanel (identifier) {
-        var index = this._identifierToIndex(identifier);
-                
-        this._root.appendChild(this._panels[index]);
-        
-        this._enabledPanels.push(index);
-        
-        // hook to initialize view components such as vscroll or carousel
-        // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way    
-        Events.triggerEvent('onEnablePanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
-    };
-    
-    /**
-     *
-     **/
-    p.getFocusedPanel = function getFocusedPanel (getIndex) {
-        index = this._focusedStack[this._focusedStack.length - 1];
-        if (getIndex) {
-            return undefined !== index ? index : false;
-        } else {
-            return this.getPanel(index);
-        }
-    }
-    
-    /**
-     * return the Panel as a oo.Dom object 
-     **/
-    p.getPanel = function getPanel (identifier) {
-        return this._panels[this._identifierToIndex(identifier)] || false;
-    };
-    
-    p.panelIsEnable = function panelIsEnable (identifier) {
-        return (-1 != this._enabledPanels.indexOf(this._identifierToIndex(identifier)) ? true : false);
-    };
-    
-    p.removePanel = function removePanel (panel) {
-        
-        var index = this._identifierToIndex(panel);
-        
-        // event ?
-        this._panels[index].destroy();
-        
-        this._panels.slice(index, 1);
-        this._panelsDic.slice(index, 1);        
-    };
-    
-    /**
-     * show a panel with a optional animation
-     * @param {string|int} the panel string identifier or index
-     * @param {direction} Right To Left or Left To Right or no anim (use constant)
-     **/
-    p.showPanel = function showPanel (panel, direction) {
-        
-        var index = this._identifierToIndex(panel);
-
-        direction = direction || Viewport.ANIM_RTL;
-
-        var anim_duration = 0;
-        if (direction !== Viewport.NO_ANIM) {
-            // prepare transition
-            var translateDist = this._root.getWidth() * (direction == Viewport.ANIM_RTL ? 1 : -1);
-            this.getPanel(index).setTranslateX(translateDist);
-            // this.getPanel(index).setDisplay('', '');
-            anim_duration = Viewport.ANIM_DURATION;
-        }
-        
-        if (!this.panelIsEnable(index)) {
-            this._enablePanel(index);
-        }
-
-        // transition
-        // this.getPanel(index).setZIndex(5, '');
-        this.getPanel(index).translateTo({x:0}, anim_duration);
-                
-        this._focusedStack.push(index);
-        
-        // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way
-        Events.triggerEvent('onShowPanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
-        
-    };
-    
-    p.hidePanel = function hidePanel (panel, direction, destroy) {
-        var index = this._identifierToIndex(panel);
-
-        direction = direction || Viewport.ANIM_RTL;
-        
-        var anim_duration = 0;
-        if (direction !== Viewport.NO_ANIM) {
-            anim_duration = Viewport.ANIM_DURATION;
-        }
-        
-        // transition
-        var translateDist = this._root.getWidth() * (direction == Viewport.ANIM_RTL ? -1 : 1);
-        // this.getPanel(index).setZIndex(3, '');
-        var that = this;
-        this.getPanel(index).translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
-            // that.getPanel(index).setDisplay('none');
-            that.getPanel(index).stopAnimation();
-        });
-        
-        if (index == this.getFocusedPanel(true)) {
-            this._focusedStack.pop();
-        }
-        
-        Events.triggerEvent('onHidePanel', this, [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);        
-    };
-    
-    /**
-     * show the newPanel and hide the oldPanel
-     * this method usualy takes three parameter, you may pass only two (first as the new Panel, and second
-     * as the direction of the animation) the current panel will be auto hidden
-     * @param oldPanel the panel to hide
-     * @param newPanel the panel to show
-     * @param define an animation for both hide and show transitions (use constant)
-     **/
-    p.switchPanel = function switchPanel (oldPanel, newPanel, direction) {
-        var dir, oldP, newP;
-        
-        if (typeof arguments[1] == 'string' || 1 == arguments.length) {
-            dir = newPanel;
-            newP = oldPanel;
-            oldP = this.getFocusedPanel(true)
-        } else {
-            oldP = oldPanel;
-            newP = newPanel;
-            dir = direction;
-        }
-        
-        this.showPanel(newP, dir);
-
-        if (false !== oldP) {
-            this.hidePanel(oldP, dir);
-        }
-
-    };
-    
-    oo.Viewport = Viewport;
     return oo;
+    
 })(oo || {});/** 
  * Class lat's you transform any dom node into button and manage interaction
  * 
@@ -1875,116 +1860,112 @@ var oo = (function (oo) {
  */
 var oo = (function (oo) {
 
-    var Dom = oo.Dom, Touch = oo.Touch; Events = oo.Events;
+    var Dom = oo.View.Dom, Touch = oo.Touch; Events = oo.Events;
     
-    var Button = function Button (selector) {
-        this._dom = new Dom(selector);
-        this._active = false;
-        
-        this._initEvents();
-    };
-    
-    Button.EVT_TOUCH = 'touch';
-    Button.EVT_RELEASE = 'release';
-    
-    var p = Button.prototype;
-    
-    p.getDom = function getDom () {
-        return this._dom;
-    };
-    
-    p._initEvents = function _initEvents () {
-        var that = this;
-        this._dom.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
-            return that._onTouch.call(that, e);
-        });
-        
-        this._dom.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
-            return that._onRelease.call(that, e);
-        });        
-    }
-
-    p._onTouch = function _onTouch (e) {
-        if (!this.isActive()) {
-            this.setActive(true);            
-        }
-        Events.triggerEvent(Button.EVT_TOUCH, this, [this, e]);
-    };
-    
-    p._onRelease = function _onRelease (e) {
-        this.setActive(false);
-        Events.triggerEvent(Button.EVT_RELEASE, this, [this, e]);        
-    };
-    
-    p.toogleActive = function _toogleActive () {
-        this.setActive(!this._active);
-    };
-    
-    p.isActive = function isActive () {
-        return this._active;
-    }
-    
-    /**
-     * set the active state of the button
-     * @param actice {bool} "true" to set as active "false" to not 
-     **/
-    p.setActive = function setActive (active) {
-        if (active || undefined === active) {
-            this._dom.classList.addClass('active');
-            this._active = true;
-        } else {
-            this._dom.classList.removeClass('active');
+    var Button = my.Class({
+        STATIC : {
+            EVT_TOUCH : 'touch',
+            EVT_RELEASE : 'release'
+        },
+        constructor : function constructor(selector) {
+            this._dom = new Dom(selector);
             this._active = false;
+
+            this._initEvents();
+        },
+        getDom : function getDom() {
+            return this._dom;
+        },
+        _initEvents : function _initEvents() {
+            var that = this;
+            this._dom.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
+                return that._onTouch.call(that, e);
+            });
+
+            this._dom.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
+                return that._onRelease.call(that, e);
+            });
+        },
+        _onTouch : function _onTouch() {
+            if (!this.isActive()) {
+                this.setActive(true);            
+            }
+            Events.triggerEvent(Button.EVT_TOUCH, this, [this, e]);
+        },
+        _onRelease : function _onRelease(e) {
+            this.setActive(false);
+            Events.triggerEvent(Button.EVT_RELEASE, this, [this, e]);
+        },
+        _toogleActive : function _toogleActive(){
+            this.setActive(!this._active);
+        },
+        isActive : function isActive() {
+            return this._active;
+        },
+        /**
+         * set the active state of the button
+         * @param actice {bool} "true" to set as active "false" to not 
+         **/
+        setActive : function setActive (active) {
+            if (active || undefined === active) {
+                this._dom.classList.addClass('active');
+                this._active = true;
+            } else {
+                this._dom.classList.removeClass('active');
+                this._active = false;
+            }
         }
-    }
+    });
     
-    oo.Button = Button;
+    var exports = oo.core.utils.getNS('oo.View');
+    exports.Button = Button;
+    
     return oo;    
     
 })(oo || {});var oo = (function (oo) {
 
-    var Dom = oo.Dom, Touch = oo.Touch; Events = oo.Events, Button = oo.Button;
+    var Dom = oo.View.Dom, Touch = oo.Touch, Events = oo.Events, Button = oo.View.Button;
     
-    var ButtonGroup = function ButtonGroup (selector, type) {
-        this._buttons = [];
-        
-        type = type || ButtonGroup.TYPE_RADIO;
-        
-        var buttonList = document.querySelectorAll(selector);
-        
-        var that = this;
-        
-        for (var i=0, len=buttonList.length; i<len; i++) {
-            btn = new Button(buttonList[i]);
-            
-            btn._onRelease = function (e) {
-                _onRelease.call(btn, e, that);
-            };
-            
-            this._buttons.push(btn);
+    var ButtonGroup = my.Class({
+        STATIC : {
+            TYPE_RADIO : 'radio',
+            TYPE_CHECKBOX : 'checkbox'
+        },
+        contructor : function constructor(selector, type) {
+            this._buttons = [];
 
-            if (type == ButtonGroup.TYPE_RADIO) {
-                var that = this;                
-                Events.addListener(Button.EVT_TOUCH, function (triggerBtn, e) {
-                    that.updateActive.apply(that, [triggerBtn, e]);
-                }, btn);                
+            type = type || ButtonGroup.TYPE_RADIO;
+
+            var buttonList = document.querySelectorAll(selector);
+
+            var that = this;
+
+            for (var i=0, len=buttonList.length; i<len; i++) {
+                btn = new Button(buttonList[i]);
+
+                btn._onRelease = function (e) {
+                    _onRelease.call(btn, e, that);
+                };
+
+                this._buttons.push(btn);
+
+                if (type == ButtonGroup.TYPE_RADIO) {
+                    var that = this;                
+                    Events.addListener(Button.EVT_TOUCH, function (triggerBtn, e) {
+                        that.updateActive.apply(that, [triggerBtn, e]);
+                    }, btn);                
+                }
             }
-        }        
-    };
-    
-    ButtonGroup.TYPE_RADIO = 'radio';
-    ButtonGroup.TYPE_CHECKBOX = 'checkbox';
-    
-    var p = ButtonGroup.prototype;
-    
-    p.updateActive = function updateActive (btn, evt) {
-        for (var i=0, len=this._buttons.length; i<len; i++) {
-            if (this._buttons[i] !== btn) {
-                this._buttons[i].setActive(false);
+        },
+        updateActive : function updateActive(btn, evt){
+            for (var i=0, len=this._buttons.length; i<len; i++) {
+                if (this._buttons[i] !== btn) {
+                    this._buttons[i].setActive(false);
+                }
             }
         }
-    };
-    
+    });
+
     // @todo : it's a little bit dirty :s
     // /!\ is called with the scope of the button clicked
     var _onRelease = function _onRelease (e, group) {
@@ -1994,539 +1975,524 @@ var oo = (function (oo) {
         Events.triggerEvent('release', group, [e, this]);        
     };
     
-    oo.ButtonGroup = ButtonGroup;
-    return oo;
+    var exports = oo.core.utils.getNS('oo.View');
+    exports.ButtonGroup = ButtonGroup;
     
+    return oo;
+
 })(oo || {});var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils, Events = oo.Events, Store = oo.Store;
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.Core.utils, Events = oo.Events, Store = oo.Store;
     
-    var List = function List (store, tpl, selector) {
+    var List = my.Class({
+        STATIC : {
+            EVT_RENDER : 'render',
+            EVT_ITEM_PRESSED : 'item-pressed',
+            EVT_ITEM_RELEASED : 'item-released'
+        },
+        constructor: function constructor(store, tpl, selector) {
+            
+            this._data = null;
 
-        this._data;
+            this._touchedItem = null;
 
-        this._touchedItem;
-        
-        this._store = store;
-        var that = this;
-        Events.addListener(Store.EVT_REFRESH, function () { that._refreshList.apply(that, arguments) }, this._store);
+            this._store = store;
+            var that = this;
+            Events.addListener(Store.EVT_REFRESH, function () { that._refreshList.apply(that, arguments); }, this._store);
 
-        this.setTemplate(tpl || '<li class="oo-list-item item-{{id}}">{{.}}</li>');
-        
-        if (selector) {
-            this._dom = new Dom(selector);
-        } else {
-            this._dom = Dom.creataElement('ul');
-        }
-        
-        this._initEvents();
-        
-        this._refreshList();
-    };
-    
-    List.EVT_RENDER = 'render';
-    List.EVT_ITEM_PRESSED = 'item-pressed';
-    List.EVT_ITEM_RELEASED = 'item-released';
-    
-    var p = List.prototype;
+            this.setTemplate(tpl || '<li class="oo-list-item item-{{id}}">{{.}}</li>');
 
-    p._initEvents = function () {
-        
-        function checkTarget (target) {
-            var t = new Dom(target);
-            var itemId;
-            if (t.classList.hasClass('oo-list-item')) {
-                itemId = t.getDomObject().className.match(/item-([0-9]*)/)[1];
+            if (selector) {
+                this._dom = new Dom(selector);
             } else {
-                var altTarget = t.findParentByCls('oo-list-item');
-                if (altTarget) {
-                    t = altTarget;
+                this._dom = Dom.creataElement('ul');
+            }
+
+            this._initEvents();
+
+            this._refreshList();
+        },
+        _initEvents : function _initEvents(){
+            
+            function checkTarget (target) {
+                var t = new Dom(target);
+                var itemId;
+                if (t.classList.hasClass('oo-list-item')) {
                     itemId = t.getDomObject().className.match(/item-([0-9]*)/)[1];
-                }
-            }
-            
-            if (itemId) {
-                return {id: itemId, dom: t};
-            }
-            
-            return false;
-        }
-        
-        var that = this;
-        var check;
-        this._dom.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
-            this._touchedItem = e.target;
-            check = checkTarget(e.target);
-            if (false !== check) {
-                check.dom.classList.addClass('active');
-                
-                Events.triggerEvent(List.EVT_ITEM_PRESSED, that, [check.dom, check.id]);
-            }
-        }, false);
-        this._dom.getDomObject().addEventListener(Touch.EVENT_MOVE, function (e) {
-            if (this._touchedItem) {
-                this._touchedItem = null;
-                that._dom.find('.active').classList.removeClass('active');            
-            }
-        }, false);        
-        this._dom.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
-            check = checkTarget(e.target);
-            check.dom.classList.removeClass('active');            
-            if (false !== check && this._touchedItem == e.target) {
-                Events.triggerEvent(List.EVT_ITEM_RELEASED, that, [check.dom, check.id]);
-            }
-        }, false);
-    };
-    
-    p.getDom = function getDom () {
-        return this._dom;
-    };
-    
-    p._refreshList = function _refreshList () {
-        this._fetchStoreData();
-        this._dom.clear();
-        this._dom.render(this._data, this._template, true);
-        Events.triggerEvent(List.EVT_RENDER, this);
-    };
-    
-    p._prepareData = function _prepareData (data) {
-        return {items: data};
-    };
-    
-    p.setData = function setData( data) {
-        this._data = this._prepareData(data);
-    };
-    
-    p._fetchStoreData = function _fetchStoreData () {
-        this.setData(this._store.getData());
-    };
-    
-    p.setTemplate = function setTemplate (tpl) {
-        this._template = this._prepareTpl(tpl);
-    };
-    
-    p._prepareTpl = function _prepareList (tpl) {
-       return ['{{#items}}', tpl, '{{/items}}'].join('');
-    };
-    
-    oo.List = List;
-    return oo;
-    
-})(oo || {});var oo = (function (oo) {
-
-    // shorthand
-    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils;
-    
-    // constructor
-    var Scroll = function VScroll (identifier, orientation, displayScroll) {
-        
-        this._wrapper = new Dom(identifier);
-        this._content = this._wrapper.find('.content');
-        
-        this._orientation = orientation || Scroll.VERTICAL;
-        this._displayScroll = displayScroll || Scroll.BOTH;
-        
-        this._vscrollbarWrapper;
-        this._vscrollbar;       
-
-        this._hscrollbarWrapper;
-        this._hscrollbar;
-
-        // due to a bug in the oo.Dom cache management this value couldn't be set in the constructor
-        // this._maxVScrollTranslate = (this._wrapper.getHeight() - this._vscrollbar.getHeight());        
-        this._maxvScrollTranslate;
-        this._maxhScrollTranslate;        
-                
-        this._buildScrollbars();
-                
-        this.initSizes();
-
-        this._startY = 0;
-        this._startX = 0;        
-        
-        this._touchStartY;
-        this._touchInterY;
-
-        this._touchStartX;
-        this._touchInterX;
-        
-        this._startTime;
-        
-        this._render();
-    };
-    
-    Scroll.VERTICAL = 'v';
-    Scroll.HORIZONTAL = 'h';
-    Scroll.BOTH = 'b';
-    Scroll.NONE = 'none';        
-    
-    var p = Scroll.prototype;
-    
-    p.initSizes = function intiSizes () {
-
-        // force empty cache
-        this._content.getWidth(false, true);
-        this._content.getHeight(false, true);
-        
-        this._content.translateTo({x: 0, y: 0}, 0);
-
-        this._startY = 0;
-        this._startX = 0;
-
-        // for VScroll
-        if (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation) {
-            this._vscrollbar.setDisplay('');            
-            this._maxvTranslate = (this._wrapper.getHeight() - this._content.getHeight());
-            if (this._maxvTranslate > 0) {
-                this._maxvTranslate = 0;
-                this._vscrollbar.setDisplay('none');
-            }            
-            this._determineScrollbarSize(Scroll.VERTICAL);
-            this._vscrollbar.translateTo({y: 0}, 0);
-        }
-        
-        // for HScroll        
-        if (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation) {
-            this._hscrollbar.setDisplay('');            
-            this._maxhTranslate = (this._content.getWidth() - this._wrapper.getWidth());            
-            if (this._maxhTranslate < 0) {
-                this._maxhTranslate = 0;
-                this._hscrollbar.setDisplay('none');
-            }            
-            this._determineScrollbarSize(Scroll.HORIZONTAL);
-            this._hscrollbar.translateTo({x: 0}, 0);
-        }
-        
-    }
-    
-    // create the dom for the scrollbar init some style
-    p._buildScrollbars = function _buildScrollbars () {
-        // VScroll
-        if (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation) {
-            this._vscrollbarWrapper = Dom.createElement('div');
-            this._vscrollbar = Dom.createElement('div');
-        
-            this._vscrollbar.classList.addClass('oo-scrollbar');
-            this._vscrollbar.setWidth(100, '%');
-            
-            this._vscrollbarWrapper.classList.addClass('oo-scroll-wrapper');
-            this._vscrollbarWrapper.classList.addClass('oo-vscroll-wrapper');
-            this._vscrollbarWrapper.appendChild(this._vscrollbar);
-        }
-        
-        // HScroll
-        if (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation) {
-            this._hscrollbarWrapper = Dom.createElement('div');
-            this._hscrollbar = Dom.createElement('div');
-        
-            this._hscrollbar.classList.addClass('oo-scrollbar');
-            this._hscrollbar.setHeight(100, '%');            
-        
-            this._hscrollbarWrapper.classList.addClass('oo-scroll-wrapper');
-            this._hscrollbarWrapper.classList.addClass('oo-hscroll-wrapper');            
-            this._hscrollbarWrapper.appendChild(this._hscrollbar);
-        }
-            
-    };
-    
-    // add the scroll bar container to the dom
-    p._renderScrollbars = function _renderScrollbars () {
-        if ((this._displayScroll == Scroll.VERTICAL || this._displayScroll == Scroll.BOTH) && (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation)) {
-            this._wrapper.appendChild(this._vscrollbarWrapper);
-        }
-        if ((this._displayScroll == Scroll.HORIZONTAL || this._displayScroll == Scroll.BOTH) && (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation)) {
-            this._wrapper.appendChild(this._hscrollbarWrapper);
-        }
-    };
-    
-    // called when scollbar size need to be calculated (in the constructor for example)
-    p._determineScrollbarSize = function _determineScrollbarSize (orientation) {
-        var dim = (Scroll.VERTICAL == orientation ? 'Height' : 'Width');
-        var ratio = this._content[['get', dim].join('')]() / this._wrapper[['get', dim].join('')]();
-        var sb = parseInt(this._wrapper[['get', dim].join('')]() / ratio, 10);
-                
-        this[['_', orientation, 'scrollbar'].join('')][['set', dim].join('')](sb);
-        this[['_max', orientation, 'ScrollTranslate'].join('')] = this._wrapper[['get', dim].join('')]() - sb;
-    };
-    
-    // determine the position of the scrollbar according to the position of the list
-    p._determineScrollbarTranslate = function _determineScrollbarTranslate (contentPos, orientation) {
-        var percent = this[['_max', orientation, 'Translate'].join('')] / contentPos;
-        return (this[['_max', orientation, 'ScrollTranslate'].join('')] / percent) * (Scroll.HORIZONTAL == orientation ? -1 : 1);
-    };
-
-    // add touch listeners 
-    p._initListeners = function _initListeners () {
-        var listNode = this._content.getDomObject();
-        var that = this;
-        var touchMoveTempo;
-        
-        // start event listener
-        listNode.addEventListener(Touch.EVENT_START, function (e) {
-            touchMoveTempo = 0;
-            
-            if (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation) {
-                that._vscrollbar.stopAnimation();
-            }
-            
-            if (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation) {
-                that._hscrollbar.stopAnimation();
-            }
-
-            that._content.stopAnimation();
-            
-            that._touchStartY = that._touchInterY = Touch.getPositionY(e);
-            that._touchStartX = that._touchInterX = Touch.getPositionX(e);
-            
-            that._startTime = (new Date).getTime();
-            that._startY = that._content.getTranslateY(false, true);
-            that._startX = that._content.getTranslateX(false, true);            
-        }, false);
-        
-        // move event listener
-        listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
-            
-            var diff, newPos;
-
-            if (Scroll.VERTICAL == that._orientation || Scroll.BOTH == that._orientation) {
-                diff = Touch.getPositionY(e) - that._touchStartY;
-                newPos = that._startY + diff;
-        
-                that._content.setTranslateY(newPos);
-                that._vscrollbar.setTranslateY(that._determineScrollbarTranslate(newPos, Scroll.VERTICAL));
-            }
-
-            if (Scroll.HORIZONTAL == that._orientation || Scroll.BOTH == that._orientation) {
-                diff = Touch.getPositionX(e) - that._touchStartX;
-                newPos = that._startX + diff;
-
-                that._content.setTranslateX(newPos);
-                that._hscrollbar.setTranslateX(that._determineScrollbarTranslate(newPos, Scroll.HORIZONTAL));
-            }
-            
-            touchMoveTempo++;
-            //if (touchMoveTempo > 7) {
-            //     that._touchInterY = Touch.getPositionY(e);
-            //     that._startTime = (new Date).getTime();
-            //     touchMoveTempo = 0;
-            //}
-            
-            e.preventDefault();
-            
-        }, false);
-        
-        // end event listener
-        listNode.addEventListener(Touch.EVENT_END, function (e) {
-
-            var stopTime = (new Date).getTime();
-            var duration = stopTime - that._startTime;            
-            var deceleration = 0.0006;
-            var newTime = 500;
-        
-            function adjustPos (orientation) {
-                var cVal = that._content[['getTranslate', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](false, true);
-                var tVal = null;
-                var stop = Touch[['getPosition', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](e);        
-
-                var dist = stop - that[['_touchInter', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')];
-                var speed = Math.abs(dist) / duration;
-                var newDist = ((speed * speed) / (2 * deceleration))  * (dist < 0 ? -1 : 1);
-
-                if ((Scroll.VERTICAL == orientation && cVal > 0) || (Scroll.HORIZONTAL == orientation && cVal > 0)) {
-                    tVal = 0;
-                } else if ( (Scroll.VERTICAL == orientation && cVal < that[['_max', orientation, 'Translate'].join('')]) || (Scroll.HORIZONTAL == orientation && Math.abs(cVal) > that[['_max', orientation, 'Translate'].join('')])) {
-                    tVal = that[['_max', orientation, 'Translate'].join('')] * (Scroll.HORIZONTAL == orientation ? -1 : 1);
                 } else {
-                    tVal = that._content[['getTranslate', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](false, true) + newDist;
-                    tVal = parseInt((tVal > 0 ? 0 : (tVal < that[['_max', orientation, 'Translate'].join('')] ? that[['_max', orientation, 'Translate'].join('')] : tVal)), 10) * (Scroll.HORIZONTAL == orientation ? -1 : 1);
-                    newTime = speed / deceleration;
-                }
-
-                if (tVal !== null) {
-                    var coord = {};
-                    coord[(Scroll.VERTICAL == orientation ? 'y' : 'x')] = tVal;
-                    that._content.translateTo(coord, newTime, function () { that._content.stopAnimation(); });
-
-                    coord[(Scroll.VERTICAL == orientation ? 'y' : 'x')] = that._determineScrollbarTranslate(tVal, orientation);
-                    that[['_', orientation, 'scrollbar'].join('')].translateTo(coord, newTime, function () { that[['_', orientation, 'scrollbar'].join('')].stopAnimation(); }, 'ease-out');
-
-                    that[['_start', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')] = tVal;
-                }
-                
-            }
-                        
-            if (Scroll.VERTICAL == that._orientation || Scroll.BOTH == that._orientation) {                
-                adjustPos(Scroll.VERTICAL);
-            }
-
-            if (Scroll.HORIZONTAL == that._orientation || Scroll.BOTH == that._orientation) {
-                adjustPos(Scroll.HORIZONTAL);
-            }
-        
-        }, false);        
-    };
-    
-    // render elements of the component
-    p._render = function _render () {
-        this._wrapper.classList.addClass('oo-list-wrapper');
-        
-        this._initListeners();        
-
-        this._renderScrollbars();
-    };
-    
-    // clean refs
-    p.destroy = function destroy () {
-        this._wrapper.destroy();
-
-        // should be done in an event manager ?
-        this._content.getDomObject().removeEventListener(Touch.EVENT_START);
-        this._content.getDomObject().removeEventListener(Touch.EVENT_MOVE);
-        this._content.getDomObject().removeEventListener(Touch.EVENT_END);
-        
-        this._content.destroy();
-        this._vscrollbarWrapper.destroy();
-        this._vscrollbar.destroy();
-        this._hscrollbarWrapper.destroy();
-        this._hscrollbar.destroy();        
-    };
-
-    // export
-    oo.Scroll = Scroll;
-    return oo;
-
-})(oo || {});var oo = (function (oo) {
-
-    // shorthand
-    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils;
-    
-    // constructor
-    var Carousel = function Carousel (selector, pager) {
-        this._startX = 0;
-        this._startTranslate = 0;
-        
-        this._panelContainer = new Dom(selector);
-        this._transitionDuration = 200;
-        
-        var domObj = this._panelContainer.getDomObject();
-        
-        this._panelWidth = (new Dom(domObj.firstElementChild)).getWidth();
-        this._nbPanel = document.querySelectorAll([selector, ' > *'].join('')).length;
-                
-        this._activePanel = 0;
-        this._displayPager = (pager ? true : false);
-        
-        this._pager;
-        this._buildPager();
-        
-        this._moved = false;
-        
-        this.render();
-    };
-    
-    var p = Carousel.prototype;
-    
-    p._buildPager = function _buildPager () {
-        if (this._displayPager) {
-            this._pager = Dom.createElement('div');
-            this._pager.classList.addClass('carousel-pager');
-            
-            this._pager.setTemplate('{{#bullet}}<i class="dot"></i>{{/bullet}}');
-            
-            var data = []
-            for(var i=0; i<this._nbPanel; i++) {
-                data.push(i);
-            }
-            
-            this._pager.render({bullet: data});
-        }
-        
-        this._updatePager();
-    };
-    
-    p._updatePager = function _updatePager () {
-        var current = this._pager.getDomObject().querySelector('.dot.active');
-        if (current) {
-            current.className = current.className.replace(/ *active/, '');
-        }
-        this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
-    };
-    
-    p.hasMoved = function hasMoved () {
-        return this._moved;
-    };
-    
-    p._initListeners = function _initListeners () {
-        var listNode = this._panelContainer.getDomObject();
-        var that = this;
-        var touchMoveTempo;
-                
-        listNode.addEventListener(Touch.EVENT_START, function (e) {
-            that._startX = Touch.getPositionX(e);
-            that._startTranslate = that._panelContainer.getTranslateX();
-            touchMoveTempo = 0;
-        }, false);
-
-        listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
-            var diff = Touch.getPositionX(e) - that._startX;
-            that._panelContainer.translateTo({x:(that._startTranslate + diff)}, 0);  
-            that._moved = true;
-        }, false);
-
-        listNode.addEventListener(Touch.EVENT_END, function () {
-            that._moved = false;
-            
-            var cVal = that._panelContainer.getTranslateX();
-                        
-            if (cVal < 0) {
-
-                cVal = Math.abs(cVal);
-
-                var min = (that._panelWidth / 2), 
-                    max = (that._panelWidth * (that._nbPanel -1) - min);
-
-                for(var i = min; i <= max; i = i + that._panelWidth) {
-                    if (cVal < i) {
-                        break;
+                    var altTarget = t.findParentByCls('oo-list-item');
+                    if (altTarget) {
+                        t = altTarget;
+                        itemId = t.getDomObject().className.match(/item-([0-9]*)/)[1];
                     }
                 }
-                
-                var tVal;
-                if (cVal > max) {
-                    tVal = max + min;
-                } else {
-                    tVal = i - min;
+
+                if (itemId) {
+                    return {id: itemId, dom: t};
                 }
-                                
-                tVal *= -1;
 
-            } else {
-                tVal = 0;
+                return false;
             }
-                        
-            that._activePanel = Math.abs(tVal / that._panelWidth);
-                        
-            that._panelContainer.translateTo({x:tVal}, that._transitionDuration);
-            
-            that._updatePager();
 
-            that._startTranslate = tVal;
-        }, false);        
-    };
-    
-    p.render = function render () {
-        
-        // update css if needed
-        
-        if (this._pager) {
-            (new Dom(this._panelContainer.getDomObject().parentNode)).appendChild(this._pager);
+            var that = this;
+            var check;
+            this._dom.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
+                this._touchedItem = e.target;
+                check = checkTarget(e.target);
+                if (false !== check) {
+                    check.dom.classList.addClass('active');
+
+                    Events.triggerEvent(List.EVT_ITEM_PRESSED, that, [check.dom, check.id]);
+                }
+            }, false);
+            this._dom.getDomObject().addEventListener(Touch.EVENT_MOVE, function (e) {
+                if (this._touchedItem) {
+                    this._touchedItem = null;
+                    that._dom.find('.active').classList.removeClass('active');            
+                }
+            }, false);        
+            this._dom.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
+                check = checkTarget(e.target);
+                check.dom.classList.removeClass('active');            
+                if (false !== check && this._touchedItem == e.target) {
+                    Events.triggerEvent(List.EVT_ITEM_RELEASED, that, [check.dom, check.id]);
+                }
+            }, false);
+        },
+        getDom : function getDom() {
+            return this._dom;
+        },
+        _refreshList : function _refreshList(){
+            this._fetchStoreData();
+            this._dom.clear();
+            this._dom.render(this._data, this._template, true);
+            Events.triggerEvent(List.EVT_RENDER, this);
+        },
+        _prepareData : function _prepareData(data) {
+            return {items: data};
+        },
+        setData : function setData(data) {
+            this._data = this._prepareData(data);
+        },
+        _fetchStoreData : function _fetchStoreData() {
+            this.setData(this._store.getData());
+        },
+        setTemplate : function setTemplate(tpl){
+            this._template = this._prepareTpl(tpl);
+        },
+        _prepareTpl : function _prepareTpl(tpl){
+            return ['{{#items}}', tpl, '{{/items}}'].join('');
         }
-        
-        this._initListeners();
-    }
+    });
     
-    oo.Carousel = Carousel;
+    var exports = oo.core.utils.getNS('oo.View');
+    exports.List = List;
+    
+    return oo;
+    
+})(oo || {});var oo = (function (oo) {
+
+    // shorthand
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.Core.utils;
+    
+    var Scroll =  my.Class({
+        STATIC : {
+            VERTICAL : 'v',
+            HORIZONTAL : 'h',
+            BOTH : 'b',
+            NONE : 'none'
+        },
+        constructor : function constructor(identifier, orientation, displayScroll){
+            
+            this._wrapper = new Dom(identifier);
+            this._content = this._wrapper.find('.content');
+
+            this._orientation = orientation || Scroll.VERTICAL;
+            this._displayScroll = displayScroll || Scroll.BOTH;
+
+            this._vscrollbarWrapper = null;
+            this._vscrollbar = null;       
+
+            this._hscrollbarWrapper = null;
+            this._hscrollbar = null;
+
+            // due to a bug in the oo.Dom cache management this value couldn't be set in the constructor
+            // this._maxVScrollTranslate = (this._wrapper.getHeight() - this._vscrollbar.getHeight());        
+            this._maxvScrollTranslate = null;
+            this._maxhScrollTranslate = null;        
+
+            this._buildScrollbars();
+
+            this.initSizes();
+
+            this._startY = 0;
+            this._startX = 0;        
+
+            this._touchStartY = null;
+            this._touchInterY = null;
+
+            this._touchStartX = null;
+            this._touchInterX = null;
+
+            this._startTime = null;
+
+            this._render();
+        },
+        initSizes : function initSizes(){
+            
+            // force empty cache
+            this._content.getWidth(false, true);
+            this._content.getHeight(false, true);
+
+            this._content.translateTo({x: 0, y: 0}, 0);
+
+            this._startY = 0;
+            this._startX = 0;
+
+            // for VScroll
+            if (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation) {
+                this._vscrollbar.setDisplay('');            
+                this._maxvTranslate = (this._wrapper.getHeight() - this._content.getHeight());
+                if (this._maxvTranslate > 0) {
+                    this._maxvTranslate = 0;
+                    this._vscrollbar.setDisplay('none');
+                }            
+                this._determineScrollbarSize(Scroll.VERTICAL);
+                this._vscrollbar.translateTo({y: 0}, 0);
+            }
+
+            // for HScroll        
+            if (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation) {
+                this._hscrollbar.setDisplay('');            
+                this._maxhTranslate = (this._content.getWidth() - this._wrapper.getWidth());            
+                if (this._maxhTranslate < 0) {
+                    this._maxhTranslate = 0;
+                    this._hscrollbar.setDisplay('none');
+                }            
+                this._determineScrollbarSize(Scroll.HORIZONTAL);
+                this._hscrollbar.translateTo({x: 0}, 0);
+            }
+        },
+        // create the dom for the scrollbar init some style
+        _buildScrollbars : function _buildScrollbars(){
+            // VScroll
+            if (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation) {
+                this._vscrollbarWrapper = Dom.createElement('div');
+                this._vscrollbar = Dom.createElement('div');
+
+                this._vscrollbar.classList.addClass('oo-scrollbar');
+                this._vscrollbar.setWidth(100, '%');
+
+                this._vscrollbarWrapper.classList.addClass('oo-scroll-wrapper');
+                this._vscrollbarWrapper.classList.addClass('oo-vscroll-wrapper');
+                this._vscrollbarWrapper.appendChild(this._vscrollbar);
+            }
+
+            // HScroll
+            if (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation) {
+                this._hscrollbarWrapper = Dom.createElement('div');
+                this._hscrollbar = Dom.createElement('div');
+
+                this._hscrollbar.classList.addClass('oo-scrollbar');
+                this._hscrollbar.setHeight(100, '%');            
+
+                this._hscrollbarWrapper.classList.addClass('oo-scroll-wrapper');
+                this._hscrollbarWrapper.classList.addClass('oo-hscroll-wrapper');            
+                this._hscrollbarWrapper.appendChild(this._hscrollbar);
+            }
+        },
+        // add the scroll bar container to the dom
+        _renderScrollbars : function _renderScrollbars(){
+            if ((this._displayScroll == Scroll.VERTICAL || this._displayScroll == Scroll.BOTH) && (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation)) {
+                this._wrapper.appendChild(this._vscrollbarWrapper);
+            }
+            if ((this._displayScroll == Scroll.HORIZONTAL || this._displayScroll == Scroll.BOTH) && (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation)) {
+                this._wrapper.appendChild(this._hscrollbarWrapper);
+            }
+        },
+        // called when scollbar size need to be calculated (in the constructor for example)
+        _determineScrollbarSize : function _determineScrollbarSize(orientation){
+            var dim = (Scroll.VERTICAL == orientation ? 'Height' : 'Width');
+            var ratio = this._content[['get', dim].join('')]() / this._wrapper[['get', dim].join('')]();
+            var sb = parseInt(this._wrapper[['get', dim].join('')]() / ratio, 10);
+
+            this[['_', orientation, 'scrollbar'].join('')][['set', dim].join('')](sb);
+            this[['_max', orientation, 'ScrollTranslate'].join('')] = this._wrapper[['get', dim].join('')]() - sb;
+        },
+        // determine the position of the scrollbar according to the position of the list
+        _determineScrollbarTranslate : function _determineScrollbarTranslate(contentPos, orientation){
+            var percent = this[['_max', orientation, 'Translate'].join('')] / contentPos;
+            return (this[['_max', orientation, 'ScrollTranslate'].join('')] / percent) * (Scroll.HORIZONTAL == orientation ? -1 : 1);
+        },
+        // add touch listeners
+        _initListeners : function _initListeners(){
+            var listNode = this._content.getDomObject();
+            var that = this;
+            var touchMoveTempo;
+
+            // start event listener
+            listNode.addEventListener(Touch.EVENT_START, function (e) {
+                touchMoveTempo = 0;
+
+                if (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation) {
+                    that._vscrollbar.stopAnimation();
+                }
+
+                if (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation) {
+                    that._hscrollbar.stopAnimation();
+                }
+
+                that._content.stopAnimation();
+
+                that._touchStartY = that._touchInterY = Touch.getPositionY(e);
+                that._touchStartX = that._touchInterX = Touch.getPositionX(e);
+
+                that._startTime = (new Date).getTime();
+                that._startY = that._content.getTranslateY(false, true);
+                that._startX = that._content.getTranslateX(false, true);            
+            }, false);
+
+            // move event listener
+            listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
+
+                var diff, newPos;
+
+                if (Scroll.VERTICAL == that._orientation || Scroll.BOTH == that._orientation) {
+                    diff = Touch.getPositionY(e) - that._touchStartY;
+                    newPos = that._startY + diff;
+
+                    that._content.setTranslateY(newPos);
+                    that._vscrollbar.setTranslateY(that._determineScrollbarTranslate(newPos, Scroll.VERTICAL));
+                }
+
+                if (Scroll.HORIZONTAL == that._orientation || Scroll.BOTH == that._orientation) {
+                    diff = Touch.getPositionX(e) - that._touchStartX;
+                    newPos = that._startX + diff;
+
+                    that._content.setTranslateX(newPos);
+                    that._hscrollbar.setTranslateX(that._determineScrollbarTranslate(newPos, Scroll.HORIZONTAL));
+                }
+
+                touchMoveTempo++;
+                //if (touchMoveTempo > 7) {
+                //     that._touchInterY = Touch.getPositionY(e);
+                //     that._startTime = (new Date).getTime();
+                //     touchMoveTempo = 0;
+                //}
+
+                e.preventDefault();
+
+            }, false);
+
+            // end event listener
+            listNode.addEventListener(Touch.EVENT_END, function (e) {
+
+                var stopTime = (new Date).getTime();
+                var duration = stopTime - that._startTime;            
+                var deceleration = 0.0006;
+                var newTime = 500;
+
+                function adjustPos (orientation) {
+                    var cVal = that._content[['getTranslate', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](false, true);
+                    var tVal = null;
+                    var stop = Touch[['getPosition', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](e);        
+
+                    var dist = stop - that[['_touchInter', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')];
+                    var speed = Math.abs(dist) / duration;
+                    var newDist = ((speed * speed) / (2 * deceleration))  * (dist < 0 ? -1 : 1);
+
+                    if ((Scroll.VERTICAL == orientation && cVal > 0) || (Scroll.HORIZONTAL == orientation && cVal > 0)) {
+                        tVal = 0;
+                    } else if ( (Scroll.VERTICAL == orientation && cVal < that[['_max', orientation, 'Translate'].join('')]) || (Scroll.HORIZONTAL == orientation && Math.abs(cVal) > that[['_max', orientation, 'Translate'].join('')])) {
+                        tVal = that[['_max', orientation, 'Translate'].join('')] * (Scroll.HORIZONTAL == orientation ? -1 : 1);
+                    } else {
+                        tVal = that._content[['getTranslate', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](false, true) + newDist;
+                        tVal = parseInt((tVal > 0 ? 0 : (tVal < that[['_max', orientation, 'Translate'].join('')] ? that[['_max', orientation, 'Translate'].join('')] : tVal)), 10) * (Scroll.HORIZONTAL == orientation ? -1 : 1);
+                        newTime = speed / deceleration;
+                    }
+
+                    if (tVal !== null) {
+                        var coord = {};
+                        coord[(Scroll.VERTICAL == orientation ? 'y' : 'x')] = tVal;
+                        that._content.translateTo(coord, newTime, function () { that._content.stopAnimation(); });
+
+                        coord[(Scroll.VERTICAL == orientation ? 'y' : 'x')] = that._determineScrollbarTranslate(tVal, orientation);
+                        that[['_', orientation, 'scrollbar'].join('')].translateTo(coord, newTime, function () { that[['_', orientation, 'scrollbar'].join('')].stopAnimation(); }, 'ease-out');
+
+                        that[['_start', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')] = tVal;
+                    }
+
+                }
+
+                if (Scroll.VERTICAL == that._orientation || Scroll.BOTH == that._orientation) {                
+                    adjustPos(Scroll.VERTICAL);
+                }
+
+                if (Scroll.HORIZONTAL == that._orientation || Scroll.BOTH == that._orientation) {
+                    adjustPos(Scroll.HORIZONTAL);
+                }
+
+            }, false);
+        },
+        // render elements of the component
+        _render : function _render(){
+            this._wrapper.classList.addClass('oo-list-wrapper');
+
+            this._initListeners();        
+
+            this._renderScrollbars();
+        },
+        // clean refs
+        destroy : function destroy(){
+            this._wrapper.destroy();
+
+            // should be done in an event manager ?
+            this._content.getDomObject().removeEventListener(Touch.EVENT_START);
+            this._content.getDomObject().removeEventListener(Touch.EVENT_MOVE);
+            this._content.getDomObject().removeEventListener(Touch.EVENT_END);
+
+            this._content.destroy();
+            this._vscrollbarWrapper.destroy();
+            this._vscrollbar.destroy();
+            this._hscrollbarWrapper.destroy();
+            this._hscrollbar.destroy();
+        }
+    });
+              
+    var exports = oo.Core.utils.getNS('oo.View');
+    exports.Scroll = Scroll;
+    
+    return oo;
+
+})(oo || {});var oo = (function (oo) {
+
+    // shorthand
+    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils;
+    
+    
+    var Carousel = my.Class({
+        constructor : function constructor(selector, pager) {
+            this._startX = 0;
+            this._startTranslate = 0;
+
+            this._panelContainer = new Dom(selector);
+            this._transitionDuration = 200;
+
+            var domObj = this._panelContainer.getDomObject();
+
+            this._panelWidth = (new Dom(domObj.firstElementChild)).getWidth();
+            this._nbPanel = document.querySelectorAll([selector, ' > *'].join('')).length;
+
+            this._activePanel = 0;
+            this._displayPager = (pager ? true : false);
+
+            this._pager = null;
+            this._buildPager();
+
+            this._moved = false;
+
+            this.render();
+        },
+        _buildPager : function _buildPager() {
+            if (this._displayPager) {
+                this._pager = Dom.createElement('div');
+                this._pager.classList.addClass('carousel-pager');
+
+                this._pager.setTemplate('{{#bullet}}<i class="dot"></i>{{/bullet}}');
+
+                var data = [];
+                for(var i=0; i<this._nbPanel; i++) {
+                    data.push(i);
+                }
+
+                this._pager.render({bullet: data});
+            }
+
+            this._updatePager();
+        },
+        _updatePager : function _updatePager() {
+            var current = this._pager.getDomObject().querySelector('.dot.active');
+            if (current) {
+                current.className = current.className.replace(/ *active/, '');
+            }
+            this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
+        },
+        hasMoved : function hasMoved() {
+            return this._moved;
+        },
+        _initListeners : function _initListeners(){
+            var listNode = this._panelContainer.getDomObject();
+            var that = this;
+            var touchMoveTempo;
+
+            listNode.addEventListener(Touch.EVENT_START, function (e) {
+                that._startX = Touch.getPositionX(e);
+                that._startTranslate = that._panelContainer.getTranslateX();
+                touchMoveTempo = 0;
+            }, false);
+
+            listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
+                var diff = Touch.getPositionX(e) - that._startX;
+                that._panelContainer.translateTo({x:(that._startTranslate + diff)}, 0);  
+                that._moved = true;
+            }, false);
+
+            listNode.addEventListener(Touch.EVENT_END, function () {
+                that._moved = false;
+
+                var cVal = that._panelContainer.getTranslateX();
+                var tVal;
+                
+                if (cVal < 0) {
+
+                    cVal = Math.abs(cVal);
+
+                    var min = (that._panelWidth / 2), 
+                        max = (that._panelWidth * (that._nbPanel -1) - min);
+
+                    for(var i = min; i <= max; i = i + that._panelWidth) {
+                        if (cVal < i) {
+                            break;
+                        }
+                    }
+
+                    
+                    if (cVal > max) {
+                        tVal = max + min;
+                    } else {
+                        tVal = i - min;
+                    }
+
+                    tVal *= -1;
+
+                } else {
+                    tVal = 0;
+                }
+
+                that._activePanel = Math.abs(tVal / that._panelWidth);
+
+                that._panelContainer.translateTo({x:tVal}, that._transitionDuration);
+
+                that._updatePager();
+
+                that._startTranslate = tVal;
+            }, false);
+        },
+        render : function render(){
+            
+            // update css if needed
+            if (this._pager) {
+                (new Dom(this._panelContainer.getDomObject().parentNode)).appendChild(this._pager);
+            }
+
+            this._initListeners();
+        }
+    });
+    
+    var exports = oo.Core.utils.getNS('oo.View');
+    exports.Carousel = Carousel;
+    
     return oo;
     
 })(oo || {});
