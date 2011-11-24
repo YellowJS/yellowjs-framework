@@ -1,7 +1,7 @@
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.Core.utils;
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils;
     
     var Scroll =  my.Class({
         STATIC : {
@@ -267,7 +267,7 @@ var oo = (function (oo) {
         }
     });
               
-    var exports = oo.Core.utils.getNS('oo.View');
+    var exports = utils.getNS('oo.View');
     exports.Scroll = Scroll;
     
     return oo;

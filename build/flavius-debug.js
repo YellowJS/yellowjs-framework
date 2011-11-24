@@ -741,7 +741,7 @@ var oo = (function (oo) {
     
     var Touch = my.Class({
         STATIC : {
-            getPosition : Touch.getPosition,
+            getPosition : getPosition,
             getPositionX : function getPositionX(e, index) {
                 return getPosition(e, index)[0];
             },
@@ -764,7 +764,7 @@ var oo = (function (oo) {
         Touch.EVENT_END   = 'touchend';        
     }
     
-    var exports = oo.Core.utils.getNS('oo.View');
+    var exports = oo.core.utils.getNS('oo.View');
     exports.Touch = Touch;
     
     return oo;
@@ -1648,7 +1648,7 @@ var oo = (function (oo) {
 })(oo || {});var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.Core.utils, Events = oo.Events;
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils, Events = oo.Events;
     
     var Viewport = my.Class({
         STATIC : {
@@ -1845,7 +1845,7 @@ var oo = (function (oo) {
     });
 
     // Viewport.ANIM_RTL_[...] = '...';    
-    var exports = oo.core.utils.getNS('oo.View');
+    var exports = utils.getNS('oo.View');
     exports.Viewport = Viewport;
     
     return oo;
@@ -1983,7 +1983,7 @@ var oo = (function (oo) {
 })(oo || {});var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.Core.utils, Events = oo.Events, Store = oo.Store;
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils, Events = oo.Events, Store = oo.Store;
     
     var List = my.Class({
         STATIC : {
@@ -2086,7 +2086,7 @@ var oo = (function (oo) {
         }
     });
     
-    var exports = oo.core.utils.getNS('oo.View');
+    var exports = utils.getNS('oo.View');
     exports.List = List;
     
     return oo;
@@ -2094,7 +2094,7 @@ var oo = (function (oo) {
 })(oo || {});var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.Core.utils;
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils;
     
     var Scroll =  my.Class({
         STATIC : {
@@ -2360,7 +2360,7 @@ var oo = (function (oo) {
         }
     });
               
-    var exports = oo.Core.utils.getNS('oo.View');
+    var exports = utils.getNS('oo.View');
     exports.Scroll = Scroll;
     
     return oo;
@@ -2368,7 +2368,7 @@ var oo = (function (oo) {
 })(oo || {});var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils;
+    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.core.utils;
     
     
     var Carousel = my.Class({
@@ -2490,7 +2490,7 @@ var oo = (function (oo) {
         }
     });
     
-    var exports = oo.Core.utils.getNS('oo.View');
+    var exports = utils.getNS('oo.View');
     exports.Carousel = Carousel;
     
     return oo;

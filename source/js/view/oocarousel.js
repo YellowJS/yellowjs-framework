@@ -1,7 +1,7 @@
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.utils;
+    var Dom = oo.Dom, Touch = oo.Touch, utils = oo.core.utils;
     
     
     var Carousel = my.Class({
@@ -123,7 +123,7 @@ var oo = (function (oo) {
         }
     });
     
-    var exports = oo.Core.utils.getNS('oo.View');
+    var exports = utils.getNS('oo.View');
     exports.Carousel = Carousel;
     
     return oo;

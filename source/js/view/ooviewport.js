@@ -1,7 +1,7 @@
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.Core.utils, Events = oo.Events;
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils, Events = oo.Events;
     
     var Viewport = my.Class({
         STATIC : {
@@ -198,7 +198,7 @@ var oo = (function (oo) {
     });
 
     // Viewport.ANIM_RTL_[...] = '...';    
-    var exports = oo.core.utils.getNS('oo.View');
+    var exports = utils.getNS('oo.View');
     exports.Viewport = Viewport;
     
     return oo;

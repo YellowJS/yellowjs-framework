@@ -27,7 +27,7 @@ var oo = (function (oo) {
     
     var Touch = my.Class({
         STATIC : {
-            getPosition : Touch.getPosition,
+            getPosition : getPosition,
             getPositionX : function getPositionX(e, index) {
                 return getPosition(e, index)[0];
             },
@@ -50,7 +50,7 @@ var oo = (function (oo) {
         Touch.EVENT_END   = 'touchend';        
     }
     
-    var exports = oo.Core.utils.getNS('oo.View');
+    var exports = oo.core.utils.getNS('oo.View');
     exports.Touch = Touch;
     
     return oo;
