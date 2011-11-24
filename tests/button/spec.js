@@ -42,5 +42,4 @@ describe("oobutton.js", function() {
             expect(res).toBeFalsy();
         });
     });
-    
 });
