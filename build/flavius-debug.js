@@ -1320,7 +1320,6 @@ var oo = (function (oo) {
     return oo;
 
 })(oo || {});var oo = (function (oo) {
-    
     // private class
     var ClassList = my.Class({
         constructor : function constructor (obj){
@@ -1862,29 +1861,29 @@ var oo = (function (oo) {
 
     var Dom = oo.View.Dom, Touch = oo.View.Touch; Events = oo.Events;
     
-    var Button = my.Class({
+    var Button = my.Class(oo.View.Dom, {
         STATIC : {
             EVT_TOUCH : 'touch',
             EVT_RELEASE : 'release'
         },
         constructor : function constructor(selector) {
-            this._dom = new Dom(selector);
+            //this._dom = new Dom(selector);
             this._active = false;
-
+            Button.Super.call(this, selector);
             this._initEvents();
         },
         getDom : function getDom() {
-            return this._dom;
+            //return this._dom;
         },
         _initEvents : function _initEvents() {
             var that = this;
-            this._dom.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
+            /*this._dom.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
                 return that._onTouch.call(that, e);
-            });
+            -});*/
 
-            this._dom.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
+            /*this._dom.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
                 return that._onRelease.call(that, e);
-            });
+            -});*/
         },
         _onTouch : function _onTouch(e) {
             if (!this.isActive()) {
@@ -1908,10 +1907,10 @@ var oo = (function (oo) {
          **/
         setActive : function setActive (active) {
             if (active || undefined === active) {
-                this._dom.classList.addClass('active');
+                //this._dom.classList.addClass('active');
                 this._active = true;
             } else {
-                this._dom.classList.removeClass('active');
+                //this._dom.classList.removeClass('active');
                 this._active = false;
             }
         }

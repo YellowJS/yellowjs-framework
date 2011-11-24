@@ -8,17 +8,16 @@
  */
 var oo = (function (oo) {
 
-    var Dom = oo.View.Dom, Touch = oo.View.Touch; Events = oo.Events;
+    var Touch = oo.View.Touch; Events = oo.Events;
     
-    var Button = my.Class({
+    var Button = my.Class(oo.View.Dom, {
         STATIC : {
             EVT_TOUCH : 'touch',
             EVT_RELEASE : 'release'
         },
         constructor : function constructor(selector) {
-            this._dom = new Dom(selector);
             this._active = false;
-
+            Button.Super.call(this, selector);
             this._initEvents();
         },
         getDom : function getDom() {

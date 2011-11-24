@@ -1,5 +1,4 @@
 var oo = (function (oo) {
-    
     // private class
     var ClassList = my.Class({
         constructor : function constructor (obj){
