@@ -1860,7 +1860,7 @@ var oo = (function (oo) {
  */
 var oo = (function (oo) {
 
-    var Dom = oo.View.Dom, Touch = oo.Touch; Events = oo.Events;
+    var Dom = oo.View.Dom, Touch = oo.View.Touch; Events = oo.Events;
     
     var Button = my.Class({
         STATIC : {
@@ -1886,7 +1886,7 @@ var oo = (function (oo) {
                 return that._onRelease.call(that, e);
             });
         },
-        _onTouch : function _onTouch() {
+        _onTouch : function _onTouch(e) {
             if (!this.isActive()) {
                 this.setActive(true);            
             }
