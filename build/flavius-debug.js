@@ -635,6 +635,40 @@ var Mustache = function() {
                 ary.push(collection[i]);  
             }  
             return ary;  
+        },
+        deepCopy : function deepCopy(src, copy){
+            if (undefined !== src){
+                if(undefined == copy) {
+                    var copy = {};
+                }
+                for (prop in src){
+                    if ( copy.hasOwnProperty(prop) ){
+                        if (typeof src[prop] !== 'object'){
+                            copy[prop] = src[prop];
+                        }
+                        else {
+                            deepCopy(src[prop], copy[prop]);
+                        }
+                    } else { 
+                        if ( typeof(src[prop]) !== 'object' ){
+                            copy[prop] = src[prop];
+                        } else {
+                            if ( src[prop] instanceof Array ){
+                                copy[prop] = [];
+                            } else {
+                                copy[prop] = {};
+                            }
+
+                            deepCopy(src[prop], copy[prop]);
+                        }
+                    }
+                }
+            }
+            else {
+                throw new Error('no source object');
+            }
+
+            return copy;
         }
     });
 
@@ -1859,7 +1893,7 @@ var oo = (function (oo) {
  */
 var oo = (function (oo) {
 
-    var Dom = oo.View.Dom, Touch = oo.View.Touch; Events = oo.Events;
+    var Touch = oo.View.Touch; Events = oo.Events;
     
     var Button = my.Class(oo.View.Dom, {
         STATIC : {
@@ -1867,23 +1901,22 @@ var oo = (function (oo) {
             EVT_RELEASE : 'release'
         },
         constructor : function constructor(selector) {
-            //this._dom = new Dom(selector);
             this._active = false;
             Button.Super.call(this, selector);
             this._initEvents();
         },
         getDom : function getDom() {
-            //return this._dom;
+            return this._dom;
         },
         _initEvents : function _initEvents() {
-            var that = this;
-            /*this._dom.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
+            var that = this; 
+            this.getDom().addEventListener(Touch.EVENT_START, function (e) {
                 return that._onTouch.call(that, e);
-            -});*/
+            });
 
-            /*this._dom.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
+            this.getDom().addEventListener(Touch.EVENT_END, function (e) {
                 return that._onRelease.call(that, e);
-            -});*/
+            });
         },
         _onTouch : function _onTouch(e) {
             if (!this.isActive()) {
@@ -1907,10 +1940,10 @@ var oo = (function (oo) {
          **/
         setActive : function setActive (active) {
             if (active || undefined === active) {
-                //this._dom.classList.addClass('active');
+                this.classList.addClass('active');
                 this._active = true;
             } else {
-                //this._dom.classList.removeClass('active');
+                this.classList.removeClass('active');
                 this._active = false;
             }
         }
@@ -2005,7 +2038,7 @@ var oo = (function (oo) {
             if (selector) {
                 this._dom = new Dom(selector);
             } else {
-                this._dom = Dom.creataElement('ul');
+                this._dom = Dom.createElement('ul');
             }
 
             this._initEvents();

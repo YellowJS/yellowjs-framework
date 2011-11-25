@@ -24,12 +24,12 @@ var oo = (function (oo) {
             return this._dom;
         },
         _initEvents : function _initEvents() {
-            var that = this;
-            this._dom.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
+            var that = this; 
+            this.getDom().addEventListener(Touch.EVENT_START, function (e) {
                 return that._onTouch.call(that, e);
             });
 
-            this._dom.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
+            this.getDom().addEventListener(Touch.EVENT_END, function (e) {
                 return that._onRelease.call(that, e);
             });
         },
@@ -55,10 +55,10 @@ var oo = (function (oo) {
          **/
         setActive : function setActive (active) {
             if (active || undefined === active) {
-                this._dom.classList.addClass('active');
+                this.classList.addClass('active');
                 this._active = true;
             } else {
-                this._dom.classList.removeClass('active');
+                this.classList.removeClass('active');
                 this._active = false;
             }
         }
