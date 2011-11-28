@@ -8,9 +8,10 @@
  */
 var oo = (function (oo) {
 
-    var Touch = oo.View.Touch; Events = oo.Events;
+    var Touch = oo.View.Touch; 
+    //Events = oo.Events;
     
-    var Button = my.Class(oo.View.Dom, {
+    var Button = my.Class(oo.View.Dom, oo.core.Mixins.Events, {
         STATIC : {
             EVT_TOUCH : 'touch',
             EVT_RELEASE : 'release'
@@ -25,23 +26,38 @@ var oo = (function (oo) {
         },
         _initEvents : function _initEvents() {
             var that = this; 
-            this.getDom().addEventListener(Touch.EVENT_START, function (e) {
+            
+            console.log(Touch.EVENT_START);
+            
+            this.addListener(Touch.EVENT_START, function (e) {
+                return that._onTouch.call(that, e);
+            }, this._dom);
+            
+            this.addListener(Touch.EVENT_END, function (e) {
+                return that._onRelease.call(that, e);
+            }, this._dom);
+            
+            
+            /*this.getDom().addEventListener(Touch.EVENT_START, function (e) {
                 return that._onTouch.call(that, e);
             });
 
             this.getDom().addEventListener(Touch.EVENT_END, function (e) {
                 return that._onRelease.call(that, e);
-            });
+            });*/
         },
         _onTouch : function _onTouch(e) {
             if (!this.isActive()) {
                 this.setActive(true);            
             }
-            Events.triggerEvent(Button.EVT_TOUCH, this, [this, e]);
+            
+            console.log(Button.EVT_TOUCH, this, [this, e]);
+            
+            this.triggerEvent(Button.EVT_TOUCH, this, [this, e]);
         },
         _onRelease : function _onRelease(e) {
             this.setActive(false);
-            Events.triggerEvent(Button.EVT_RELEASE, this, [this, e]);
+            this.triggerEvent(Button.EVT_RELEASE, this, [this, e]);
         },
         _toogleActive : function _toogleActive(){
             this.setActive(!this._active);
