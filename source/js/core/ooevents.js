@@ -31,7 +31,6 @@ var oo = (function (oo) {
           return listenerConf;
       },
       addListener : function addListener(eventName, listener, sender){
-          console.log(this);
           if (!this.listeners[eventName]){
               this.listeners[eventName] = [];
           }
@@ -39,10 +38,6 @@ var oo = (function (oo) {
           var listenerConf = this.buildListenerConf(listener, sender);
 
           this.listeners[eventName].push(listenerConf);
-          
-          
-          sender.addEventListener(eventName, listener, false);
-          
           
       },
       removeListener : function removeListener(eventName, listener, sender) {

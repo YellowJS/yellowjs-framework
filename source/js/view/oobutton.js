@@ -29,22 +29,22 @@ var oo = (function (oo) {
             
             console.log(Touch.EVENT_START);
             
-            this.addListener(Touch.EVENT_START, function (e) {
+            /*this.addListener(Touch.EVENT_START, function (e) {
                 return that._onTouch.call(that, e);
             }, this._dom);
             
             this.addListener(Touch.EVENT_END, function (e) {
                 return that._onRelease.call(that, e);
-            }, this._dom);
+            }, this._dom);*/
             
             
-            /*this.getDom().addEventListener(Touch.EVENT_START, function (e) {
+            this.getDom().addEventListener(Touch.EVENT_START, function (e) {
                 return that._onTouch.call(that, e);
             });
 
             this.getDom().addEventListener(Touch.EVENT_END, function (e) {
                 return that._onRelease.call(that, e);
-            });*/
+            });
         },
         _onTouch : function _onTouch(e) {
             if (!this.isActive()) {
