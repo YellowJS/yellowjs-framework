@@ -8,7 +8,7 @@
  */
 var oo = (function (oo) {
 
-    var hasTouch = 'ontouchstart' in window ? true : false;
+    //var hasTouch = 'ontouchstart' in window ? true : false;
     var getPosition = function getPosition (e, index) {        
         if (hasTouch) {
             index = index || 0;
@@ -27,6 +27,7 @@ var oo = (function (oo) {
     
     var Touch = my.Class({
         STATIC : {
+            HAS_TOUCH : 'ontouchstart' in window ? true : false,
             getPosition : getPosition,
             getPositionX : function getPositionX(e, index) {
                 return getPosition(e, index)[0];
@@ -40,7 +41,7 @@ var oo = (function (oo) {
         }
     });
     
-    if (!hasTouch) {
+    if (!Touch.HAS_TOUCH) {
         Touch.EVENT_START = 'mousedown';
         Touch.EVENT_MOVE  = 'mousemove';
         Touch.EVENT_END   = 'mouseup';
