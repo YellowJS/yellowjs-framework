@@ -32,7 +32,7 @@ var oo = (function (oo) {
                 y : null
             };
             if (Touch.HAS_TOUCH) {
-                if (event.targetTouches.length == 1){
+                if (event.touches.length == 1){
                     //one finger 
                     //console.log(event.touches[0].pageX);
                     coords.x = event.touches[0].pageX;
@@ -60,7 +60,7 @@ var oo = (function (oo) {
               startTime : null,
               startTimePrevious : null,
               stopTime : null,
-              isMoved : false,
+              hasMoved : false,
               startPosX : null,
               startPosY : null,
               lastPosX : null,
@@ -76,7 +76,7 @@ var oo = (function (oo) {
             this.touchFlags.startPosX = this.getXPos(e);
             this.touchFlags.startPosY = this.getYPos(e);
             
-            
+            console.log(e.touches.length);
             
             
             //alert(this.startPos)
@@ -90,7 +90,7 @@ var oo = (function (oo) {
             console.log('move');
             this.touchFlags.lastPosX = this.getXPos(e);
             this.touchFlags.lastPosY = this.getYPos(e);
-            this.touchFlags.isMoved = true;
+            this.touchFlags.hasMoved = true;
             
             //console.log(this.touchFlags.lastPosX);
             
@@ -102,19 +102,22 @@ var oo = (function (oo) {
             
             console.log("this.touchFlags.lastPosX" + this.touchFlags.lastPosX);
             console.log("this.touchFlags.lastPosY" + this.touchFlags.lastPosY);
+            console.log(this.touchFlags.countTouch);
             
-            
-            if (this.touchFlags.isMoved){
+            if (this.touchFlags.hasMoved){
                 var deltaX = this.touchFlags.lastPosX - this.touchFlags.startPosX;
                 var deltaY = this.touchFlags.lastPosY - this.touchFlags.startPosY;
-
-                if (Math.abs(deltaX) > 50) {
-                    if ( deltaX > 0 ) {
-                        alert('swipe left');
-                    } else {
-                        alert('swipe right');
-                    }
-                } 
+                
+                if ( (Event.HAS_TOUCH && event.targetTouches.length == 1) || !Event.HAS_TOUCH ){
+                    if (Math.abs(deltaX) > 50) {
+                        if ( deltaX > 0 ) {
+                            alert('swipe left');
+                        } else {
+                            alert('swipe right');
+                        }
+                    } 
+                }
+                 
             } else {
                 //test tap or double tap
                 
@@ -139,7 +142,7 @@ var oo = (function (oo) {
             this.touchFlags.lastPosY = null; 
             this.touchFlags.startPosX = null;
             this.touchFlags.startPosY = null;
-            this.touchFlags.isMoved = false;
+            this.touchFlags.hasMoved = false;
             this.touchFlags.startTimePrevious = this.touchFlags.startTime; 
         }   
     });
