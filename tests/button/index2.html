@@ -14,6 +14,9 @@
   <meta name="author" content="">
   <style type="text/css">
           .active { color:red;}
+          
+          #main {   width:500px; height:500px; margin:0 auto; background:#e3e575;}
+          .child {  width:200px; height:200px; margin:30px auto; background:#bbcbf9;}
   </style>
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -24,7 +27,15 @@
     <h1>With mixin Event</h1>
   </header>
   <div role="main">
-    <span id="button">Button</span>
+    
+    <div id="main">
+         <span id="button">Button</span>
+         <div id="child" class="child">
+            childNode
+         </div>
+    </div>
+    
+    
   </div>
   <footer>
 
@@ -40,9 +51,27 @@
 <script>
     function init(){ 
         var button = new oo.View.Button('#button');
-        button.addListener('tap', function(){
+         
+        document.querySelector('#button').addEventListener('tap', function(){
+            alert('tapCustom')
+        },false);
+        
+        document.querySelector('#main').addEventListener('swipeLeft', function(){
+            alert('swipeLeftCustom')
+        },false); 
+        
+        document.querySelector('#main').addEventListener('swipeRight', function(){
+            alert('swipeRightCustom')
+        },false);
+        
+        document.querySelector('#child').addEventListener('tap', function(){
+           alert('tapChildCustom')
+        },false);
+        
+        
+        /*button.addListener('tap', function(){
             alert('tap')
-        }, button.getDom());
+        }, button.getDom());*/
         console.log(button.listeners)
         
         
