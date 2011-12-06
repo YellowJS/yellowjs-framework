@@ -11,7 +11,7 @@ var oo = (function (oo) {
     var Touch = oo.View.Touch; 
     //Events = oo.Events;
     
-    var Button = my.Class(oo.View.Dom, oo.core.Mixins.Events, {
+    var Button = my.Class(oo.View.Dom, oo.core.mixins.Events, {
         STATIC : {
             EVT_TOUCH : 'touch',
             EVT_RELEASE : 'release'
