@@ -31,10 +31,10 @@ var oo = (function (oo) {
                 x : null,
                 y : null
             };
+
             if (Touch.HAS_TOUCH) {
                 if (event.touches.length == 1){
                     //one finger 
-                    //console.log(event.touches[0].pageX);
                     coords.x = event.touches[0].pageX;
                     coords.y = event.touches[0].pageY;
                 }
@@ -56,58 +56,41 @@ var oo = (function (oo) {
            return coords.y; 
         },
         touchFlags : {
-              countTouch : 0,
-              startTime : null,
-              startTimePrevious : null,
-              stopTime : null,
-              hasMoved : false,
-              startPosX : null,
-              startPosY : null,
-              lastPosX : null,
-              lastPosY : null,
-              deltaTime : 700
+            startTime : null, stopTime : null, hasMoved : false, startX : null, startY : null, lastX : null, lastY : null, time : 150, timeout : null, doubleTap : false 
         },
         startGesture : function startGesture(e){
-            //first start : touchFlags.startTime
+            
             this.touchFlags.startTime = Date.now();
-            
-            //console.log(this.touchFlags.startTime - this.touchFlags.startTimePrevious);
-            /*if ( (this.touchFlags.startTime - this.touchFlags.startTimePrevious) >= 400){
-               this.touchFlags.countTouch = 0; 
-            }*/
-            this.touchFlags.countTouch++;
-            
-            this.touchFlags.startPosX = this.getXPos(e);
-            this.touchFlags.startPosY = this.getYPos(e);
-
+            this.touchFlags.hasMoved = false; 
+            this.touchFlags.startX = this.getXPos(e);
+            this.touchFlags.startY = this.getYPos(e);
+ 
+            if ( (this.touchFlags.startTime - this.touchFlags.stopTime) < this.touchFlags.time){
+                this.touchFlags.doubleTap = true;
+                window.clearTimeout(this.touchFlags.timeout);
+            } else {
+                this.touchFlags.doubleTap = false;
+            }
         },
         moveGesture : function moveGesture(e){
+            //condition cause mousemove
             if (this.touchFlags.startTime){
-               // console.log('move');
-                this.touchFlags.lastPosX = this.getXPos(e);
-                this.touchFlags.lastPosY = this.getYPos(e);
+                this.touchFlags.lastX = this.getXPos(e);
+                this.touchFlags.lastY = this.getYPos(e);
                 this.touchFlags.hasMoved = true;
             }
-            
-            
-            //console.log(this.touchFlags.lastPosX);
-            
         },                                                                    
         stopGesture : function stopGesture(e){
-            //console.log(e);
+            var that = this;
             
             this.touchFlags.stopTime = Date.now();
-            
-            // console.log("this.touchFlags.lastPosX" + this.touchFlags.lastPosX);
-            //             console.log("this.touchFlags.lastPosY" + this.touchFlags.lastPosY);
-            //             console.log(this.touchFlags.countTouch);
-            
+
             if (this.touchFlags.hasMoved){
-                var deltaX = this.touchFlags.lastPosX - this.touchFlags.startPosX;
-                var deltaY = this.touchFlags.lastPosY - this.touchFlags.startPosY;
+                var deltaX = this.touchFlags.lastX - this.touchFlags.startX,
+                    deltaY = this.touchFlags.lastY - this.touchFlags.startY;
                 
                 if ( (Event.HAS_TOUCH && event.targetTouches.length == 1) || !Event.HAS_TOUCH ){
-                    if (Math.abs(deltaX) > 30) {
+                    if (Math.abs(deltaX) > 30 && Math.abs(deltaY) < 30 ) {
                         if ( deltaX > 0 ) {
                             this.fireEvent(e, "swipeLeft", true, true);
                         } else {
@@ -115,73 +98,22 @@ var oo = (function (oo) {
                         }
                     } 
                 }
-                 
             } else { 
-                
-               var that = this;
-               console.log(that.touchFlags) 
-                window.setTimeout(function(e){ 
-                    console.log(that.touchFlags.countTouch);
-                    console.log('testdt '+ (that.touchFlags.stopTime - that.touchFlags.startTimePrevious));
-                    if ( (2 === that.touchFlags.countTouch && (that.touchFlags.stopTime - that.touchFlags.startTimePrevious) < 400)){
-                        console.log("doubletap");
+               //https://github.com/madrobby/zepto/blob/master/src/touch.js
+               that.touchFlags.timeout = window.setTimeout(function(){
+                   that.touchFlags.timeout = null;
 
-                    } else {  
-                        //console.log('test ' + that.touchFlags.startTime);
-                        if ( (that.touchFlags.stopTime - that.touchFlags.startTime) < 1000 ) {
-                         //this.fireEvent(e, "tap", true, true);
-                         //console.log('tap');
-                         //that.touchFlags.countTouch = 0;
-                         
-                        }
-                        
-                     }
-                    
-                    
-                },200)
-                
-                
-                that.touchFlags.lastPosX = null; 
-                that.touchFlags.lastPosY = null; 
-                that.touchFlags.startPosX = null;
-                that.touchFlags.startPosY = null;
-                that.touchFlags.hasMoved = false;
-                that.touchFlags.startTimePrevious = that.touchFlags.startTime; 
-                that.touchFlags.startTime = null;
-                
-                //test tap or double tap   
-                //alert(this.touchFlags.stopTime - this.touchFlags.startTimePrevious)
-                //if ( (2 === this.touchFlags.countTouch) && ((this.touchFlags.stopTime - this.touchFlags.startTimePrevious) < 200) ){
-                //   alert("doubletap")  
-                //   
-                //} else {
-                //    if ( (this.touchFlags.stopTime - this.touchFlags.startTime) < 200 ) {
-                //        this.fireEvent(e, "tap", true, true);
-                //    }
-                //} 
-                //console.log((this.touchFlags.stopTime - this.touchFlags.startTime) < 150)
-                
-                
-                
+                   if ( that.touchFlags.doubleTap){
+                       that.fireEvent(e, "doubleTap", true, true);
+                   } else {
+                       that.fireEvent(e, "tap", true, true);
+                   }
+               },this.touchFlags.time);
+    
             }
             
+            that.touchFlags.lastX = that.touchFlags.lastY = that.touchFlags.startX = that.touchFlags.startY = null;
 
-            /*
-            if (Math.abs(deltaY) > 100) {
-                if ( deltaX > 0 ) {
-                    alert('swipe top ?')
-                } else {
-                    alert('swipe bottom ?')
-                }
-            } */
-            
-            //alert(deltaX);
-            //alert(deltaY);
-            //console.log(this.touchFlags.stopTime);
-            
-            //reset Pos
-             
-             
         },
         fireEvent : function fireEvent(event, name, bubble, cancelable){
             //create each Time the event ? 
@@ -197,10 +129,6 @@ var oo = (function (oo) {
     var exports = oo.core.utils.getNS('oo.core');
     exports.Gesture = gesture;
     
-    return oo;
-    
-    
-    
-  
+    return oo; 
     
 })(oo || {});

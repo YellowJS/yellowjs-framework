@@ -17,9 +17,10 @@
           
           #main {   width:500px; height:500px; margin:0 auto; background:#e3e575;}
           .child {  width:200px; height:200px; margin:30px auto; background:#bbcbf9;}
+          #result {  position:fixed; right:0; top:0; border:1px solid #ccc; padding:20px; width:150px;}
   </style>
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 </head>
 
 <body>
@@ -34,6 +35,9 @@
             childNode
          </div>
     </div>
+    <ul id="result">
+
+    </ul>
     
     
   </div>
@@ -49,37 +53,52 @@
 <script src="../../source/js/view/oobutton.js"></script>
 
 <script>
+
+    var result;
+
     function init(){ 
         var button = new oo.View.Button('#button');
-         
-        document.querySelector('#button').addEventListener('tap', function(){
-            alert('tapCustom')
+        result = document.querySelector('#result');
+        document.querySelector('#button').addEventListener('tap', function(e){
+            e.stopPropagation();
+            updateList('tap button');
+        },false);
+
+        document.querySelector('#button').addEventListener('doubleTap', function(e){
+            e.stopPropagation();
+            updateList('doubleTap button');
         },false);
         
-        document.querySelector('#main').addEventListener('swipeLeft', function(){
-            alert('swipeLeftCustom')
+        document.querySelector('#main').addEventListener('swipeLeft', function(e){
+            updateList('swipe Left main')
         },false); 
         
-        document.querySelector('#main').addEventListener('swipeRight', function(){
-            alert('swipeRightCustom')
+        document.querySelector('#main').addEventListener('swipeRight', function(e){
+            updateList('swipeRight main')
         },false);
         
-        document.querySelector('#child').addEventListener('tap', function(){
-           alert('tapChildCustom')
+        document.querySelector('#child').addEventListener('tap', function(e){
+          e.stopPropagation();
+           updateList('tap child')
         },false);
-        
-        
-        /*button.addListener('tap', function(){
-            alert('tap')
-        }, button.getDom());*/
-        console.log(button.listeners)
-        
-        
-        //console.log(button.getDom()); //ok
-        //console.log(button.isActive()); 
-        //button.setActive(true);
-        //console.log(button.isActive());
+
+        document.querySelector('#child').addEventListener('doubleTap', function(e){
+           updateList('doubleTap child')
+        },false);
+
+        document.querySelector('#main').addEventListener('tap', function(e){
+           updateList('tap main')
+        },false);
     }
+
+    function updateList(eventName){
+      var item = document.createElement('li');
+      item.appendChild(document.createTextNode(eventName));
+      result.appendChild(item);
+    }
+
+
+
     window.addEventListener('load', init, false);
 </script> 
 </body>

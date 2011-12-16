@@ -27,7 +27,6 @@ var oo = (function (oo) {
         _initEvents : function _initEvents() {
             var that = this; 
             
-            console.log(Touch.EVENT_START);
             
             /*this.addListener(Touch.EVENT_START, function (e) {
                 return that._onTouch.call(that, e);
@@ -50,8 +49,6 @@ var oo = (function (oo) {
             if (!this.isActive()) {
                 this.setActive(true);            
             }
-            
-            console.log(Button.EVT_TOUCH, this, [this, e]);
             
             this.triggerEvent(Button.EVT_TOUCH, this, [this, e]);
         },

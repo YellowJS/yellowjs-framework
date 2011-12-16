@@ -51,7 +51,6 @@ var oo = (function (oo) {
           }
       },
       triggerEvent : function triggerEvent(eventName, sender, params){
-          console.log(this.listeners);
           if (this.listeners[eventName]){
               for (var i = 0, len = this.listeners[eventName].length; i<len; i++) {
                   var listener = this.listeners[eventName][i];
