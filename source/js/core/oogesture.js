@@ -1,6 +1,6 @@
-/** 
+/**
  * Contains class for gesture management
- * 
+ *
  * @namespace oo
  * @class Touch
  *
@@ -34,7 +34,7 @@ var oo = (function (oo) {
 
             if (Touch.HAS_TOUCH) {
                 if (event.touches.length == 1){
-                    //one finger 
+                    //one finger
                     coords.x = event.touches[0].pageX;
                     coords.y = event.touches[0].pageY;
                 }
@@ -48,20 +48,20 @@ var oo = (function (oo) {
         getXPos : function getXPos(event) {
            var coords = this.getPos(event);
 
-           return coords.x; 
+           return coords.x;
         },
         getYPos : function getYPos(event) {
            var coords = this.getPos(event);
 
-           return coords.y; 
+           return coords.y;
         },
         touchFlags : {
-            startTime : null, stopTime : null, hasMoved : false, startX : null, startY : null, lastX : null, lastY : null, time : 150, timeout : null, doubleTap : false 
+            el : null, startTime : null, stopTime : null, hasMoved : false, startX : null, startY : null, lastX : null, lastY : null, time : 150, timeout : null, doubleTap : false
         },
         startGesture : function startGesture(e){
-            
+            this.touchFlags.el = e.target;
             this.touchFlags.startTime = Date.now();
-            this.touchFlags.hasMoved = false; 
+            this.touchFlags.hasMoved = false;
             this.touchFlags.startX = this.getXPos(e);
             this.touchFlags.startY = this.getYPos(e);
  
@@ -79,7 +79,7 @@ var oo = (function (oo) {
                 this.touchFlags.lastY = this.getYPos(e);
                 this.touchFlags.hasMoved = true;
             }
-        },                                                                    
+        },
         stopGesture : function stopGesture(e){
             var that = this;
             
@@ -92,21 +92,21 @@ var oo = (function (oo) {
                 if ( (Event.HAS_TOUCH && event.targetTouches.length == 1) || !Event.HAS_TOUCH ){
                     if (Math.abs(deltaX) > 30 && Math.abs(deltaY) < 30 ) {
                         if ( deltaX > 0 ) {
-                            this.fireEvent(e, "swipeLeft", true, true);
+                            this.fireEvent(that.touchFlags.el, "swipeLeft", true, true);
                         } else {
-                            this.fireEvent(e, "swipeRight", true, true);
+                            this.fireEvent(that.touchFlags.el, "swipeRight", true, true);
                         }
-                    } 
+                    }
                 }
-            } else { 
+            } else {
                //https://github.com/madrobby/zepto/blob/master/src/touch.js
                that.touchFlags.timeout = window.setTimeout(function(){
                    that.touchFlags.timeout = null;
 
                    if ( that.touchFlags.doubleTap){
-                       that.fireEvent(e, "doubleTap", true, true);
+                       that.fireEvent(that.touchFlags.el, "doubleTap", true, true);
                    } else {
-                       that.fireEvent(e, "tap", true, true);
+                       that.fireEvent(that.touchFlags.el, "tap", true, true);
                    }
                },this.touchFlags.time);
     
@@ -115,13 +115,13 @@ var oo = (function (oo) {
             that.touchFlags.lastX = that.touchFlags.lastY = that.touchFlags.startX = that.touchFlags.startY = null;
 
         },
-        fireEvent : function fireEvent(event, name, bubble, cancelable){
-            //create each Time the event ? 
-            var evt = document.createEvent('Events');  
-            evt.initEvent(name, bubble, cancelable);  
+        fireEvent : function fireEvent(target, name, bubble, cancelable){
+            //create each Time the event ?
+            var evt = document.createEvent('Events');
+            evt.initEvent(name, bubble, cancelable);
             //evt.customData = "my custom data"
-            event.target.dispatchEvent(evt);
-        }   
+            target.dispatchEvent(evt);
+        }
     });
     
     
@@ -129,6 +129,6 @@ var oo = (function (oo) {
     var exports = oo.core.utils.getNS('oo.core');
     exports.Gesture = gesture;
     
-    return oo; 
+    return oo;
     
 })(oo || {});
