@@ -9,6 +9,16 @@
  */
 (function () {
 
+    // bootstrap oo apps
+
+    var root = this;
+
+    var previousOo = root.oo;
+
+    var Flavius;
+    Flavius = root.oo = {};
+
+    Flavius;
 
     var Utils = my.Class({
         /**
@@ -51,7 +61,7 @@
          * @param {Object} sopce - the desired scope
          * @return {Function}
          */
-        bind: function bind (fn, scope) {
+        createDelegate: function createDelegate (fn, scope) {
             return function () {
                 return fn.apply(scope, arguments);
             };
@@ -248,6 +258,5 @@
     var utils = new Utils();
     var ns = utils.getNS('oo.core');
     ns.utils = utils;
-    return oo;
 
 })();

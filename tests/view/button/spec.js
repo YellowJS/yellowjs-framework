@@ -1,17 +1,10 @@
 describe("oobutton.js", function() {
     var ooButton = new oo.View.Button('#button'); 
-    var dom = ooButton.getDom();
-       console.log(dom);
-    describe("getDom", function () {  
-        it('Should return an instance of oo.View.Dom', function () {
-            expect(dom instanceof oo.View.Dom).toBeTruthy();
-        });
-    }); 
     
     describe("setActive(true)", function () {  
         it('the button should has class active', function () {
             ooButton.setActive(true);
-            var cls = dom._dom.getAttribute('class');
+            var cls = ooButton._dom.getAttribute('class');
             expect(cls.indexOf('active')).toNotBe(-1);
         });
     });
@@ -19,7 +12,7 @@ describe("oobutton.js", function() {
     describe("setActive(false)", function () {  
         it('the button shouldn\'t has class active', function () {
             ooButton.setActive(false);
-            var cls = dom._dom.getAttribute('class');
+            var cls = ooButton._dom.getAttribute('class');
             expect(cls.indexOf('active')).toBe(-1);
         });
     });
