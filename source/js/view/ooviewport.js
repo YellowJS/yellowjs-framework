@@ -1,9 +1,9 @@
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils, Events = oo.Events;
+    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils;
     
-    var Viewport = my.Class({
+    var Viewport = my.Class(oo.View.Dom, oo.core.mixins.Events, {
         STATIC : {
             ANIM_RTL : 'rtl',
             ANIM_LTR : 'ltr',
@@ -13,10 +13,10 @@ var oo = (function (oo) {
         constructor : function constructor(root){
             root = root || 'body';
 
-            this._root = new Dom(root);
+            Viewport.Super.call(this, root);
 
             // give access to classList of the root node
-            this.classList = this._root.classList;
+            // this.classList = this._root.classList;
 
             this._panels = [];
             this._panelsDic = [];
@@ -77,13 +77,13 @@ var oo = (function (oo) {
          _enablePanel : function _enablePanel(identifier){
              var index = this._identifierToIndex(identifier);
 
-             this._root.appendChild(this._panels[index]);
+             this.appendChild(this._panels[index]);
 
              this._enabledPanels.push(index);
 
              // hook to initialize view components such as vscroll or carousel
              // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way    
-             Events.triggerEvent('onEnablePanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
+             this.triggerEvent('onEnablePanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
          },
          getFocusedPanel : function getFocusedPanel(getIndex){
              index = this._focusedStack[this._focusedStack.length - 1];
@@ -124,7 +124,7 @@ var oo = (function (oo) {
              var anim_duration = 0;
              if (direction !== Viewport.NO_ANIM) {
                  // prepare transition
-                 var translateDist = this._root.getWidth() * (direction == Viewport.ANIM_RTL ? 1 : -1);
+                 var translateDist = this.getWidth() * (direction == Viewport.ANIM_RTL ? 1 : -1);
                  this.getPanel(index).setTranslateX(translateDist);
                  // this.getPanel(index).setDisplay('', '');
                  anim_duration = Viewport.ANIM_DURATION;
@@ -141,7 +141,7 @@ var oo = (function (oo) {
              this._focusedStack.push(index);
 
              // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way
-             Events.triggerEvent('onShowPanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
+             this.triggerEvent('onShowPanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
          },
          hidePanel : function hidePanel(panel, direction, destroy) {
              var index = this._identifierToIndex(panel);
@@ -154,7 +154,7 @@ var oo = (function (oo) {
              }
 
              // transition
-             var translateDist = this._root.getWidth() * (direction == Viewport.ANIM_RTL ? -1 : 1);
+             var translateDist = this.getWidth() * (direction == Viewport.ANIM_RTL ? -1 : 1);
              // this.getPanel(index).setZIndex(3, '');
              var that = this;
              this.getPanel(index).translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
@@ -166,7 +166,7 @@ var oo = (function (oo) {
                  this._focusedStack.pop();
              }
 
-             Events.triggerEvent('onHidePanel', this, [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
+             this.triggerEvent('onHidePanel', this, [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
          },
          /**
           * show the newPanel and hide the oldPanel
