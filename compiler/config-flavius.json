@@ -21,7 +21,7 @@
                 },
                 {
                     "text" : "ooevents.js",
-                    "path" : "../source/js/core/"
+                    "path" : "../source/js/core/mixins/"
                 },
                 {
                     "text" : "ootouch.js",
