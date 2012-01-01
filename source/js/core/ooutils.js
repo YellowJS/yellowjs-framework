@@ -7,22 +7,22 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-(function () {
+var oo = (function (oo) {
 
     // bootstrap oo apps
 
-    var root = this;
+    // var root = this;
 
-    var previousOo = root.oo;
+    // var previousOo = root.oo;
 
-    var Flavius;
-    Flavius = root.oo = {};
+    // var Flavius;
+    // Flavius = root.oo = {};
 
-    Flavius;
+    // Flavius;
 
-    var Utils = my.Class({
+    var Core = my.Class({
         /**
-         * use oo.core.utils.log instead of console.log
+         * use oo.log instead of console.log
          *
          * @param {String} data - the data to log
          *
@@ -254,9 +254,12 @@
         }
     });
 
+    // oo.utils.namespace is now deprecated
     // export an instance of Utils class on the right namespace
-    var utils = new Utils();
-    var ns = utils.getNS('oo.core');
-    ns.utils = utils;
+    oo = new Core();
+    var ns = oo.getNS('oo.core');
+    ns.utils = oo;
 
-})();
+    return oo;
+
+})(oo || {});

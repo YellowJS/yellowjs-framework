@@ -190,7 +190,7 @@ var oo = (function (oo) {
             this._dom = domNode;
 
             if (!this._dom.id) {
-                this._dom.id = oo.core.utils.generateId(this._dom.tagName);
+                this._dom.id = oo.generateId(this._dom.tagName);
             }
 
             return this;
@@ -318,7 +318,7 @@ var oo = (function (oo) {
     Dom.createElement = function createElement (tag) { return new Dom(document.createElement(tag)) };
 
     //oo.Dom = Dom;
-    var exports = oo.core.utils.getNS('oo.View');
+    var exports = oo.getNS('oo.view');
     exports.Dom = Dom;
     
     return oo;

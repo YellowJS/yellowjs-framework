@@ -1,5 +1,5 @@
 describe("oobutton.js", function() {
-    var ooButton = new oo.View.Button('#button'); 
+    var ooButton = new oo.view.Button('#button'); 
     
     describe("setActive(true)", function () {  
         it('the button should has class active', function () {

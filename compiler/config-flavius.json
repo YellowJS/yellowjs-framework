@@ -25,7 +25,7 @@
                 },
                 {
                     "text" : "ootouch.js",
-                    "path" : "../source/js/view/"
+                    "path" : "../source/js/core/"
                 },
                 {
                     "text" : "oorouter.js",

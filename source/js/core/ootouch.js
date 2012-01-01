@@ -50,7 +50,7 @@ var oo = (function (oo) {
         Touch.EVENT_END   = 'touchend';        
     }
     
-    var exports = oo.core.utils.getNS('oo.View');
+    var exports = oo.getNS('oo.core');
     exports.Touch = Touch;
     
     return oo;

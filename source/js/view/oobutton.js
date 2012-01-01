@@ -6,12 +6,12 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-(function () {
+var oo = (function (oo) {
 
-    var utils = oo.core.utils, View = utils.getNS('oo.View'), Touch = View.Touch; 
+    var view = oo.getNS('oo.view'), Touch = oo.core.Touch; 
     //Events = oo.Events;
     
-    var Button = my.Class(oo.View.Dom, oo.core.mixins.Events, {
+    var Button = my.Class(oo.view.Dom, oo.core.mixins.Events, {
         STATIC : {
             EVT_TOUCH : 'touch',
             EVT_RELEASE : 'release'
@@ -22,8 +22,8 @@
             this._initEvents();
         },
         _initEvents : function _initEvents() {
-            this._dom.addEventListener(Touch.EVENT_START, utils.createDelegate(this._onTouch, this), false);
-            this._dom.addEventListener(Touch.EVENT_END, utils.createDelegate(this._onRelease, this), false);
+            this._dom.addEventListener(Touch.EVENT_START, oo.createDelegate(this._onTouch, this), false);
+            this._dom.addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
         },
         _onTouch : function _onTouch(e) {
             this.setActive(true);            
@@ -46,6 +46,7 @@
         }
     });
     
-    View.Button = Button;
+    view.Button = Button;
+    return oo;
     
-})();
+})(oo || {});

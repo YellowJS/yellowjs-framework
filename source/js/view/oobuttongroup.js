@@ -1,6 +1,6 @@
 var oo = (function (oo) {
 
-    var Dom = oo.View.Dom, Touch = oo.Touch, Events = oo.Events, Button = oo.View.Button;
+    var Dom = oo.view.Dom, Touch = oo.core.Touch, Events = oo.core.mixins.Events, Button = oo.view.Button;
     
     var ButtonGroup = my.Class({
         STATIC : {
@@ -51,7 +51,7 @@ var oo = (function (oo) {
         Events.triggerEvent('release', group, [e, this]);        
     };
     
-    var exports = oo.core.utils.getNS('oo.View');
+    var exports = oo.getNS('oo.View');
     exports.ButtonGroup = ButtonGroup;
     
     return oo;

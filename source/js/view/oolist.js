@@ -1,7 +1,7 @@
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils, Events = oo.Events, Store = oo.Store;
+    var Dom = oo.view.Dom, Touch = oo.core.Touch, Events = oo.core.mixins.Events, Store = oo.Store;
     
     var List = my.Class({
         STATIC : {
@@ -104,7 +104,7 @@ var oo = (function (oo) {
         }
     });
     
-    var exports = utils.getNS('oo.View');
+    var exports = oo.getNS('oo.view');
     exports.List = List;
     
     return oo;

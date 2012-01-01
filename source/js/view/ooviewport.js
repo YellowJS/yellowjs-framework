@@ -1,9 +1,9 @@
 var oo = (function (oo) {
-
-    // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, utils = oo.core.utils;
     
-    var Viewport = my.Class(oo.View.Dom, oo.core.mixins.Events, {
+    // shorthand
+    var Dom = oo.view.Dom;
+
+    var Viewport = my.Class(Dom, oo.core.mixins.Events, {
         STATIC : {
             ANIM_RTL : 'rtl',
             ANIM_LTR : 'ltr',
@@ -198,7 +198,7 @@ var oo = (function (oo) {
     });
 
     // Viewport.ANIM_RTL_[...] = '...';    
-    var exports = utils.getNS('oo.View');
+    var exports = oo.getNS('oo.view');
     exports.Viewport = Viewport;
     
     return oo;

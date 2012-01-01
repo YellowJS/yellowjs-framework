@@ -9,7 +9,7 @@
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.View.Dom, Touch = oo.Touch, Events = oo.Events;
+    var Events = oo.core.mixins.Events;
     
     var Store = my.Class({
         STATIC : {
@@ -134,7 +134,7 @@ var oo = (function (oo) {
     });    
     
     
-    var exports = oo.core.utils.getNS('oo.Model');
+    var exports = oo.getNS('oo.Model');
     exports.Store = Store;
     
     return oo;

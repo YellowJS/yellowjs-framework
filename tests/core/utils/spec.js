@@ -8,7 +8,7 @@ describe("ooutils.js", function() {
             return this.ClsName;
         };
 
-        var f2 = oo.core.utils.bind(f, Obj);
+        var f2 = oo.createDelegate(f, Obj);
 
         it('should return a function', function () {    
             expect(f2).toBeTruthy('function' == typeof f2);

@@ -80,7 +80,7 @@ var oo = (function (oo) {
         }
     });
     
-    var exports = oo.core.utils.getNS('oo.core.mixins');
+    var exports = oo.getNS('oo.core.mixins');
     exports.Events = Events;
     
     return oo;

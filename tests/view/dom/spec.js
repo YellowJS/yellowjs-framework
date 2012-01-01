@@ -1,5 +1,5 @@
 describe("oodom.js", function() {
-    var ooDom = new oo.View.Dom('#domtest'); 
+    var ooDom = new oo.view.Dom('#domtest'); 
 
     describe("setTranslateX", function () {  
         it('translateX value should be equal to 100', function () {    
