@@ -15,7 +15,7 @@ var oo = (function (oo) {
     
     var global = this;
     
-    function buildListenerConf(listener, sender) { 
+    function buildListenerConf(listener) { 
         var listenerConf;
         if (typeof listener == 'object' && listener.sc && listener.fn) {
             listenerConf = {fn:listener.fn, sc: listener.sc};
@@ -23,42 +23,58 @@ var oo = (function (oo) {
             listenerConf = {fn:listener, sc: global};
         }
 
-        if (sender) {
-            listenerConf.se = sender;
-        }
-
         return listenerConf;
     }
 
     var Events = my.Class({
-        listeners : {},
-        addListener : function addListener(eventName, listener, sender){
-            if (!this.listeners[eventName]){
-                this.listeners[eventName] = [];
+        _getListenersArray : function _getListenersArray () {
+            if (!this._listeners)
+                this._listeners = {};
+
+            return this._listeners;
+        },
+        addListener : function addListener(eventName, listener){
+            var l = this._getListenersArray();
+            if (!l[eventName]){
+                l[eventName] = [];
             }
 
-            var listenerConf = buildListenerConf(listener, sender);
+            var listenerConf = buildListenerConf(listener);
 
-            this.listeners[eventName].push(listenerConf);
+            l[eventName].push(listenerConf);
 
         },
-        removeListener : function removeListener(eventName, listener, sender) {
-            if (this.listeners[eventName]){
-                var listenerConf = buildListenerConf(listener, sender);
-                var index = this.listeners[eventName].indexOf(listenerConf);
+        removeListener : function removeListener(eventName, listener) {
+            var l = this._getListenersArray();
+
+            if (l[eventName]){
+                var listenerConf = buildListenerConf(listener);
+                var index = l[eventName].indexOf(listenerConf);
                 if (-1 != index) {
-                    this.listeners[eventName].splice(index, 1);
+                    l[eventName].splice(index, 1);
                 }
             }
         },
-        triggerEvent : function triggerEvent(eventName, sender, params){
-            if (this.listeners[eventName]){
-                for (var i = 0, len = this.listeners[eventName].length; i<len; i++) {
-                    var listener = this.listeners[eventName][i];
+        /**
+         * the folowing signature is deprecated - sender is not taken into account anymore
+         * trigerEvent(eventName, sender, params)
+         *
+         * use this one instead
+         * trigerEvent(eventName, params) 
+         */
+        triggerEvent : function triggerEvent(eventName, params){
+            // backward compatibility
+            if (!(typeof params == 'array') && 3 == arguments.length) {
+                params = arguments[2];
+            }
 
-                    if (undefined === listener.se || listener.se === sender) {
-                        listener.fn.apply(listener.sc, params);
-                    }
+            var l = this._getListenersArray();
+
+            if (l[eventName]){
+                for (var i = 0, len = l[eventName].length; i<len; i++) {
+                    var listener = l[eventName][i];
+
+                    listener.fn.apply(listener.sc, params);
                 }
             }
         }
