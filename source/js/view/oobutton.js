@@ -22,8 +22,8 @@
             this._initEvents();
         },
         _initEvents : function _initEvents() {
-            this._dom.addEventListener(Touch.EVENT_START, utils.createDelegate(this._onTouch), this);
-            this._dom.addEventListener(Touch.EVENT_START, utils.createDelegate(this._onRelease), this);
+            this._dom.addEventListener(Touch.EVENT_START, utils.createDelegate(this._onTouch, this), false);
+            this._dom.addEventListener(Touch.EVENT_END, utils.createDelegate(this._onRelease, this), false);
         },
         _onTouch : function _onTouch(e) {
             this.setActive(true);            
@@ -32,9 +32,6 @@
         _onRelease : function _onRelease(e) {
             this.setActive(false);
             this.triggerEvent(Button.EVT_RELEASE, this, [this, e]);
-        },
-        toogleActive : function _toogleActive(){
-            this.setActive(!this._active);
         },
         isActive : function isActive() {
             return this._active;
