@@ -27,11 +27,11 @@ var oo = (function (oo) {
         },
         _onTouch : function _onTouch(e) {
             this.setActive(true);            
-            this.triggerEvent(Button.EVT_TOUCH, this, [this, e]);
+            this.triggerEvent(Button.EVT_TOUCH, [this, e]);
         },
         _onRelease : function _onRelease(e) {
             this.setActive(false);
-            this.triggerEvent(Button.EVT_RELEASE, this, [this, e]);
+            this.triggerEvent(Button.EVT_RELEASE, [this, e]);
         },
         isActive : function isActive() {
             return this._active;
