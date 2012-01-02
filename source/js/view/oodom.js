@@ -76,7 +76,10 @@ var oo = (function (oo) {
 
     var Dom = my.Class({
         STATIC: {
-            CSSMATRIXPATTERN : /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/
+            CSSMATRIXPATTERN : /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/,
+            
+            // wrapper for createElement native function
+            createElement: function createElement (tag) { return new Dom(document.createElement(tag)) }
         },
         constructor : function constructor (identifier) {
             /**
@@ -314,9 +317,6 @@ var oo = (function (oo) {
     });
     // static method
     
-    // wrapper for createElement native functio`n
-    Dom.createElement = function createElement (tag) { return new Dom(document.createElement(tag)) };
-
     //oo.Dom = Dom;
     var exports = oo.getNS('oo.view');
     exports.Dom = Dom;
