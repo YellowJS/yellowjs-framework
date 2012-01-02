@@ -1,0 +1,43 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  margin:0;
+}
+
+.home-icon {
+  position: absolute;  
+}
+
+.folder {
+  top: 395px;
+  left: 265px;
+  width: 70px;
+  height: 80px;  
+}
+
+.btn-apps {
+  top: 530px;
+  left: 156px;
+  width: 47px;
+  height: 46px;
+  background: url('../assets/apps-button.png');
+  background-position: 0;
+}
+
+.btn-apps.active {
+  background-position: 47px;
+}
+
+.apps-list {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  width: 720px;
+}
+
+.apps-list li {
+  float: left;
+}
