@@ -4,17 +4,15 @@ var oo = (function (oo) {
     var Dom = oo.view.Dom, Touch = oo.core.Touch;
     
     
-    var Carousel = my.Class({
+    var Carousel = my.Class(Dom, {
         constructor : function constructor(selector, pager) {
             this._startX = 0;
             this._startTranslate = 0;
 
-            this._panelContainer = new Dom(selector);
+            Carousel.Super.call(this, selector);
             this._transitionDuration = 200;
 
-            var domObj = this._panelContainer.getDomObject();
-
-            this._panelWidth = (new Dom(domObj.firstElementChild)).getWidth();
+            this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             this._nbPanel = document.querySelectorAll([selector, ' > *'].join('')).length;
 
             this._activePanel = 0;
@@ -45,36 +43,38 @@ var oo = (function (oo) {
             this._updatePager();
         },
         _updatePager : function _updatePager() {
-            var current = this._pager.getDomObject().querySelector('.dot.active');
-            if (current) {
-                current.className = current.className.replace(/ *active/, '');
+            if (this._displayPager) {
+                var current = this._pager.getDomObject().querySelector('.dot.active');
+                if (current) {
+                    current.className = current.className.replace(/ *active/, '');
+                }
+                this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
             }
-            this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
         },
         hasMoved : function hasMoved() {
             return this._moved;
         },
         _initListeners : function _initListeners(){
-            var listNode = this._panelContainer.getDomObject();
+            var listNode = this.getDomObject();
             var that = this;
             var touchMoveTempo;
 
             listNode.addEventListener(Touch.EVENT_START, function (e) {
                 that._startX = Touch.getPositionX(e);
-                that._startTranslate = that._panelContainer.getTranslateX();
+                that._startTranslate = that.getTranslateX();
                 touchMoveTempo = 0;
             }, false);
 
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
                 var diff = Touch.getPositionX(e) - that._startX;
-                that._panelContainer.translateTo({x:(that._startTranslate + diff)}, 0);  
+                that.translateTo({x:(that._startTranslate + diff)}, 0);  
                 that._moved = true;
             }, false);
 
             listNode.addEventListener(Touch.EVENT_END, function () {
                 that._moved = false;
 
-                var cVal = that._panelContainer.getTranslateX();
+                var cVal = that.getTranslateX();
                 var tVal;
                 
                 if (cVal < 0) {
@@ -105,7 +105,7 @@ var oo = (function (oo) {
 
                 that._activePanel = Math.abs(tVal / that._panelWidth);
 
-                that._panelContainer.translateTo({x:tVal}, that._transitionDuration);
+                that.translateTo({x:tVal}, that._transitionDuration);
 
                 that._updatePager();
 
@@ -116,7 +116,7 @@ var oo = (function (oo) {
             
             // update css if needed
             if (this._pager) {
-                (new Dom(this._panelContainer.getDomObject().parentNode)).appendChild(this._pager);
+                (new Dom(this.getDomObject().parentNode)).appendChild(this._pager);
             }
 
             this._initListeners();
