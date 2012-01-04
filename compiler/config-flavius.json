@@ -16,7 +16,7 @@
                     "path" : "../source/js/vendor/"
                 },
                 {
-                    "text" : "ooutils.js",
+                    "text" : "oocore.js",
                     "path" : "../source/js/core/"
                 },
                 {
