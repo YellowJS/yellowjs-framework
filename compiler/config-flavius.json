@@ -42,11 +42,15 @@
                 {
                     "text" : "oodom.js",
                     "path" : "../source/js/view/"
-                },
+                },             
                 {
                     "text" : "ooviewport.js",
                     "path" : "../source/js/view/"
                 },
+                {
+                    "text" : "oopanel.js",
+                    "path" : "../source/js/view/"
+                },                   
                 {
                     "text" : "oobutton.js",
                     "path" : "../source/js/view/"
