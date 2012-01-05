@@ -295,25 +295,31 @@ var oo = (function (oo) {
 
             return this;
         },
+        setId: function setId(id) {
+            this._dom.id = id;
+        },
+        getId: function getId(id) {
+            return this._dom.id;
+        },        
         setTemplate : function setTemplate (tpl) {
             this._template = tpl;
 
             return this;
         },
         render : function render (data, tpl, resetCache) {
-          if (tpl) {
-               this.setTemplate(tpl);
-           }
+            if (tpl) {
+                this.setTemplate(tpl);
+            }
 
-           if (!this._cacheTpl || resetCache) {
-               data = data || {};
-               this._cacheTpl = Mustache.to_html(this._template, data);
-           }
-
-           this.appendHtml(this._cacheTpl);
-
-           return this;
-       }
+            if (!this._cacheTpl || resetCache) {
+                data = data || {};
+                this._cacheTpl = Mustache.to_html(this._template, data);
+            }
+    
+            this.appendHtml(this._cacheTpl);
+    
+            return this;
+        }
     });
     // static method
     
