@@ -7,6 +7,7 @@
 		},
 		onEnabled: function onEnabled() {
 			var b = new oo.view.Button('.monpanel');
+			b.setId('my-first-btn');
 
 			this.register(b);
 		}

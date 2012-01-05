@@ -2,7 +2,14 @@ var CONTROLLERS = (function(CONTROLLERS) {
     CONTROLLERS.IndexController = {
 
         indexAction: function indexAction() {
-            oo.getViewport().show('super-id');
+            oo.getViewport().show('super-id', function (panel) {
+                var b = panel.getEl('my-first-btn');
+
+                b.addListener(oo.view.Button.EVT_RELEASE, function () {
+                    alert('Hello World');
+                });
+
+            });
         },
         
         // indexAction: function indexAction () {
