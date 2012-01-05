@@ -13,27 +13,27 @@ var app = (function () {
             // prevent page scrolling
             document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
         
-            app.use_anim = oo.view.Viewport.NO_ANIM;
+            //app.use_anim = oo.view.Viewport.NO_ANIM;
         
-            app.viewport = new oo.view.Viewport();
+            //app.viewport = new oo.view.Viewport();
 
-			oo.Router.routes = {
-			    'index': {
-			        url: '/index',
-			        controller: 'index',
-			        action: 'index'
-			    },
-			    'folder': {
-			        url: '/toggle-folder',
-			        controller: 'index',
-			        action: 'HPUContacts'
-			    },
-			    'apps': {
-			        url: '/apps',
-			        controller: 'index',
-			        action: 'apps'
-			    }
-			};
+            oo.Router.routes = {
+                'index': {
+                    url: '/index',
+                    controller: 'index',
+                    action: 'index'
+                },
+                'folder': {
+                    url: '/toggle-folder',
+                    controller: 'index',
+                    action: 'HPUContacts'
+                },
+                'apps': {
+                    url: '/apps',
+                    controller: 'index',
+                    action: 'apps'
+                }
+            };
 
             oo.Router.init();
             

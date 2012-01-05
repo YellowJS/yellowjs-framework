@@ -41,3 +41,7 @@ img {
 .apps-list li {
   float: left;
 }
+
+.monpanel {
+  background:red;
+}
