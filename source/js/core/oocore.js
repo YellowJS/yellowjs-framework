@@ -66,16 +66,14 @@ var oo = (function (oo) {
                 return fn.apply(scope, arguments);
             };
         },
-        EmptyFn: function EmptyFn () {
-            
-        },
+        EmptyFn: function EmptyFn () { },
         /**
          *
          *  Secure Hash Algorithm (SHA1)
          *  http://www.webtoolkit.info/
          *
          **/
-        generateId : function generateId (tagName) {
+        generateId: function generateId (tagName) {
             msg = [tagName, (new Date).getTime(), Math.random().toString()].join('');
 
             function rotate_left(n,s) {
@@ -242,16 +240,39 @@ var oo = (function (oo) {
 
             return ['id-', temp.toLowerCase()].join('');
         },
-        //convert a Nodelist to an array of elements
-        collectionToArray: function collectionToArray(collection)  
-        {  
-            var ary = [];  
-            for(var i=0, len = collection.length; i < len; i++)  
-            {  
-                ary.push(collection[i]);  
-            }  
-            return ary;  
+
+        /**
+         * create a controller from the class passed in parameter
+         */
+        createController: function createController() {
+            // to be implemented
+        },
+
+        getRouter: function getRouter() {
+            // to be implemented  
+        },
+
+        getViewport: function getViewport() {
+            return oo.view.viewport;
+        },
+
+        createPanel: function createPanel(panel) {
+            if (!(typeof panel == 'object' && 'id' in panel))
+                throw Error('wrong parameter');
+
+            var id = panel.id; delete panel.id;
+
+            // force the class contructor to call its parent contrustor
+            var Tmp = panel.constructor = function () {
+                Tmp.Super.call(this);
+            };
+            var p = my.Class(oo.view.Panel, panel);
+
+            oo.getViewport().register(id, p);
+
+            return p;
         }
+
     });
 
     // oo.utils.namespace is now deprecated
