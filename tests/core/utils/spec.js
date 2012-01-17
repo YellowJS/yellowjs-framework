@@ -20,4 +20,10 @@ describe("ooutils.js", function() {
 
     });
 
+    describe("createList", function(){
+        it('list must be an instance of oo.view.List', function(){
+            expect(list instanceof oo.view.List).toBeTruthy();
+        });
+    });
+
 });
