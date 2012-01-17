@@ -9,6 +9,7 @@ var oo = (function (oo) {
         _wrapper : null,
         constructor: function constructor(conf) {
             if(conf){
+                
                 if( conf.hasOwnProperty('model') ){
                     this.setModel(conf.model);
                 }
@@ -16,7 +17,14 @@ var oo = (function (oo) {
                 if( conf.hasOwnProperty('template') ){
                     this.setTemplate(conf.template);
                 }
+
+                if( conf.hasOwnProperty('wrapper') ){
+                    this.setWrapper(conf.wrapper);
+                }
             }
+        },
+        _transformToOoDom : function _transformToOoDom(elem){
+            return new Dom(elem);
         },
         setTemplate : function setTemplate(tpl){
             this._tpl = tpl || null;
@@ -25,7 +33,9 @@ var oo = (function (oo) {
             this._model = model || null;
         },
         setWrapper : function setWrapper(elem){
-            this._wrapper = elem || null;
+            if(!elem) return;
+
+            this._wrapper = this._transformToOoDom(elem) || null;
         }
     });
     
