@@ -23,6 +23,9 @@ var oo = (function (oo) {
         },
         setModel : function setModel(model){
             this._model = model || null;
+        },
+        setWrapper : function setWrapper(elem){
+            this._wrapper = elem || null;
         }
     });
     
