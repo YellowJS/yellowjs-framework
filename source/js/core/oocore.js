@@ -271,6 +271,14 @@ var oo = (function (oo) {
             oo.getViewport().register(id, p);
 
             return p;
+        },
+        createList : function createList(list){
+            var l = new oo.view.List( list || null);
+
+            console.log(l);
+
+            return l;
+            
         }
 
     });
