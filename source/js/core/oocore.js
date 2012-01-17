@@ -275,8 +275,6 @@ var oo = (function (oo) {
         createList : function createList(list){
             var l = new oo.view.List( list || null);
 
-            console.log(l);
-
             return l;
             
         }
