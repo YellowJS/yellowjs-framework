@@ -3,21 +3,34 @@
     var global = this;
     var data = oo.getNS('oo.data');
 
-     data.Provider = my.Class({
-        _name: '',
-        _data: {
-            'data': 'titi',
-            'toto': 'tutu'
+    var providerRepository = {};
+
+    data.Provider = my.Class({
+        STATIC: {
+            register: function register (cls, codename) {
+                if (providerRepository[codename])
+                    throw 'Already existing codename';
+
+                providerRepository[codename] = cls;
+            },
+            get: function get (codename) {
+                return providerRepository[codename];
+            }
         },
+        _name: '',
+        _data: {},
         constructor: function (options) {
-            this._name = options.name;
+            if (options && 'name' in options && typeof options.name == 'string')
+                this._name = options.name;
+            else
+                throw 'Config object must contain a name property';
         },
         save: function (callback) {
-            throw Error('can\'t be called directly from Provider class');
+            throw 'Can\'t be called directly from Provider class';
         },
         fetch: function (callback) {
-            throw Error('can\'t be called directly from Provider class');
+            throw 'Can\'t be called directly from Provider class';
         }
-     });
+    });
 
 })(oo || {});

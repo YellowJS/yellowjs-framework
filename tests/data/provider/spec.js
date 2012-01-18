@@ -1,5 +1,47 @@
 describe("ooprovider.js", function() {
 
+    describe("add a second provider with the same code name", function () {
+        
+        it("should throw an error", function () {
+            expect(function () { oo.data.Provider.register(oo.data.Fakeprovider, 'fake') }).toThrow('Already existing codename');
+        });
+
+    });
+
+    describe("provider instanciation without name", function () {
+        it("should should have a name property", function () {
+            expect (function () { var p = new oo.data.Provider(); }).toThrow('Config object must contain a name property');
+        });
+    });
+
+
+    describe("call forbiden method on Provider \"interface\"", function () {
+
+        var p = new oo.data.Provider({name: 'fakeProviderTest'});
+
+        describe("call fetch method", function () {
+        
+            it("should throw an error", function () {
+                expect(function () { p.fetch() }).toThrow('Can\'t be called directly from Provider class');
+            });
+
+        });
+
+        describe("call save method", function () {
+        
+            it("should throw an error", function () {
+                expect(function () { p.save(); }).toThrow('Can\'t be called directly from Provider class');
+            });
+
+        });
+
+    });
+
+});
+
+
+describe("oofakeprovider.js", function() {
+
     var updByCallback = 1;
     var p = new oo.data.Fakeprovider({
         'name': 'toto'
