@@ -12,7 +12,9 @@
         save: function save (data, callback) {
             this._datas.push(data);
             
-            callback.call(global);
+            if(callback){
+                callback.call(global);
+            }
         },
         fetch: function fetch (callback) {
             callback.call(global, this._datas);
