@@ -32,13 +32,13 @@
                     "path" : "../source/js/controller/"
                 },
                 {
-                    "text" : "oostore.js",
-                    "path" : "../source/js/model/"
-                },
+                    "text" : "ooprovider.js",
+                    "path" : "../source/js/data/"
+                },                
                 {
-                    "text" : "ooajax.js",
-                    "path" : "../source/js/model/"
-                },
+                    "text" : "oolocalprovider.js",
+                    "path" : "../source/js/data/"
+                },               
                 {
                     "text" : "oodom.js",
                     "path" : "../source/js/view/"
