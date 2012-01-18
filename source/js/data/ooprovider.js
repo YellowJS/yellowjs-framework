@@ -14,7 +14,10 @@
                 providerRepository[codename] = cls;
             },
             get: function get (codename) {
-                return providerRepository[codename];
+                if (codename in providerRepository)
+                    return providerRepository[codename];
+                else
+                    throw 'Invalid codename';
             }
         },
         _name: '',
