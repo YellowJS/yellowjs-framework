@@ -18,6 +18,9 @@
                     return providerRepository[codename];
                 else
                     throw 'Invalid codename';
+            },
+            unregister: function register (codename) {
+                delete providerRepository[codename];
             }
         },
         _name: '',
