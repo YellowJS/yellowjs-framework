@@ -21,4 +21,6 @@
         }
     });
 
+    oo.data.Provider.register(Fakeprovider, 'fake');
+    
 })(oo || {});
