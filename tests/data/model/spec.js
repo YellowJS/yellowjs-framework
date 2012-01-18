@@ -57,7 +57,6 @@ describe("oomodel.js", function() {
                 provider.fetch(function(datas){
                     dataProvider = datas;
                 });
-                
                 expect(dataProvider).toContain(obj);
             });
 
@@ -83,7 +82,6 @@ describe("oomodel.js", function() {
                 }).toThrow();
             });
         });
-
     });
 
 });
