@@ -54,6 +54,4 @@ describe("oolist.js", function() {
             expect(res instanceof oo.view.Dom).toBeTruthy();
         });
     });
-    
-
 });
