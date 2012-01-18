@@ -5,7 +5,7 @@
  * @class Events
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
- * @author Claire Sosset <claire.sosset@gmail.com> || @Claire_So 
+ * @author Claire Sosset <claire.sosset@gmail.com> || @Claire_So
  */
 var oo = (function (oo) {
     
@@ -15,7 +15,7 @@ var oo = (function (oo) {
     
     var global = this;
     
-    function buildListenerConf(listener) { 
+    function buildListenerConf(listener) {
         var listenerConf;
         if (typeof listener == 'object' && listener.sc && listener.fn) {
             listenerConf = {fn:listener.fn, sc: listener.sc};
