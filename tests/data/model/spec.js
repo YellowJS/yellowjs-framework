@@ -45,19 +45,28 @@ describe("oomodel.js", function() {
 
     describe("save", function() {
         describe("save with good conf", function() {
-            it('obj must be in datas provider',function(){
-                var datasP,
-                    obj = {
-                        'title' : 'Mon post',
-                        'content' : 'Mon article'
-                    };
+            var obj = {
+                'title' : 'Mon post',
+                'content' : 'Mon article'
+            };
 
+
+            it('obj must be in datas provider',function(){
+                var datasP;
                 model.save(obj);
                 provider.fetch(function(datas){
                     dataProvider = datas;
                 });
                 
                 expect(dataProvider).toContain(obj);
+            });
+
+            describe("save with callback", function() {
+                var callback = jasmine.createSpy();
+                model.save(obj, callback);
+                it("function callback must be executed", function(){
+                    expect(callback).toHaveBeenCalled();
+                });
             });
         });
 
