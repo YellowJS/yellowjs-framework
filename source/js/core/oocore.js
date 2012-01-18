@@ -273,10 +273,10 @@ var oo = (function (oo) {
             return p;
         },
         createList : function createList(list){
-            var l = new oo.view.List( list || null);
-
-            return l;
-            
+            return new oo.view.List( list || null);
+        },
+        createModel : function createModel(model){
+            return new oo.data.Model(model);
         }
 
     });
