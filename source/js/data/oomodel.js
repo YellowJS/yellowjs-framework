@@ -13,6 +13,16 @@
         },
         fetch : function fetch(callback){
             this._provider.fetch(callback);
+        },
+        save : function save(datas){
+            if(!datas || ( 'object' !== typeof datas )) {
+                throw Error("Data parameter must exist and be an object");
+            }
+
+            var callback = function(){};
+
+            this._provider.save(datas, callback);
+            
         }
     });
 
