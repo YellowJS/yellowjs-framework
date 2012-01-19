@@ -3,7 +3,6 @@ describe("oolist.js", function() {
 
     describe("constructor", function() {
         var list = oo.createElement('list',conf);
-        console.log(list)
 
         it('_tpl must be equal to "test"', function() {
             expect(list._tpl).toEqual("test");
