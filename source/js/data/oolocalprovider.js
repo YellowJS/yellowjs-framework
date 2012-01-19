@@ -6,10 +6,14 @@
         constructor: function contructor (options) {
             LocalProvider.Super.call(this, options);
 
-            this._store = Lawnchair({name: this._name, record: 'record'});
+            // gives an empty callback is not the best idea i have never had
+            this._store = Lawnchair({name: this._name, record: 'record'}, function () {});
         },
         save: function save (data, callback) {
-            this._store.save(data);
+            if (!(data instanceof Array))
+                data = [data];
+
+            this._store.batch(data);
 
             callback.call(global);
         },
