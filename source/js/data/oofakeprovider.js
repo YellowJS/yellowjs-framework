@@ -1,15 +1,18 @@
 (function (oo) {
     
     var global = this, ns = oo.getNS('oo.data');
-    var Fakeprovider = ns.Fakeprovider = my.Class(oo.data.Provider, {
-        _data: {
+    var FakeProvider = ns.FakeProvider = my.Class(oo.data.Provider, {
+        _data: [{
             'key1': 'value1',
             'key2': 'value2'
-        },
+        }],
         constructor: function contructor (options) {
-            Fakeprovider.Super.call(this, options);
+            FakeProvider.Super.call(this, options);
         },
         save: function save (data, callback) {
+            if (!('key' in data))
+                data.key = oo.generateId();
+
             this._data[data.key] = data.value;
 
             callback.call(global);
@@ -19,6 +22,6 @@
         }
     });
 
-    oo.data.Provider.register(Fakeprovider, 'fake');
+    oo.data.Provider.register(FakeProvider, 'fake');
 
 })(oo || {});

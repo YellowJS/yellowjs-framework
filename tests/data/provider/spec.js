@@ -3,7 +3,7 @@ describe("ooprovider.js", function() {
     describe("add a second provider with the same code name", function () {
         
         it("should throw an error", function () {
-            expect(function () { oo.data.Provider.register(oo.data.Fakeprovider, 'fake') }).toThrow('Already existing codename');
+            expect(function () { oo.data.Provider.register(oo.data.FakeProvider, 'fake') }).toThrow('Already existing codename');
         });
 
     });
@@ -17,7 +17,7 @@ describe("ooprovider.js", function() {
         });
 
         it("should throw an error", function () {
-            expect(function () { oo.data.Provider.get('invalid-fake') }).toThrow('Invalid codename');
+            expect(function () { oo.data.Provider.get('invalid-fake') }).toThrow('Invalid codename for a provider');
         });
 
     })    
@@ -56,8 +56,7 @@ describe("ooprovider.js", function() {
 
 describe("oofakeprovider.js", function() {
 
-    var updByCallback = 1;
-    var p = new oo.data.Fakeprovider({
+    var p = new oo.data.FakeProvider({
         'name': 'toto'
     });
 
@@ -69,31 +68,39 @@ describe("oofakeprovider.js", function() {
 
     });
 
-    describe ("fetch", function () {
-
-        p.fetch(function(data) {
-            it('should return initial values', function () {
-                expect(data.key1).toEqual('value1');
-                expect(data.key2).toEqual('value2');
-            });
+    describe("methods", function () {
+            
+        var clb;
+        beforeEach(function () {
+            clb = jasmine.createSpy();
         });
+
+        describe ("fetch", function () {
+
+            it("should call the callback with the data as parameter", function () {
+
+                p.fetch(clb);
+
+                expect(clb).wasCalledWith([{
+                    'key1': 'value1',
+                    'key2': 'value2'
+                }]);
                 
-    });
-
-    describe ("save", function () {
-
-        p.save({key:'key3', value:'value3'}, function() {
-            updByCallback = 2;
-
-            it('should call the callback and update the value of updByCallback', function () {
-                expect(updByCallback).toEqual(2);
             });
+                    
         });
 
-        p.fetch(function(data) {
-            it('should return saved value', function () {
-                expect(data.key3).toEqual('value3');
+        describe ("save", function () {
+
+            it('should call the callback with the data as parameter', function () {
+
+                var d = {key:'key3', value:'value3'};
+
+                p.save(d, clb);
+
+                expect(clb).wasCalled();
             });
+
         });
 
     });

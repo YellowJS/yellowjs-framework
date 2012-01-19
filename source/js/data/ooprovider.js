@@ -17,7 +17,7 @@
                 if (codename in providerRepository)
                     return providerRepository[codename];
                 else
-                    throw 'Invalid codename';
+                    throw 'Invalid codename for a provider';
             },
             unregister: function register (codename) {
                 delete providerRepository[codename];
