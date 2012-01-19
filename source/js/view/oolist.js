@@ -1,9 +1,10 @@
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.view.Dom;
+    var Dom = oo.view.Dom,
+        ns = oo.getNS('oo.view');
     
-    var List = my.Class(/*oo.view.Dom,*/ {
+    var List = ns.List = my.Class(oo.view.Element, {
         _tpl : null,
         _model : null,
         _wrapper : null,
@@ -39,9 +40,8 @@ var oo = (function (oo) {
         }
     });
     
-    var exports = oo.getNS('oo.view');
-    exports.List = List;
-    
+    oo.view.Element.register(List, 'list');
+
     return oo;
     
 })(oo || {});

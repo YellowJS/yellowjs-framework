@@ -121,11 +121,11 @@ var oo = (function (oo) {
 
             return p;
         },
-        createList : function createList(list){
-            return new oo.view.List( list || null);
-        },
         createModel : function createModel(model){
             return new oo.data.Model(model);
+        },
+        createElement : function createElement(type, opt){
+            return new ( oo.view.Element.get(type))(opt || null);
         }
 
     });

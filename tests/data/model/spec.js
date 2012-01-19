@@ -31,15 +31,9 @@ describe("oomodel.js", function() {
 
     describe("fetch", function() {
         var callback = jasmine.createSpy();
-
         model.fetch(callback);
-
         it('function callback must be executed',function(){
            expect(callback).toHaveBeenCalled();
-        });
-
-        it('function callback must be executed with provider datas',function(){
-           expect(callback).toHaveBeenCalledWith(dataProvider);
         });
     });
 
@@ -49,7 +43,6 @@ describe("oomodel.js", function() {
                 'title' : 'Mon post',
                 'content' : 'Mon article'
             };
-
 
             it('obj must be in datas provider',function(){
                 var datasP;
