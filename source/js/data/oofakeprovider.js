@@ -10,14 +10,20 @@
             FakeProvider.Super.call(this, options);
         },
         save: function save (data, callback) {
-            this._datas.push(data);
+            if (!(data instanceof Array))
+                data = [data];
+
+            var self = this;
+            data.forEach(function (val) {
+                self._data.push(val);
+            });
             
-            if(callback){
+            if (callback) {
                 callback.call(global);
             }
         },
         fetch: function fetch (callback) {
-            callback.call(global, this._datas);
+            callback.call(global, this._data);
         }
     });
 
