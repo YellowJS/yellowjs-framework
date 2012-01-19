@@ -33,8 +33,6 @@ var oo = (function(oo){
         }
     });
 
-    console.log(oo)
     return oo;
-
 
 })(oo || null);
