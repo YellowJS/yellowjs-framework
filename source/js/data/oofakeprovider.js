@@ -10,15 +10,14 @@
             FakeProvider.Super.call(this, options);
         },
         save: function save (data, callback) {
-            if (!('key' in data))
-                data.key = oo.generateId();
-
-            this._data[data.key] = data.value;
-
-            callback.call(global);
+            this._datas.push(data);
+            
+            if(callback){
+                callback.call(global);
+            }
         },
         fetch: function fetch (callback) {
-            callback.call(global, this._data);
+            callback.call(global, this._datas);
         }
     });
 

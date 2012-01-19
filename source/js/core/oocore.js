@@ -120,6 +120,12 @@ var oo = (function (oo) {
             oo.getViewport().register(id, p);
 
             return p;
+        },
+        createList : function createList(list){
+            return new oo.view.List( list || null);
+        },
+        createModel : function createModel(model){
+            return new oo.data.Model(model);
         }
 
     });

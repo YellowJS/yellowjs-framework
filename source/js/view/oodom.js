@@ -3,7 +3,7 @@ var oo = (function (oo) {
     var ClassList = my.Class({
         constructor : function constructor (obj){
             this._dom = obj;
-            this._list = obj.className.split(' '); 
+            this._list = obj.className.split(' ');
         },
         destroy : function destroy () {
             this._dom = null;
@@ -21,7 +21,7 @@ var oo = (function (oo) {
             var updated = false;
             var that = this;
             clsName.forEach(function (element, index, array) {
-                var i = that._list.indexOf(element)
+                var i = that._list.indexOf(element);
                 if (-1 !== i) {
                     that._list.splice(i, 1);
                     updated = true;
@@ -79,22 +79,22 @@ var oo = (function (oo) {
             CSSMATRIXPATTERN : /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/,
             
             // wrapper for createElement native function
-            createElement: function createElement (tag) { return new Dom(document.createElement(tag)) }
+            createElement: function createElement (tag) { return new Dom(document.createElement(tag)); }
         },
         constructor : function constructor (identifier) {
             /**
              * underlying dom node object
              */
-            this._dom;
+            this._dom = null;
 
             /**
              * internal cache
              */
             this._cached = {};
 
-            this._template;
+            this._template = null;
 
-            this._cacheTpl;
+            this._cacheTpl = null;
 
             if (typeof identifier == 'string') {
                 this.setDomObject(document.querySelector(identifier));
@@ -103,7 +103,7 @@ var oo = (function (oo) {
                 this.setDomObject(identifier);
             }
             this.generateAccessor();
-            this.classList = new ClassList(this._dom); 
+            this.classList = new ClassList(this._dom);
         },
         // destructor
         destroy : function destroy (){
@@ -150,7 +150,7 @@ var oo = (function (oo) {
         getWebkitTransform : function getWebkitTransform (noCache) {
             if (!this._cached['webkitTransform'] || noCache) {
                 this._cached['webkitTransform'] = window.getComputedStyle(this._dom).webkitTransform;
-            }        
+            }
             return this._cached['webkitTransform'];
         },
         setWebkitTransform : function setWebkitTransform (value) {
@@ -171,10 +171,10 @@ var oo = (function (oo) {
             return this;
         },
         getTranslateX : function getTranslateX (unit, noCache) {
-            return (unit ? [this.getTranslations(noCache)[0],'px'].join('') : this.getTranslations(noCache)[0]); 
+            return (unit ? [this.getTranslations(noCache)[0],'px'].join('') : this.getTranslations(noCache)[0]);
         },
         getTranslateY : function getTranslateY (unit, noCache) {
-            return (unit ? [this.getTranslations(noCache)[1],'px'].join('') : this.getTranslations(noCache)[1]);    
+            return (unit ? [this.getTranslations(noCache)[1],'px'].join('') : this.getTranslations(noCache)[1]);
         },
         setTranslateX : function setTranslateX (val) {
             var valY = this.getTranslateY();
@@ -216,7 +216,7 @@ var oo = (function (oo) {
                 return new Dom(p);
             } else {
                 return false;
-            }      
+            }
         },
         // append a node to the current node children list
         // wrapper for the native API
@@ -278,7 +278,7 @@ var oo = (function (oo) {
 
             var currentTimingFunction = this.getWebkitTransitionTimingFunction();
             if (typeof timmingFunction === 'string') {
-                this.setWebkitTransitionTimingFunction(timingFunction, '');            
+                this.setWebkitTransitionTimingFunction(timingFunction, '');
             }
 
             var that = this, endListener = function endListener (e) {
@@ -287,8 +287,8 @@ var oo = (function (oo) {
                 that.setWebkitTransitionTimingFunction(currentTimingFunction, '');
                 if (listener) {
                     listener.call(that, e);
-                };
-            }                
+                }
+            };
             this._dom.addEventListener('webkitTransitionEnd', endListener, false);
 
             this.setTranslations(coord.x, coord.y);
@@ -300,7 +300,7 @@ var oo = (function (oo) {
         },
         getId: function getId(id) {
             return this._dom.id;
-        },        
+        },
         setTemplate : function setTemplate (tpl) {
             this._template = tpl;
 
