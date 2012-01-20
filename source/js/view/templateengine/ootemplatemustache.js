@@ -2,7 +2,7 @@ var oo = (function (oo){
     var global = this;
     var tplEngine = oo.getNS('oo.view.templateengine');
 
-    var templateEngineMustache = tplEngine.TemplateMustache = my.Class(oo.view.templateengine.Template,{
+    var templateEngineMustache = tplEngine.TemplateEngineMustache = my.Class(oo.view.templateengine.Template,{
         _name: '',
         constructor: function (options) {
             templateEngineMustache.Super.call(this, options);
