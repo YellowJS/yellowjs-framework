@@ -1,9 +1,13 @@
 describe("oolist.js", function() {
+    oo.define({
+        templateEngine : 'mustache'
+    });
+
     var conf = {"model" : "test", "template":"test", "wrapper" : "#domtest"};
 
     describe("constructor", function() {
         var list = oo.createElement('list',conf);
-
+        
         it('_tpl must be equal to "test"', function() {
             expect(list._tpl).toEqual("test");
         });
@@ -56,6 +60,23 @@ describe("oolist.js", function() {
                 var res = list._transformToOoDom("#another-dom-test");
                 expect(res instanceof oo.view.Dom).toBeTruthy();
             });
+        });
+    });
+
+    describe('render', function(){
+       var provider = new oo.data.Fakeprovider({
+            "name" : "fdsfsdf"
+        });
+
+        var model = oo.createModel({
+            'id' : "test",
+            'provider' : provider            
+        });
+
+        var list2 = oo.createElement('list', {
+            model : model,
+            'template' : '<li>{{title}}</li>',
+            'wrapper' : '#wrapper'
         });
     });
 });

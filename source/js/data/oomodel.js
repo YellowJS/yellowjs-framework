@@ -5,6 +5,9 @@
 
 
     var Model = my.Class(null, oo.core.mixins.Events,{
+        STATIC : {
+            AFTER_SAVE : 'AFTER_SAVE'
+        },
         constructor: function constructor(options){
             if(!options || (!options.hasOwnProperty('id') || !options.hasOwnProperty('provider')) ) return;
             this._id = options.id;
@@ -19,6 +22,7 @@
             }
 
             this._provider.save(datas, callback);
+            this.triggerEvent(Model.AFTER_SAVE);
         }
     });
 

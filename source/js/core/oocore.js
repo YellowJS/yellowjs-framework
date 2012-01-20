@@ -126,8 +126,17 @@ var oo = (function (oo) {
         },
         createElement : function createElement(type, opt){
             return new ( oo.view.Element.get(type))(opt || null);
+        },
+        define : function define(opt){
+            if( opt.hasOwnProperty("templateEngine") ){
+                this._setTemplateEngine(opt.templateEngine);
+            }
+        },
+        _setTemplateEngine : function setTemplateEngine(codeName){
+            var templateEngine = new (oo.view.templateengine.Template.get(codeName))();
+            //set templateengine to class element
+            oo.view.Element.setTemplate(templateEngine);
         }
-
     });
 
     // oo.utils.namespace is now deprecated

@@ -77,4 +77,18 @@ describe("oomodel.js", function() {
         });
     });
 
+    /*describe('listeners', function(){
+       var model2 = oo.createModel({
+            id : 'post-model2',
+            provider : provider
+       });
+
+       model2.addListener(oo.data.Model.AFTER_SAVE, function(){
+          alert('opdfkgpodfkg');
+       });
+
+       model2.fetch(function(datas){
+           console.log(datas);
+       });
+    });*/
 });

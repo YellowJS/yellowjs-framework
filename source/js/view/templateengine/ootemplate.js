@@ -1,42 +1,38 @@
 var oo = (function (oo){
-    var global = this,
-        view = oo.getNS('oo.view'),
-        viewRepository = {};
-    
-    view.Element = my.Class({
+    var global = this;
+    var tplEngine = oo.getNS('oo.view.templateengine');
+
+    var templateRepository = {};
+
+    var Template = tplEngine.Template = my.Class({
         STATIC: {
             register: function register (cls, codename) {
-                if (viewRepository[codename])
+                if (templateRepository[codename])
                     throw 'Already existing codename';
 
-                viewRepository[codename] = cls;
+                templateRepository[codename] = cls;
             },
             get: function get (codename) {
-                if (codename in viewRepository)
-                    return viewRepository[codename];
+                if (codename in templateRepository)
+                    return templateRepository[codename];
                 else
                     throw 'Invalid codename';
             },
             unregister: function register (codename) {
-                delete viewRepository[codename];
-            },
-            setTemplate : function setTemplate(cls){
-                view.Element.templateEngine = cls;
-            },
-            templateEngine : null
+                delete templateRepository[codename];
+            }
         },
-        _name: '',
         constructor: function (options) {
             /*if (options && 'name' in options && typeof options.name == 'string')
                 this._name = options.name;
             else
                 throw 'Config object must contain a name property';*/
         },
-        attachToDom : function attachToDom(){
-            //to do
+        render: function (datas, tpl) {
+            throw 'Can\'t be called directly from Provider class';
         }
     });
 
     return oo;
 
-})(oo || null);
+})(oo || {});
