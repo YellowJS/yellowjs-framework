@@ -3,17 +3,20 @@ var oo = (function (oo){
     var tplEngine = oo.getNS('oo.view.templateengine');
 
     var templateEngineMustache = tplEngine.TemplateEngineMustache = my.Class(oo.view.templateengine.Template,{
-        _name: '',
         constructor: function (options) {
             templateEngineMustache.Super.call(this, options);
         },
-        render: function (datas,tpl, domElem) {
+        render: function (datas, tpl) {
+            if(!datas && !tpl && !domElem) {
+                throw Error('datas, tpl and domElem must exist');
+            }
+
             var output='';
             datas.forEach(function(item){
                 output += Mustache.render(tpl, item);
             });
 
-            domElem.appendHtml(output);
+            return output;
         }
     });
 

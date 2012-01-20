@@ -1,7 +1,7 @@
-/** 
+/**
  * Private class providing utils method
  * via a singleton instance
- * 
+ *
  * @namespace oo.core
  * @private class
  *
@@ -98,7 +98,7 @@ var oo = (function (oo) {
         },
 
         getRouter: function getRouter() {
-            // to be implemented  
+            // to be implemented
         },
 
         getViewport: function getViewport() {

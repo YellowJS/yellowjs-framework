@@ -12,7 +12,6 @@ describe("ootemplate.js", function() {
         it("should return a templateEngineMustache", function () {
             var cls = oo.view.templateengine.Template.get('mustache');
             var obj = new cls();
-            console.log(oo.view.templateengine.TemplateEngineMustache)
             expect(obj instanceof oo.view.templateengine.TemplateEngineMustache).toBeTruthy();
         });
 

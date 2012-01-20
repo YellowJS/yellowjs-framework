@@ -7,8 +7,9 @@ var oo = (function (oo) {
     var List = ns.List = my.Class(oo.view.Element, {
         _tpl : null,
         _model : null,
-        _wrapper : null,
+        _target : null,
         constructor: function constructor(conf) {
+            var self = this;
             List.Super.call(this);
             if(conf){
                 
@@ -20,43 +21,34 @@ var oo = (function (oo) {
                     this.setTemplate(conf.template);
                 }
 
-                if( conf.hasOwnProperty('wrapper') ){
-                    this.setWrapper(conf.wrapper);
+                if( conf.hasOwnProperty('target') ){
+                    this.settarget(conf.target);
                 }
             }
 
             if (this._model && (this._model instanceof oo.data.Model)){
-                this._prepareRender();
+                this._model.addListener(oo.data.Model.AFTER_FETCH, oo.createDelegate(this.afterFetch, this));
             }
         },
         _transformToOoDom : function _transformToOoDom(elem){
             return new Dom(elem);
         },
-        /*fetch datas from model*/
-        _prepareRender : function _prepareRender(){
-            var that = this;
-            this._model.fetch(function(datas){
-                that._render(datas, that._tpl);
-            });
+        afterFetch : function afterFetch(datas){
+            this._render(datas);
         },
-        _render : function render(datas,tpl){
-            oo.view.Element.templateEngine.render(datas,tpl, this._wrapper);
+        _render : function render(datas){
+            this._target.appendHtml(oo.view.Element.templateEngine.render(datas, this._tpl, this._target));
         },
         setTemplate : function setTemplate(tpl){
             this._tpl = tpl || null;
         },
         setModel : function setModel(model){
-            var that = this;
             this._model = model || null;
-            /*this._model.addListener(oo.data.Model.AFTER_SAVE, function (success) {
-                if (success)
-                    that._render();
-            });*/
         },
-        setWrapper : function setWrapper(elem){
+        settarget : function settarget(elem){
             if(!elem) return;
 
-            this._wrapper = this._transformToOoDom(elem) || null;
+            this._target = this._transformToOoDom(elem) || null;
         }
     });
     

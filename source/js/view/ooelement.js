@@ -3,7 +3,7 @@ var oo = (function (oo){
         view = oo.getNS('oo.view'),
         viewRepository = {};
     
-    view.Element = my.Class({
+    view.Element = my.Class(oo.view.Dom, {
         STATIC: {
             register: function register (cls, codename) {
                 if (viewRepository[codename])
@@ -25,15 +25,7 @@ var oo = (function (oo){
             },
             templateEngine : null
         },
-        _name: '',
         constructor: function (options) {
-            /*if (options && 'name' in options && typeof options.name == 'string')
-                this._name = options.name;
-            else
-                throw 'Config object must contain a name property';*/
-        },
-        attachToDom : function attachToDom(){
-            //to do
         }
     });
 
