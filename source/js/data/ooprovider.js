@@ -1,4 +1,4 @@
-(function (oo) {
+var oo = (function (oo) {
     
     var global = this;
     var data = oo.getNS('oo.data');
@@ -38,5 +38,7 @@
             throw 'Can\'t be called directly from Provider class';
         }
     });
+
+    return oo;
 
 })(oo || {});

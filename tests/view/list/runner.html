@@ -15,9 +15,17 @@
 
   <!-- include source files here... -->
   <script type="text/javascript" src="../../../source/js/vendor/my.class.js"></script>
-  <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>  
+  <script type="text/javascript" src="../../../source/js/vendor/mustache.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/mixins/ooevents.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/ooelement.js"></script>
   <script type="text/javascript" src="../../../source/js/view/oodom.js"></script>
+  <script type="text/javascript" src="../../../source/js/data/ooprovider.js"></script>
+  <script type="text/javascript" src="../../../source/js/data/oofakeprovider.js"></script>
+  <script type="text/javascript" src="../../../source/js/data/oomodel.js"></script>
   <script type="text/javascript" src="../../../source/js/view/oolist.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplate.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplatemustache.js"></script>
 
    
   
@@ -55,6 +63,7 @@
   <body>
       <div id="domtest"></div>
       <div id="another-dom-test"></div>
+      <div id="target"></div>
       <!-- include spec files here... -->
        <script type="text/javascript" src="spec.js"></script>
   </body>

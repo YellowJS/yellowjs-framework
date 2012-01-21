@@ -1,6 +1,6 @@
 describe("oomodel.js", function() {
 
-    var provider = new oo.data.Fakeprovider({
+    var provider = new oo.data.FakeProvider({
         "name" : "bar"
     });
 
@@ -31,15 +31,9 @@ describe("oomodel.js", function() {
 
     describe("fetch", function() {
         var callback = jasmine.createSpy();
-
         model.fetch(callback);
-
         it('function callback must be executed',function(){
            expect(callback).toHaveBeenCalled();
-        });
-
-        it('function callback must be executed with provider datas',function(){
-           expect(callback).toHaveBeenCalledWith(dataProvider);
         });
     });
 
@@ -50,14 +44,12 @@ describe("oomodel.js", function() {
                 'content' : 'Mon article'
             };
 
-
             it('obj must be in datas provider',function(){
                 var datasP;
                 model.save(obj);
                 provider.fetch(function(datas){
                     dataProvider = datas;
                 });
-                
                 expect(dataProvider).toContain(obj);
             });
 
@@ -83,7 +75,20 @@ describe("oomodel.js", function() {
                 }).toThrow();
             });
         });
-
     });
 
+    /*describe('listeners', function(){
+       var model2 = oo.createModel({
+            id : 'post-model2',
+            provider : provider
+       });
+
+       model2.addListener(oo.data.Model.AFTER_SAVE, function(){
+          alert('opdfkgpodfkg');
+       });
+
+       model2.fetch(function(datas){
+           console.log(datas);
+       });
+    });*/
 });

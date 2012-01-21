@@ -1,7 +1,7 @@
-/** 
+/**
  * Private class providing utils method
  * via a singleton instance
- * 
+ *
  * @namespace oo.core
  * @private class
  *
@@ -98,7 +98,7 @@ var oo = (function (oo) {
         },
 
         getRouter: function getRouter() {
-            // to be implemented  
+            // to be implemented
         },
 
         getViewport: function getViewport() {
@@ -121,13 +121,22 @@ var oo = (function (oo) {
 
             return p;
         },
-        createList : function createList(list){
-            return new oo.view.List( list || null);
-        },
         createModel : function createModel(model){
             return new oo.data.Model(model);
+        },
+        createElement : function createElement(type, opt){
+            return new ( oo.view.Element.get(type))(opt || null);
+        },
+        define : function define(opt){
+            if( opt.hasOwnProperty("templateEngine") ){
+                this._setTemplateEngine(opt.templateEngine);
+            }
+        },
+        _setTemplateEngine : function setTemplateEngine(codeName){
+            var templateEngine = new (oo.view.templateengine.Template.get(codeName))();
+            //set templateengine to class element
+            oo.view.Element.setTemplate(templateEngine);
         }
-
     });
 
     // oo.utils.namespace is now deprecated

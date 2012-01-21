@@ -10,7 +10,7 @@ describe("oocore.js", function() {
 
         var f2 = oo.createDelegate(f, Obj);
 
-        it('should return a function', function () {    
+        it('should return a function', function () {
             expect(f2).toBeTruthy('function' == typeof f2);
         });
 
@@ -35,17 +35,41 @@ describe("oocore.js", function() {
         var resultObj = oo.override(baseObj, overObj);
 
         it("should have \"new value1\" at \"key1\"", function () {
-            expect(resultObj.key1).toEqual("new value1")
+            expect(resultObj.key1).toEqual("new value1");
         });
 
         it("should have \"new value2\" at \"key3\"", function () {
-            expect(resultObj.key3).toEqual("new value2")
+            expect(resultObj.key3).toEqual("new value2");
         });
 
         it("should have \"value2\" at \"key2\"", function () {
-            expect(resultObj.key2).toEqual("value2")
+            expect(resultObj.key2).toEqual("value2");
         });
 
+    });
+
+    describe("createElement list", function(){
+        it('list must be an instance of oo.view.List', function(){
+            var list = oo.createElement('list');
+            expect(list instanceof oo.view.List).toBeTruthy();
+        });
+    });
+
+    describe("define", function(){
+        oo.define({
+            templateEngine : "mustache"
+        });
+        it('Element templateEngine must be instance of mustache', function(){
+            var ins = oo.view.templateengine.Template.get('mustache');
+            var templateEngine = oo.view.Element.templateEngine;
+            expect(templateEngine instanceof ins).toBeTruthy();
+        });
+    });
+
+    describe("define", function(){
+        it('throw error invalide code name', function(){
+            expect(function () { oo.define({ templateEngine : null }); }).toThrow('Invalid codename');
+        });
     });
 
 });
