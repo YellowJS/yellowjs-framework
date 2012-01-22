@@ -8,10 +8,20 @@
             AFTER_FETCH : 'AFTER_FETCH'
         },
         constructor: function constructor(options){
-            if(!options || (!options.hasOwnProperty('id') || !options.hasOwnProperty('provider')) )
-                throw "Either property \"id\" or \"provider\" is missing in the options given to the Model constructor";
-            this._id = options.id;
-            this._provider = options.provider;
+            if(!options || (!options.hasOwnProperty('name') || !options.hasOwnProperty('provider')) )
+                throw "Either property \"name\" or \"provider\" is missing in the options given to the Model constructor";
+            this._name = options.name;
+
+            this.setProvider(options.provider);
+        },
+        setProvider: function setProvider (providerConf) {
+            if (providerConf instanceof Provider) {
+                this._provider = providerConf;
+            } else if (typeof providerConf == 'object') {
+                var Cls = oo.data.Provider.get(providerConf.type);
+                delete providerConf.type; providerConf.name = this._name;
+                this._provider = new Cls(providerConf);
+            }
         },
         fetch : function fetch(callback){
             var self = this,

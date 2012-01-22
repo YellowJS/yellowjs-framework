@@ -6,7 +6,7 @@ describe("oolist.js", function() {
         });
 
         var model = oo.createModel({
-            'id' : "test",
+            'name' : "test",
             'provider' : provider
         });
 
