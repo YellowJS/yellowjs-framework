@@ -9,7 +9,7 @@
         },
         constructor: function constructor(options){
             if(!options || (!options.hasOwnProperty('id') || !options.hasOwnProperty('provider')) )
-                throw "Either property \"id\” or \"provider\" is missing in the options given to the Model constructor";
+                throw "Either property \"id\" or \"provider\" is missing in the options given to the Model constructor";
             this._id = options.id;
             this._provider = options.provider;
         },

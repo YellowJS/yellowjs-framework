@@ -6,7 +6,7 @@ var oo = (function (oo){
         constructor: function (options) {
             templateEngineMustache.Super.call(this, options);
         },
-        render: function (datas, tpl) {
+        render: function (tpl, datas) {
             if(!datas && !tpl) {
                 throw Error('datas, tpl and domElem must exist');
             }

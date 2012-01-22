@@ -8,6 +8,14 @@ var oo = (function (oo) {
         constructor: function constructor(conf) {
             List.Super.call(this, conf);
         }
+        // render: function (data, tpl) {
+        //     if (!tpl || '' == tpl)
+        //         tpl = this._tpl;            
+
+        //     //tpl = 
+
+
+        // }
     });
     
     oo.view.Element.register(List, 'list');

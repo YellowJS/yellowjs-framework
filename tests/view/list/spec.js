@@ -3,35 +3,29 @@ describe("oolist.js", function() {
         templateEngine : 'mustache'
     });
 
-    var conf = {"model" : "test", "template":"test", "target" : "#domtest"};
+    var conf = {"template":"test", "target" : "#domtest"};
 
     describe("constructor", function() {
         var list = oo.createElement('list', conf);
         
+        it("should be an instanceof oo.view.Dom", function () {
+            expect(list instanceof oo.view.Dom).toBeTruthy();
+        })
+
         it('_tpl must be equal to "test"', function() {
             expect(list._tpl).toEqual("test");
         });
 
-        it('_model must be equal to "test"', function() {
-            //list.setModel('test');
-            expect(list._model).toEqual("test");
-        });
-
-        it('_target must be an instance of oo.view.Dom', function(){
-            //list.settarget('#domtest');
-            expect(list._target instanceof oo.view.Dom).toBeTruthy();
-        });
-
         it('_target must have id "domtest"', function(){
-            var id = list._target.getId();
+            var id = list.getId();
             expect(id).toEqual('domtest');
         });
     });
 
     describe("methods", function(){
-       var list = oo.createElement('list');
+       var list = oo.createElement('list', {target: '#domtest'});
 
-       describe("settarget", function() {
+       describe("setTemplate", function() {
            it('_tpl must be equal to "test"', function() {
                 list.setTemplate('test');
                 expect(list._tpl).toEqual("test");
@@ -39,28 +33,12 @@ describe("oolist.js", function() {
         });
 
         describe("setModel", function() {
-           it('_model must be equal to "test"', function() {
-                list.setModel('test');
-                expect(list._model).toEqual("test");
+           it('_model must an instance of oo.data.Model', function() {
+                list.setModel({id:'test', provider: 'fake'});
+                expect(list._model instanceof oo.data.Model).toBeTruthy();
             });
         });
 
-        describe("settarget", function() {
-            it('_target must be an instance of oo.view.Dom and has id domtest', function(){
-                list.settarget('#domtest');
-                expect(list._target instanceof oo.view.Dom).toBeTruthy();
-                
-                var id = list._target.getId();
-                expect(id).toEqual('domtest');
-            });
-        });
-
-        describe("_transformToOoDom", function() {
-            it('must return an instanceof oo.view.Dom', function(){
-                var res = list._transformToOoDom("#another-dom-test");
-                expect(res instanceof oo.view.Dom).toBeTruthy();
-            });
-        });
     });
 
     describe('render', function(){
@@ -75,10 +53,12 @@ describe("oolist.js", function() {
 
         var list2 = oo.createElement('list', {
             model : model,
-            'template' : '<li>{{firstname}}</li>',
+            'template' : '<span clss="h1">{{firstname}}</span><span clss="h2">{{nickname}}</span>',
             'target' : '#target'
         });
 
-        model.fetch();
+        model.fetch(function (data) {
+            console.log(data);
+        });
     });
 });

@@ -13,7 +13,7 @@ describe("ooelement.js", function() {
         
         it("should return a list", function () {
             var cls = oo.view.Element.get('list');
-            var obj = new cls({name: 'oo'});
+            var obj = new cls({name: 'oo', target: '#elem-target'});
             expect(obj instanceof oo.view.List).toBeTruthy();
         });
 
@@ -25,7 +25,7 @@ describe("ooelement.js", function() {
 
     describe("element instanciation without name", function () {
         it("should have a name property", function () {
-            expect (function () { var p = new oo.view.Element(); }).toThrow('Config object must contain a name property');
+            expect (function () { var p = new oo.view.Element(); }).toThrow('call Element constructor but "options" missing');
         });
     });
 
