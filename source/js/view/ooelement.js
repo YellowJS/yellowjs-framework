@@ -55,8 +55,8 @@ var oo = (function (oo){
             }
 
         },
-        afterFetch : function afterFetch(datas){
-            this.render(datas);
+        afterFetch : function afterFetch(data){
+            this.render(data);
         },        
         setModel : function setModel(model){
             if (model instanceof oo.data.Model)
@@ -65,8 +65,11 @@ var oo = (function (oo){
                 this._model = oo.createModel(model);
         },
         setTemplate : function setTemplate(tpl){
-            this._tpl = tpl || null;
-        },       
+            this._tpl = tpl || '';
+        },
+        prepareData: function prepareData(data) {
+            return data;
+        },
         render: function render (data, tpl) {
             if (!data)
                 data = {};
@@ -75,8 +78,9 @@ var oo = (function (oo){
                 tpl = this._tpl;
 
             var tplEng = Element.getTemplateEngine();
-
-            this.appendHtml(tplEng.render(tpl, data));
+            
+            this.clear();
+            this.appendHtml(tplEng.render(tpl, this.prepareData(data)));
         }
 
     });

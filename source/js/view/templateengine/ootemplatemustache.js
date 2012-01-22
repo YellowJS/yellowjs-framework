@@ -11,6 +11,7 @@ var oo = (function (oo){
                 throw Error('datas, tpl and domElem must exist');
             }
 
+            console.log(tpl, datas);
             return Mustache.render(tpl, datas);
         }
     });
