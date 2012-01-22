@@ -98,7 +98,6 @@
             return {
                 send: function send(params) {
                     if (method = 'POST') {
-                        console.log(paramString);
                         req.send(paramString);
                     }                        
                     else
