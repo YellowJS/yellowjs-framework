@@ -70,7 +70,7 @@ var oo = (function (oo) {
                 return fn.apply(scope, arguments);
             };
         },
-        EmptyFn: function EmptyFn () { },
+        emptyFn: function emptyFn () { },
         /**
          *
          *  returns a unique identifier (by way of Backbone.localStorage.js)
