@@ -75,7 +75,10 @@
             req.addEventListener('readystatechange', function (e) {
                 if (e.target.readyState==4) {
                     if (e.target.status == 200) {
-                        var str = (e.target.responseType.indexOf('json') != -1) ? JSON.parse(e.target.responseText): e.target.responseText;
+                        
+                        // check against response content-type header to determine if is JSON formatted response
+                        var str = JSON.parse(e.target.responseText);
+                        
                         successCallback.call(global, str);
                     }
                     else
