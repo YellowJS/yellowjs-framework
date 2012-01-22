@@ -6,7 +6,7 @@ describe("oolist.js", function() {
     var conf = {"model" : "test", "template":"test", "target" : "#domtest"};
 
     describe("constructor", function() {
-        var list = oo.createElement('list',conf);
+        var list = oo.createElement('list', conf);
         
         it('_tpl must be equal to "test"', function() {
             expect(list._tpl).toEqual("test");
@@ -75,7 +75,7 @@ describe("oolist.js", function() {
 
         var list2 = oo.createElement('list', {
             model : model,
-            'template' : '<li>{{title}}</li>',
+            'template' : '<li>{{firstname}}</li>',
             'target' : '#target'
         });
 

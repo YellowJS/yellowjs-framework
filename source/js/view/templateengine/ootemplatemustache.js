@@ -7,16 +7,11 @@ var oo = (function (oo){
             templateEngineMustache.Super.call(this, options);
         },
         render: function (datas, tpl) {
-            if(!datas && !tpl && !domElem) {
+            if(!datas && !tpl) {
                 throw Error('datas, tpl and domElem must exist');
             }
 
-            var output='';
-            datas.forEach(function(item){
-                output += Mustache.render(tpl, item);
-            });
-
-            return output;
+            return Mustache.render(tpl, datas);
         }
     });
 

@@ -20,7 +20,7 @@ var oo = (function (oo){
             },
             unregister: function register (codename) {
                 delete templateRepository[codename];
-            }
+            }           
         },
         constructor: function (options) {
             /*if (options && 'name' in options && typeof options.name == 'string')

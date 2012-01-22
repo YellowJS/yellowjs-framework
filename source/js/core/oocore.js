@@ -129,13 +129,8 @@ var oo = (function (oo) {
         },
         define : function define(opt){
             if( opt.hasOwnProperty("templateEngine") ){
-                this._setTemplateEngine(opt.templateEngine);
+                oo.view.Element.setTemplateEngine(opt.templateEngine);
             }
-        },
-        _setTemplateEngine : function setTemplateEngine(codeName){
-            var templateEngine = new (oo.view.templateengine.Template.get(codeName))();
-            //set templateengine to class element
-            oo.view.Element.setTemplate(templateEngine);
         }
     });
 
