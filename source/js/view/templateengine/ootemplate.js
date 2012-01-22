@@ -28,7 +28,7 @@ var oo = (function (oo){
             else
                 throw 'Config object must contain a name property';*/
         },
-        render: function (datas, tpl) {
+        render: function (tpl, datas) {
             throw 'Can\'t be called directly from Provider class';
         }
     });

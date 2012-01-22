@@ -21,11 +21,11 @@ var oo = (function (oo){
                 delete viewRepository[codename];
             },
 
-            setTemplateEngine : function setTemplateEngine(tplEngine) {
-                if (typeof tplEngine == 'string')
-                    tplEngine = new (oo.view.templateengine.Template.get(tplEngine))();
+            getTemplateEngine : function getTemplateEngine() {
+                if (null == Element.templateEngine)
+                    Element.templateEngine = new (oo.view.templateengine.Template.get(oo.getConfig('templateEngine')))();
 
-                Element.templateEngine = tplEngine;
+                return Element.templateEngine;
             },
             templateEngine : null
         },
@@ -38,17 +38,10 @@ var oo = (function (oo){
             if(!options.hasOwnProperty('target'))
                 throw "call Element constructor but \"target\" property of object options is missing";
 
-            console.log(Element);
             Element.Super.call(this, options.target);
 
             if( options.hasOwnProperty('model') ){
-                var model = null;
-                if (options.model instanceof oo.data.Model)
-                    model = options.model;
-                else
-                    model = oo.createModel(options.model);
-                
-                this.setModel(model);
+                this.setModel(options.model);
                 delete options.model;
             }
 
@@ -62,17 +55,32 @@ var oo = (function (oo){
             }
 
         },
-        afterFetch : function afterFetch(datas){
-            this.render(datas);
+        afterFetch : function afterFetch(data){
+            this.render(data);
         },        
         setModel : function setModel(model){
-            this._model = model || null;
+            if (model instanceof oo.data.Model)
+                this._model = model;
+            else
+                this._model = oo.createModel(model);
         },
         setTemplate : function setTemplate(tpl){
-            this._tpl = tpl || null;
-        },       
+            this._tpl = tpl || '';
+        },
+        prepareData: function prepareData(data) {
+            return data;
+        },
         render: function render (data, tpl) {
-            this.appendHtml(Element.templateEngine.render(datas, this._tpl));
+            if (!data)
+                data = {};
+
+            if (!tpl || '' == tpl)
+                tpl = this._tpl;
+
+            var tplEng = Element.getTemplateEngine();
+            
+            this.clear();
+            this.appendHtml(tplEng.render(tpl, this.prepareData(data)));
         }
 
     });

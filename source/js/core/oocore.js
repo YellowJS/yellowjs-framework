@@ -20,6 +20,10 @@ var oo = (function (oo) {
 
     // Flavius;
 
+    var _globalConfig = {
+        templateEngine: 'mustache'
+    };
+
     var Core = my.Class({
         /**
          * use oo.log instead of console.log
@@ -128,10 +132,14 @@ var oo = (function (oo) {
             return new ( oo.view.Element.get(type))(opt || null);
         },
         define : function define(opt){
-            if( opt.hasOwnProperty("templateEngine") ){
-                oo.view.Element.setTemplateEngine(opt.templateEngine);
-            }
-        }
+            oo.override(_globalConfig, opt);
+        },
+        getConfig : function getConfig(key){
+            if (key && key in _globalConfig) 
+                return _globalConfig[key];
+            else 
+                return _globalConfig;
+        }        
     });
 
     // oo.utils.namespace is now deprecated
