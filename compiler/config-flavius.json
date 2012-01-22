@@ -1,10 +1,10 @@
 {
-    "projectName" : "flavius",
+    "projectName" : "PlineJs",
     "deployDir" : "build",
     "pkgs" : [
         {
-            "name" : "flaviuspkg",
-            "file" : "flavius.js",
+            "name" : "plinejspkg",
+            "file" : "plinejs-0.2.js",
             "isDebug" : true,
             "fileIncludes" : [
                 {
@@ -15,6 +15,10 @@
                     "text" : "mustache.js",
                     "path" : "../source/js/vendor/"
                 },
+                {
+                    "text" : "lawnchair-0.6.1-min.js",
+                    "path" : "../source/js/vendor/"
+                },                
                 {
                     "text" : "oocore.js",
                     "path" : "../source/js/core/"
@@ -34,15 +38,39 @@
                 {
                     "text" : "ooprovider.js",
                     "path" : "../source/js/data/"
+                },
+                {
+                    "text" : "oofakeprovider.js",
+                    "path" : "../source/js/data/"
                 },                
                 {
                     "text" : "oolocalprovider.js",
                     "path" : "../source/js/data/"
-                },               
+                },
+                {
+                    "text" : "ooajaxprovider.js",
+                    "path" : "../source/js/data/"
+                },
+                {
+                    "text" : "oomodel.js",
+                    "path" : "../source/js/data/"
+                },
+                {
+                    "text" : "ootemplate.js",
+                    "path" : "../source/js/view/templateengine/"
+                },
+                {
+                    "text" : "ootemplatemustache.js",
+                    "path" : "../source/js/view/templateengine/"
+                },
                 {
                     "text" : "oodom.js",
                     "path" : "../source/js/view/"
-                },             
+                },
+                {
+                    "text" : "ooelement.js",
+                    "path" : "../source/js/view/"
+                },
                 {
                     "text" : "ooviewport.js",
                     "path" : "../source/js/view/"
@@ -50,25 +78,9 @@
                 {
                     "text" : "oopanel.js",
                     "path" : "../source/js/view/"
-                },                   
-                {
-                    "text" : "oobutton.js",
-                    "path" : "../source/js/view/"
-                },
-                {
-                    "text" : "oobuttongroup.js",
-                    "path" : "../source/js/view/"
                 },
                 {
                     "text" : "oolist.js",
-                    "path" : "../source/js/view/"
-                },
-                {
-                    "text" : "ooscroll.js",
-                    "path" : "../source/js/view/"
-                },
-                {
-                    "text" : "oocarousel.js",
                     "path" : "../source/js/view/"
                 }
             ]
