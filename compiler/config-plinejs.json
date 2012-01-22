@@ -1,10 +1,10 @@
 {
-    "projectName" : "flavius",
+    "projectName" : "PlineJs",
     "deployDir" : "build",
     "pkgs" : [
         {
-            "name" : "flaviuspkg",
-            "file" : "flavius.js",
+            "name" : "plinejspkg",
+            "file" : "pline-0.2.js",
             "isDebug" : true,
             "fileIncludes" : [
                 {
@@ -16,9 +16,13 @@
                     "path" : "../source/js/vendor/"
                 },
                 {
+                    "text" : "lawnchair-0.6.1-min.js",
+                    "path" : "../source/js/vendor/"
+                },                
+                {
                     "text" : "oocore.js",
                     "path" : "../source/js/core/"
-                },
+                },              
                 {
                     "text" : "ooevents.js",
                     "path" : "../source/js/core/mixins/"
@@ -38,7 +42,11 @@
                 {
                     "text" : "oolocalprovider.js",
                     "path" : "../source/js/data/"
-                },               
+                },
+                {
+                    "text" : "ooajaxprovider.js",
+                    "path" : "../source/js/data/"
+                },
                 {
                     "text" : "oodom.js",
                     "path" : "../source/js/view/"
@@ -50,25 +58,9 @@
                 {
                     "text" : "oopanel.js",
                     "path" : "../source/js/view/"
-                },                   
-                {
-                    "text" : "oobutton.js",
-                    "path" : "../source/js/view/"
-                },
-                {
-                    "text" : "oobuttongroup.js",
-                    "path" : "../source/js/view/"
                 },
                 {
                     "text" : "oolist.js",
-                    "path" : "../source/js/view/"
-                },
-                {
-                    "text" : "ooscroll.js",
-                    "path" : "../source/js/view/"
-                },
-                {
-                    "text" : "oocarousel.js",
                     "path" : "../source/js/view/"
                 }
             ]
