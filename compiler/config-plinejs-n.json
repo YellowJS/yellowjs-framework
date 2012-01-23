@@ -1,0 +1,89 @@
+{
+    "projectName" : "PlineJs",
+    "deployDir" : "build",
+    "pkgs" : [
+        {
+            "name" : "plinejspkg",
+            "file" : "plinejs-0.2-n.js",
+            "isDebug" : true,
+            "fileIncludes" : [
+                {
+                    "text" : "my.class.js",
+                    "path" : "../source/js/vendor/"
+                },
+                {
+                    "text" : "mustache.js",
+                    "path" : "../source/js/vendor/"
+                },
+                {
+                    "text" : "lawnchair-0.6.1-min.js",
+                    "path" : "../source/js/vendor/"
+                },                
+                {
+                    "text" : "oocore.js",
+                    "path" : "../source/js/core/"
+                },
+                {
+                    "text" : "ooevents.js",
+                    "path" : "../source/js/core/mixins/"
+                },
+                {
+                    "text" : "ootouch.js",
+                    "path" : "../source/js/core/"
+                },
+                {
+                    "text" : "oorouter.js",
+                    "path" : "../source/js/controller/"
+                },
+                {
+                    "text" : "ooprovider.js",
+                    "path" : "../source/js/data/"
+                },
+                {
+                    "text" : "oofakeprovider.js",
+                    "path" : "../source/js/data/"
+                },                
+                {
+                    "text" : "oolocalprovider.js",
+                    "path" : "../source/js/data/"
+                },
+                {
+                    "text" : "ooajaxprovider.js",
+                    "path" : "../source/js/data/"
+                },
+                {
+                    "text" : "oomodel.js",
+                    "path" : "../source/js/data/"
+                },
+                {
+                    "text" : "ootemplate.js",
+                    "path" : "../source/js/view/templateengine/"
+                },
+                {
+                    "text" : "ootemplatemustache.js",
+                    "path" : "../source/js/view/templateengine/"
+                },
+                {
+                    "text" : "oodom.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooelement.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooviewport.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oopanel.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oolist.js",
+                    "path" : "../source/js/view/"
+                }
+            ]
+        }
+    ]
+}
