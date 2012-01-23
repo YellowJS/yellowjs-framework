@@ -9,7 +9,7 @@ var oo = (function (oo) {
             ANIM_RTL : 'rtl',
             ANIM_LTR : 'ltr',
             NO_ANIM : 'none',
-            ANIM_DURATION : 500
+            ANIM_DURATION : 750
         },
         constructor : function constructor(root){
             root = root || 'body';
