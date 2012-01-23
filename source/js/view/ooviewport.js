@@ -42,7 +42,7 @@ var oo = (function (oo) {
          **/
         addPanel : function addPanel(identifier, autoShow, autoRender, animDirection){
             
-            var p = new this._panelClasses[identifier];
+            var p = new (this._panelClasses[identifier])();
 
             this._panels.push(p);
             this._panelsDic.push(identifier);
@@ -65,7 +65,7 @@ var oo = (function (oo) {
             return index;
         },
         _indexToIdentifier : function _indexToIdentifier(index){
-           return index = this._panelsDic[index];
+           return this._panelsDic[index];
         },
         _enablePanel : function _enablePanel(identifier){
             var index = this._identifierToIndex(identifier);
@@ -180,7 +180,7 @@ var oo = (function (oo) {
             if (typeof arguments[1] == 'string' || 1 == arguments.length) {
                 dir = newPanel;
                 newP = oldPanel;
-                oldP = this.getFocusedPanel(true)
+                oldP = this.getFocusedPanel(true);
             } else {
                 oldP = oldPanel;
                 newP = newPanel;

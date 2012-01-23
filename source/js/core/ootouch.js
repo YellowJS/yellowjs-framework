@@ -10,10 +10,12 @@ var oo = (function (oo) {
 
     var hasTouch = 'ontouchstart' in window ? true : false;
     var getPosition = function getPosition (e, index) {        
+        var touch = null;
+        
         if (hasTouch) {
             index = index || 0;
         
-            var touch = e.touches[index];
+            touch = e.touches[index];
             if (undefined === touch) {
                 touch = e.changedTouches[index];
             }

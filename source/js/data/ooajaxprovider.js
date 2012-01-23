@@ -3,8 +3,8 @@
     var global = this, ns = oo.getNS('oo.data');
     var AjaxProvider = ns.AjaxProvider = my.Class(oo.data.Provider, {
         _store: {},
-        _cacheProvider = null,
-        _url = null,
+        _cacheProvider: null,
+        _url: null,
         constructor: function contructor (options) {
 
             var defaultConf = {
@@ -14,14 +14,14 @@
             var opt = oo.override(defaultConf, options);
 
             if (!opt.url || typeof opt.url != 'string')
-                throw '\'url\' property must be set'
+                throw '\'url\' property must be set';
 
             this._url = opt.url;
 
             AjaxProvider.Super.call(this, {name: opt.name});
 
             if (opt.cacheProvider) {
-                this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))
+                this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))();
             }
         },
         save: function save (data, config) {
@@ -30,7 +30,7 @@
             var defaultConf = {
                 success: oo.emptyFn,
                 error: oo.emptyFn
-            }
+            };
 
             var conf = oo.override(defaultConf, config);
 
