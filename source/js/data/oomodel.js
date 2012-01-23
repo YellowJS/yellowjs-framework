@@ -24,17 +24,35 @@
             }
         },
         fetch : function fetch(callback){
+
+            var defaultConf = {
+                success: oo.emptyFn,
+                params: {}
+            }
+    
+            callback = callback || {};
+            if (typeof callback == 'function') {
+                callback = {success: callback};
+            }
+
+            if (typeof callback != 'object') {
+                throw "Model.fetch() : params must be a function or a config object";
+            }
+
+            callback = oo.override(defaultConf, callback);
+
+
             var self = this,
                 cb = function cb(datas){
                     if (datas){
-                        if (callback){
-                            callback(datas);
+                        if (callback.success){
+                            callback.success(datas);
                         }
                         self.triggerEvent(Model.AFTER_FETCH, [datas]);
                     }
                 };
 
-            this._provider.fetch(cb);
+            this._provider.fetch({success: cb, params: callback.params});
         },
         save : function save(datas, callback){
             if(!datas || ( 'object' !== typeof datas )) {
