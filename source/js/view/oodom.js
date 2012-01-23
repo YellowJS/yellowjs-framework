@@ -218,7 +218,7 @@ var oo = (function (oo) {
             var p = this._dom.parentNode;
             var pattern = new RegExp(cls);
             while (!pattern.test(p.className) && p) {
-                p = this._dom.parentNode;
+                p = p.parentNode;
             }
             if (p) {
                 return new Dom(p);
