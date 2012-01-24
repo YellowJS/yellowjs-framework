@@ -6,7 +6,7 @@ describe("oomodel.js", function() {
 
 
     var model = oo.createModel({
-        id : 'post-model',
+        name : 'post-model',
         provider: provider
     });
 
@@ -21,7 +21,7 @@ describe("oomodel.js", function() {
 
     describe("constructor", function() {
         it('model._id must be equal to "post-model"',function(){
-           expect(model._id).toEqual("post-model");
+           expect(model._name).toEqual("post-model");
         });
 
         it('model._provider must be equal to "provider"',function(){

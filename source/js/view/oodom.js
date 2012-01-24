@@ -97,7 +97,11 @@ var oo = (function (oo) {
             this._cacheTpl = null;
 
             if (typeof identifier == 'string') {
-                this.setDomObject(document.querySelector(identifier));
+                var n = document.querySelector(identifier);
+                if (null == n)
+                    throw "Invalid selector node doesn't exists";
+
+                this.setDomObject(n);
             }
             else /*if (identifier instanceof DOMNode)*/ {
                 this.setDomObject(identifier);
@@ -192,7 +196,7 @@ var oo = (function (oo) {
         setDomObject : function setDomObject (domNode) {
             this._dom = domNode;
 
-            if (!this._dom.id) {
+            if (this._dom && !('id' in this._dom)) {
                 this._dom.id = oo.generateId(this._dom.tagName);
             }
 
@@ -204,13 +208,17 @@ var oo = (function (oo) {
         },
         // find a child element of the current node according to the given selector
         find : function find (selector) {
-            return new Dom(this._dom.querySelector(selector));
+            var n = this._dom.querySelector(selector);
+            if (null == n)
+                return null;
+            else 
+                return new Dom(n);
         },
         findParentByCls : function findParentByCls (cls) {
             var p = this._dom.parentNode;
             var pattern = new RegExp(cls);
             while (!pattern.test(p.className) && p) {
-                p = this._dom.parentNode;
+                p = p.parentNode;
             }
             if (p) {
                 return new Dom(p);
