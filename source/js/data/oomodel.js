@@ -8,23 +8,51 @@
             AFTER_FETCH : 'AFTER_FETCH'
         },
         constructor: function constructor(options){
-            if(!options || (!options.hasOwnProperty('id') || !options.hasOwnProperty('provider')) )
-                throw "Either property \"id\" or \"provider\" is missing in the options given to the Model constructor";
-            this._id = options.id;
-            this._provider = options.provider;
+            if(!options || (!options.hasOwnProperty('name') || !options.hasOwnProperty('provider')) )
+                throw "Either property \"name\" or \"provider\" is missing in the options given to the Model constructor";
+            this._name = options.name;
+
+            this.setProvider(options.provider);
+        },
+        setProvider: function setProvider (providerConf) {
+            if (providerConf instanceof Provider) {
+                this._provider = providerConf;
+            } else if (typeof providerConf == 'object') {
+                var Cls = oo.data.Provider.get(providerConf.type);
+                delete providerConf.type; providerConf.name = this._name;
+                this._provider = new Cls(providerConf);
+            }
         },
         fetch : function fetch(callback){
+
+            var defaultConf = {
+                success: oo.emptyFn,
+                params: {}
+            }
+    
+            callback = callback || {};
+            if (typeof callback == 'function') {
+                callback = {success: callback};
+            }
+
+            if (typeof callback != 'object') {
+                throw "Model.fetch() : params must be a function or a config object";
+            }
+
+            callback = oo.override(defaultConf, callback);
+
+
             var self = this,
                 cb = function cb(datas){
                     if (datas){
-                        if (callback){
-                            callback(datas);
+                        if (callback.success){
+                            callback.success(datas);
                         }
                         self.triggerEvent(Model.AFTER_FETCH, [datas]);
                     }
                 };
 
-            this._provider.fetch(cb);
+            this._provider.fetch({success: cb, params: callback.params});
         },
         save : function save(datas, callback){
             if(!datas || ( 'object' !== typeof datas )) {

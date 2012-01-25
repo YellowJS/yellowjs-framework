@@ -64,7 +64,7 @@ var oo = (function (oo) {
          */
         triggerEvent : function triggerEvent(eventName, params){
             // backward compatibility
-            if (!(typeof params == 'array') && 3 == arguments.length) {
+            if ((typeof params != 'array') && 3 == arguments.length) {
                 params = arguments[2];
             }
 

@@ -5,7 +5,7 @@ var oo = (function (oo) {
         Touch = oo.core.Touch,
         ns = oo.getNS('oo.view');
     
-    var List = ns.List = my.Class(oo.view.Element, {
+    var List = ns.List = my.Class(oo.view.Element, oo.core.mixins.Events, {
         STATIC: {
             EVT_RENDER: 'render',
             EVT_ITEM_PRESSED: 'item-pressed',
@@ -51,20 +51,22 @@ var oo = (function (oo) {
                 if (false !== check) {
                     check.dom.classList.addClass('active');
                      
-                    Events.triggerEvent(List.EVT_ITEM_PRESSED, that, [check.dom, check.id]);
+                    that.triggerEvent(List.EVT_ITEM_PRESSED, [check.dom, check.id]);
                 }
             }, false);
             this.getDomObject().addEventListener(Touch.EVENT_MOVE, function (e) {
                 if (this._touchedItem) {
                     this._touchedItem = null;
-                    that._dom.find('.active').classList.removeClass('active');            
+                    var active = that.find('.active');
+                    if (null != active)
+                        active.classList.removeClass('active');
                 }
             }, false);        
             this.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
                 check = checkTarget(e.target);
                 check.dom.classList.removeClass('active');            
                 if (false !== check && this._touchedItem == e.target) {
-                    Events.triggerEvent(List.EVT_ITEM_RELEASED, that, [check.dom, check.id]);
+                    that.triggerEvent(List.EVT_ITEM_RELEASED, [check.dom, check.id]);
                 }
             }, false);
         },

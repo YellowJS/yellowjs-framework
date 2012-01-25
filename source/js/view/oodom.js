@@ -54,7 +54,7 @@ var oo = (function (oo) {
         },
         // check if it has the given class
         hasClass : function hasClass(clsName) {
-            var i = this._list.indexOf(clsName)
+            var i = this._list.indexOf(clsName);
             if (-1 === i) {
                 return false;
             } else {
@@ -97,7 +97,11 @@ var oo = (function (oo) {
             this._cacheTpl = null;
 
             if (typeof identifier == 'string') {
-                this.setDomObject(document.querySelector(identifier));
+                var n = document.querySelector(identifier);
+                if (null == n)
+                    throw "Invalid selector node doesn't exists";
+
+                this.setDomObject(n);
             }
             else /*if (identifier instanceof DOMNode)*/ {
                 this.setDomObject(identifier);
@@ -122,13 +126,13 @@ var oo = (function (oo) {
             /**
              * generates accessors fonction
              */
-            for (var i=0, len=prop['readOnly'].length; i<len; i++) {
-                eval(['p.get', prop['readOnly'][i].charAt(0).toUpperCase(), prop['readOnly'][i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop['readOnly'][i], ' : (window.getComputedStyle(this._dom).', prop['readOnly'][i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop['readOnly'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop['readOnly'][i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
+            for (var i=0, len=prop.readOnly.length; i<len; i++) {
+                eval(['p.get', prop.readOnly[i].charAt(0).toUpperCase(), prop.readOnly[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop.readOnly[i], ' : (window.getComputedStyle(this._dom).', prop.readOnly[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readOnly[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
             }
 
-            for (var i=0, len=prop['readWrite'].length; i<len; i++) {
-                eval(['p.get', prop['readWrite'][i].charAt(0).toUpperCase(), prop['readWrite'][i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop['readWrite'][i], ' : (window.getComputedStyle(this._dom).', prop['readWrite'][i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop['readWrite'][i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop['readWrite'][i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
-                eval(['p.set', prop['readWrite'][i].charAt(0).toUpperCase(), prop['readWrite'][i].slice(1), ' = function (val, unit) { if (this._cached[\'', prop['readWrite'][i], '\'] || this._cached[[\'', prop['readWrite'][i], '\', \'u\'].join(\'\')]) { this._cached[\'', prop['readWrite'][i], '\'] = this._cached[[\'', prop['readWrite'][i], '\', \'u\'].join(\'\')] = null; } this._dom.style.', prop['readWrite'][i], ' = [val, (undefined !== unit ? unit : \'\')].join(\'\'); return this };'].join(''));
+            for (var i=0, len=prop.readWrite.length; i<len; i++) {
+                eval(['p.get', prop.readWrite[i].charAt(0).toUpperCase(), prop.readWrite[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop.readWrite[i], ' : (window.getComputedStyle(this._dom).', prop.readWrite[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readWrite[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
+                eval(['p.set', prop.readWrite[i].charAt(0).toUpperCase(), prop.readWrite[i].slice(1), ' = function (val, unit) { if (this._cached[\'', prop.readWrite[i], '\'] || this._cached[[\'', prop.readWrite[i], '\', \'u\'].join(\'\')]) { this._cached[\'', prop.readWrite[i], '\'] = this._cached[[\'', prop.readWrite[i], '\', \'u\'].join(\'\')] = null; } this._dom.style.', prop.readWrite[i], ' = [val, (undefined !== unit ? unit : \'\')].join(\'\'); return this };'].join(''));
             }
 
             // read translation values from dom or from cache
@@ -137,26 +141,26 @@ var oo = (function (oo) {
 
         },
         getTranslations : function getTranslations (noCache){
-            if (!this._cached['webkitTranslations'] || noCache) {
+            if (!this._cached.webkitTranslations || noCache) {
                 var values = this.getWebkitTransform().match(Dom.CSSMATRIXPATTERN);
                 if (null === values) {
                     values = [0, 0, 0];
                 }
-                this._cached['webkitTranslations'] = [parseInt(values[1], 10), parseInt(values[2], 10)];
-                // this._cached['webkitTranslations'] = [parseInt(values[1], 10), parseInt(values[3], 10)];
+                this._cached.webkitTranslations = [parseInt(values[1], 10), parseInt(values[2], 10)];
+                // this._cached.webkitTranslations = [parseInt(values[1], 10), parseInt(values[3], 10)];
             }
-            return this._cached['webkitTranslations'];
+            return this._cached.webkitTranslations;
         },
         getWebkitTransform : function getWebkitTransform (noCache) {
-            if (!this._cached['webkitTransform'] || noCache) {
-                this._cached['webkitTransform'] = window.getComputedStyle(this._dom).webkitTransform;
+            if (!this._cached.webkitTransform || noCache) {
+                this._cached.webkitTransform = window.getComputedStyle(this._dom).webkitTransform;
             }
-            return this._cached['webkitTransform'];
+            return this._cached.webkitTransform;
         },
         setWebkitTransform : function setWebkitTransform (value) {
-            if (this._cached['webkitTransform'] || this._cached['webkitTranslations']) {
-                this._cached['webkitTransform'] = null;
-                this._cached['webkitTranslations'] = null;
+            if (this._cached.webkitTransform || this._cached.webkitTranslations) {
+                this._cached.webkitTransform = null;
+                this._cached.webkitTranslations = null;
             }
 
             this._dom.style.webkitTransform = value;
@@ -192,7 +196,7 @@ var oo = (function (oo) {
         setDomObject : function setDomObject (domNode) {
             this._dom = domNode;
 
-            if (!this._dom.id) {
+            if (this._dom && !('id' in this._dom)) {
                 this._dom.id = oo.generateId(this._dom.tagName);
             }
 
@@ -204,13 +208,17 @@ var oo = (function (oo) {
         },
         // find a child element of the current node according to the given selector
         find : function find (selector) {
-            return new Dom(this._dom.querySelector(selector));
+            var n = this._dom.querySelector(selector);
+            if (null == n)
+                return null;
+            else 
+                return new Dom(n);
         },
         findParentByCls : function findParentByCls (cls) {
             var p = this._dom.parentNode;
             var pattern = new RegExp(cls);
             while (!pattern.test(p.className) && p) {
-                p = this._dom.parentNode;
+                p = p.parentNode;
             }
             if (p) {
                 return new Dom(p);
