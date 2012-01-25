@@ -3,9 +3,11 @@
     var global = this, ns = oo.getNS('oo.data');
     var FakeProvider = ns.FakeProvider = my.Class(oo.data.Provider, {
         _data: [{
+            'key' : 0,
             'firstname': 'claire',
             'nickname': 'Claire_So'
         }, {
+            'key' : 2,
             'firstname': 'mathias',
             'nickname': 'FreakDev'
         }],
@@ -26,7 +28,7 @@
             }
         },
         fetch: function fetch (callback) {
-            callback.call(global, this._data);
+            callback.success.call(global, this._data);
         }
     });
 
