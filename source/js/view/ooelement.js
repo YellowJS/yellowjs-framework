@@ -57,7 +57,7 @@ var oo = (function (oo){
         },
         afterFetch : function afterFetch(data){
             this.render(data);
-        },        
+        },
         setModel : function setModel(model){
             if (model instanceof oo.data.Model)
                 this._model = model;
@@ -74,9 +74,10 @@ var oo = (function (oo){
             if (!data)
                 data = {};
 
-            if (!tpl || '' == tpl)
+            if (!tpl || '' === tpl)
                 tpl = this._tpl;
 
+            if(!tpl) return;
             var tplEng = Element.getTemplateEngine();
             
             this.clear();

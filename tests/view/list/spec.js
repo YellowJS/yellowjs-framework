@@ -1,6 +1,6 @@
 describe("oolist.js", function() {
 
-    var provider = new oo.data.FakeProvider({
+    /*var provider = new oo.data.FakeProvider({
         "name" : "fdsfsdf"
     });
 
@@ -20,9 +20,9 @@ describe("oolist.js", function() {
             var preparedData = list2.prepareData({data: 'toto'});
             expect(preparedData.data.data).toEqual('toto');
         });
-    });
+    });*/
 
-    describe('render', function(){
+    /*describe('render', function(){
 
         it("should have a well formated template", function () {
             expect(list2._tpl).toEqual('<ul>{{#data}}<li class="oo-list-item item-{{key}}"><span clss="h1">{{firstname}}</span> | <span clss="h2">{{nickname}}</span></li>{{/data}}</ul>');
@@ -31,5 +31,5 @@ describe("oolist.js", function() {
         model.fetch(function (data) {
             console.log(data);
         });
-    });
+    });*/
 });
