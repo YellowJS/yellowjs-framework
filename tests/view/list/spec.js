@@ -1,6 +1,6 @@
 describe("oolist.js", function() {
 
-    /*var provider = new oo.data.FakeProvider({
+    var provider = new oo.data.FakeProvider({
         "name" : "fdsfsdf"
     });
 
@@ -11,7 +11,7 @@ describe("oolist.js", function() {
 
     var list2 = oo.createElement('list', {
         model : model,
-        'template' : '<span clss="h1">{{firstname}}</span> | <span clss="h2">{{nickname}}</span>',
+        'template' : '<span class="h1">{{firstname}}</span> | <span class="h2">{{nickname}}</span>',
         'target' : '#target'
     });
 
@@ -20,16 +20,14 @@ describe("oolist.js", function() {
             var preparedData = list2.prepareData({data: 'toto'});
             expect(preparedData.data.data).toEqual('toto');
         });
-    });*/
+    });
 
-    /*describe('render', function(){
+    describe('render', function(){
 
         it("should have a well formated template", function () {
-            expect(list2._tpl).toEqual('<ul>{{#data}}<li class="oo-list-item item-{{key}}"><span clss="h1">{{firstname}}</span> | <span clss="h2">{{nickname}}</span></li>{{/data}}</ul>');
+            expect(list2._tpl).toEqual('<ul>{{#data}}<li data-id="{{key}}" class="oo-list-item"><span class="h1">{{firstname}}</span> | <span class="h2">{{nickname}}</span></li>{{/data}}</ul>');
         });
 
-        model.fetch(function (data) {
-            console.log(data);
-        });
-    });*/
+        model.fetch();
+    });
 });

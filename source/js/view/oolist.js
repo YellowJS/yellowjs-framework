@@ -11,7 +11,7 @@ var oo = (function (oo) {
             EVT_ITEM_PRESSED: 'item-pressed',
             EVT_ITEM_RELEASED: 'item-released'
         },
-        _structTpl: '<ul>{{#data}}<li data-id="{{key}}" class="oo-list-item item-{{key}}">{{tpl}}</li>{{/data}}</ul>',
+        _structTpl: '<ul>{{#data}}<li data-id="{{key}}" class="oo-list-item">{{tpl}}</li>{{/data}}</ul>',
         _touchedItem: null,
         constructor: function constructor(conf) {
             if (conf.structure) {
@@ -36,8 +36,7 @@ var oo = (function (oo) {
                     var altTarget = t.findParentByCls('oo-list-item');
                     if (altTarget) {
                         t = altTarget;
-                        itemId = t.getDomObject().className.match(/item-(.*)/)[1] || t.getId();
-                        //itemId = t.getDomObject().className.match(/item-(.*)/)[1] || t.getId();
+                        itemId = altTarget._dom.dataset.id || t.getId();
                     }
                 }
                  
