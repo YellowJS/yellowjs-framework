@@ -36,7 +36,7 @@ var oo = (function (oo) {
                     var altTarget = t.findParentByCls('oo-list-item');
                     if (altTarget) {
                         t = altTarget;
-                        itemId = altTarget._dom.dataset.id || t.getId();
+                        itemId = altTarget._dom.getAttribute('data-id') || t.getId();
                     }
                 }
                  
