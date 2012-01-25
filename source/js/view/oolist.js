@@ -11,7 +11,7 @@ var oo = (function (oo) {
             EVT_ITEM_PRESSED: 'item-pressed',
             EVT_ITEM_RELEASED: 'item-released'
         },
-        _structTpl: '<ul>{{#data}}<li class="oo-list-item item-{{key}}">{{tpl}}</li>{{/data}}</ul>',
+        _structTpl: '<ul>{{#data}}<li data-id="{{key}}" class="oo-list-item">{{tpl}}</li>{{/data}}</ul>',
         _touchedItem: null,
         constructor: function constructor(conf) {
             List.Super.call(this, conf);
@@ -32,7 +32,7 @@ var oo = (function (oo) {
                     var altTarget = t.findParentByCls('oo-list-item');
                     if (altTarget) {
                         t = altTarget;
-                        itemId = t.getDomObject().className.match(/item-(.*)/)[1] || t.getId();
+                        itemId = altTarget._dom.dataset.id || t.getId();
                     }
                 }
                  
@@ -64,7 +64,7 @@ var oo = (function (oo) {
             }, false);        
             this.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
                 check = checkTarget(e.target);
-                check.dom.classList.removeClass('active');            
+                check.dom.classList.removeClass('active');
                 if (false !== check && this._touchedItem == e.target) {
                     that.triggerEvent(List.EVT_ITEM_RELEASED, [check.dom, check.id]);
                 }
