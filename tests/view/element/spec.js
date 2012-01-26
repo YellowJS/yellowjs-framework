@@ -72,7 +72,7 @@ describe("ooelement.js", function() {
 
         describe("setModel", function() {
            it('_model must an instance of oo.data.Model', function() {
-                el.setModel({id:'test', provider: 'fake'});
+                el.setModel({name:'test', provider: 'fake'});
                 expect(el._model instanceof oo.data.Model).toBeTruthy();
             });
         });
@@ -85,13 +85,13 @@ describe("ooelement.js", function() {
         });
 
         var model = oo.createModel({
-            'id' : "test",
+            'name' : "test",
             'provider' : provider
         });
 
         var list2 = new oo.view.Element({
             model : model,
-            'template' : '<span clss="h1">{{firstname}}</span> | <span clss="h2">{{nickname}}</span><br />',
+            'template' : '<span class="h1">{{firstname}}</span> | <span class="h2">{{nickname}}</span><br />',
             'target' : '#elem-target'
         });
 

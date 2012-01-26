@@ -50,26 +50,14 @@ describe("oocore.js", function() {
 
     describe("createElement list", function(){
         it('list must be an instance of oo.view.List', function(){
-            var list = oo.createElement('list');
+            var list = oo.createElement('list',{'target':'#test'});
             expect(list instanceof oo.view.List).toBeTruthy();
         });
     });
 
-    describe("define", function(){
-        oo.define({
-            templateEngine : "mustache"
-        });
-        it('Element templateEngine must be instance of mustache', function(){
-            var ins = oo.view.templateengine.Template.get('mustache');
-            var templateEngine = oo.view.Element.templateEngine;
-            expect(templateEngine instanceof ins).toBeTruthy();
-        });
-    });
 
-    describe("define", function(){
-        it('throw error invalide code name', function(){
-            expect(function () { oo.define({ templateEngine : null }); }).toThrow('Invalid codename');
-        });
-    });
+    /*describe("createController", function(){
+        oo.createController();
+    });*/
 
 });
