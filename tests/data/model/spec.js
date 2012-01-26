@@ -49,8 +49,8 @@ describe("oomodel.js", function() {
                 model.save(obj);
                 provider.fetch(function(datas){
                     dataProvider = datas;
+                    expect(dataProvider).toContain(obj);
                 });
-                expect(dataProvider).toContain(obj);
             });
 
             describe("save with callback", function() {
