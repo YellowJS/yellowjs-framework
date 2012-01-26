@@ -79,7 +79,7 @@ describe("oofakeprovider.js", function() {
 
             it("should call the callback with the data as parameter", function () {
 
-                p.fetch(clb);
+                p.fetch({success:clb});
 
                 expect(clb).wasCalled();
 
