@@ -112,11 +112,7 @@ var oo = (function (oo) {
         },
 
         getRouter: function getRouter() {
-            if(!oo.router.router){
-                oo.router.router = new oo.router.Router();
-            }
-            
-            return oo.router.router;
+            return oo.router.router || ( oo.router.router = new oo.router.Router());
         },
 
         getViewport: function getViewport() {
