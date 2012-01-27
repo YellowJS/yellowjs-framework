@@ -68,8 +68,8 @@ var oo = (function (oo) {
             }, false);
             this.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
                 check = checkTarget(e.target);
-                check.dom.classList.removeClass('active');
                 if (false !== check && this._touchedItem == e.target) {
+                    check.dom.classList.removeClass('active');
                     that.triggerEvent(List.EVT_ITEM_RELEASED, [check.dom, check.id]);
                 }
             }, false);

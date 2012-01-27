@@ -217,10 +217,11 @@ var oo = (function (oo) {
         findParentByCls : function findParentByCls (cls) {
             var p = this._dom.parentNode;
             var pattern = new RegExp(cls);
-            while (!pattern.test(p.className) && p) {
+            while (!pattern.test(p.className) && p && (Node.DOCUMENT_NODE !== p.nodeType)) {
                 p = p.parentNode;
             }
-            if (p) {
+
+            if (p && (Node.DOCUMENT_NODE !== p.nodeType)) {
                 return new Dom(p);
             } else {
                 return false;
