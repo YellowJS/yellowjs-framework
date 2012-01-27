@@ -156,26 +156,34 @@ describe("oorouter.js", function() {
               'ctl2Controller' : controller2
             };
             router.addControllers(params);
-            expect(router._controllers.ctl1).toEqual(controller1);
-            expect(router._controllers.ctl2).toEqual(controller2);
+            
+            expect(router._controllers.ctl1Controller).toEqual(controller1);
+            expect(router._controllers.ctl2Controller).toEqual(controller2);
         });
     });
 
-    /*describe('init',function(){
+    describe('dispatch',function(){
+        var callback = jasmine.createSpy();
+        var callback2 = jasmine.createSpy();
+        
         var newRouter = new oo.router.Router();
-        var controller1 = oo.createController({c11Action:function c11Action(){ alert('c1');}});
-        var controller2 = oo.createController({c22Action:function c22Action(){ alert('c2');}});
-        var c = oo.createController({indexAction:function indexAction(){ alert('index');}});
+        var controller1 = oo.createController({c11Action: callback});
+        var controller2 = oo.createController({c22Action:callback2});
+        var c = oo.createController({indexAction:function indexAction(){ /*alert('index');*/}});
 
         newRouter.addController('IndexController',c);
 
         var params = {
-          'ctl11Controller' : controller1,
-          'ctl22Controller' : controller2
+          'Ctl11Controller' : controller1,
+          'Ctl22Controller' : controller2
         };
 
         newRouter.addControllers(params);
         newRouter.init();
         newRouter.dispatch('/ctl11/c11');
-    });*/
+        newRouter.dispatch('/ctl22/c22');
+        
+        expect(callback).toHaveBeenCalled();
+        expect(callback2).toHaveBeenCalled();
+    });
 });

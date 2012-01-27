@@ -58,7 +58,6 @@ var oo = (function(oo){
             if('function' !== typeof cls){
                 throw new Error('Wrong "cls" parameter : Must be a function');
             }
-
             var obj = {};
             obj[name] = cls;
             this._controllers = oo.override(this._controllers,obj);
