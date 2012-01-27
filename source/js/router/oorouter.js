@@ -72,15 +72,40 @@ var oo = (function(oo){
             }
         },
         init : function init(){
-            var that = this;
-            window.addEventListener("hashchange", function(e) {
-                that.dispatch(window.location.hash.slice(1));
-            }, false);
+            var that = this, wl = window.location, f = false;
 
-            this.dispatch(window.location.hash.slice(1));
+            var callback = function callback(route){
+              that.dispatch(route);
+            };
+
+            if( window.history && window.history.pushState ){
+              this.hasHistory = true;
+              window.addEventListener('popstate',function(event){
+                 f = true;
+                 callback(wl.pathname);
+              });
+            
+              //setTimeout force fire popstate
+              window.setTimeout(function(){
+                if(!f){
+                  that.dispatch(wl.pathname);
+                }
+              },1);
+            } else {
+              window.addEventListener("hashchange", function(e) {
+                  callback(wl.hash.slice(1));
+              }, false);
+
+              callback(wl.hash.slice(1));
+            }
         },
         load : function load(route){
-            window.location.hash = route;
+            if(!this.hasHistory){
+              window.location.hash = route;
+            } else {
+              history.pushState({},"",route);
+              this.dispatch(route);
+            }
         },
         dispatch: function dispatch (hash) {
             this.parseRoute(hash);
