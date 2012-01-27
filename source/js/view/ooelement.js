@@ -22,13 +22,20 @@ var oo = (function (oo){
             },
 
             getTemplateEngine : function getTemplateEngine() {
-                if (null == Element.templateEngine)
+                if (null === Element.templateEngine)
                     Element.templateEngine = new (oo.view.templateengine.Template.get(oo.getConfig('templateEngine')))();
 
                 return Element.templateEngine;
             },
             templateEngine : null
         },
+
+        // read only property
+        _needToRender: false,
+        needToRender: function needToRender() {
+            return this._needToRender;
+        },
+        
         _tpl : null,
         _model : null,
         constructor: function constructor (options) {
@@ -56,7 +63,7 @@ var oo = (function (oo){
 
         },
         afterFetch : function afterFetch(data){
-            this.render(data);
+            this._needToRender = true;
         },        
         setModel : function setModel(model){
             if (model instanceof oo.data.Model)
@@ -72,9 +79,9 @@ var oo = (function (oo){
         },
         render: function render (data, tpl) {
             if (!data)
-                data = {};
+                data = this._model.get();
 
-            if (!tpl || '' == tpl)
+            if (!tpl || '' === tpl)
                 tpl = this._tpl;
 
             var tplEng = Element.getTemplateEngine();
