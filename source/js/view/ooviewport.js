@@ -22,7 +22,7 @@ var oo = (function (oo) {
             this._panelClasses = {};
             this._panels = [];
             this._panelsDic = [];
-            this._enabledPanels = [];        
+            this._enabledPanels = [];
             this._focusedStack = [];
         },
         /**
@@ -30,7 +30,7 @@ var oo = (function (oo) {
          * @param panel {String} identifier as string or index
          **/
         hasPanel : function hasPanel(panel) {
-           return -1 != this._panelsDic.indexOf(panel) ? true : false; 
+           return -1 != this._panelsDic.indexOf(panel) ? true : false;
         },
         /**
          * add a panel to the viewport

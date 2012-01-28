@@ -1,6 +1,6 @@
-/** 
+/**
  * Abstract class that should be extended to create panels
- * 
+ *
  * @namespace oo.core
  * @private class
  *
@@ -35,10 +35,11 @@ var oo = (function (oo) {
             this.classList.addClass('oo-panel');
 
             Panel.Super.prototype.render.call(this);
-
-            for (var el in this._uiElements) {
+            
+            for (var id in this._uiElements) {
+                var el = this._uiElements[id];
                 if (el.needToRender())
-                    this._uiElements[el].render();
+                    el.render();
             }
         },
         hide: function hide() {
