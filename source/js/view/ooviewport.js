@@ -80,7 +80,7 @@ var oo = (function (oo) {
 
             // useless
             // hook to initialize view components such as vscroll or carousel
-            // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way    
+            // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way
             // this.triggerEvent('onEnablePanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
         },
         getFocusedPanel : function getFocusedPanel(getIndex){
@@ -92,7 +92,7 @@ var oo = (function (oo) {
             }
         },
         /**
-         * return the Panel as a oo.Dom object 
+         * return the Panel as a oo.Dom object
          **/
         getPanel : function getPanel(identifier) {
            return this._panels[this._identifierToIndex(identifier)] || false;
@@ -117,54 +117,21 @@ var oo = (function (oo) {
         showPanel : function showPanel(panel, direction) {
             var index = this._identifierToIndex(panel);
 
-            direction = direction || Viewport.ANIM_RTL;
-
-            var anim_duration = 0;
-            if (direction !== Viewport.NO_ANIM) {
-                // prepare transition
-                var translateDist = this.getWidth() * (direction == Viewport.ANIM_RTL ? 1 : -1);
-                this.getPanel(index).setTranslateX(translateDist);
-                // this.getPanel(index).setDisplay('', '');
-                anim_duration = Viewport.ANIM_DURATION;
-            }
-
-            if (!this.panelIsEnable(index)) {
-                this._enablePanel(index);
-            }
-
-            // transition
-            // this.getPanel(index).setZIndex(5, '');
-            this.getPanel(index).translateTo({x:0}, anim_duration);
+            this.getPanel(index).show(direction || Viewport.ANIM_RTL);
 
             this._focusedStack.push(index);
 
-            // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way
-            this.triggerEvent('onShowPanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
         },
         hidePanel : function hidePanel(panel, direction, destroy) {
             var index = this._identifierToIndex(panel);
 
             direction = direction || Viewport.ANIM_RTL;
 
-            var anim_duration = 0;
-            if (direction !== Viewport.NO_ANIM) {
-                anim_duration = Viewport.ANIM_DURATION;
-            }
-
-            // transition
-            var translateDist = this.getWidth() * (direction == Viewport.ANIM_RTL ? -1 : 1);
-            // this.getPanel(index).setZIndex(3, '');
-            var that = this;
-            this.getPanel(index).translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
-                // that.getPanel(index).setDisplay('none');
-                that.getPanel(index).stopAnimation();
-            });
+            this.getPanel(index).hide(direction || Viewport.ANIM_RTL);
 
             if (index == this.getFocusedPanel(true)) {
                 this._focusedStack.pop();
             }
-
-            this.triggerEvent('onHidePanel', this, [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
         },
         /**
          * show the newPanel and hide the oldPanel
@@ -197,7 +164,7 @@ var oo = (function (oo) {
         register: function register(id, p) {
             this._panelClasses[id] = p;
         },
-        show: function show(identifier, fn) {
+        show: function show () {
             if (!this.hasPanel(identifier)) {
                 this.addPanel(identifier, true);
             }
