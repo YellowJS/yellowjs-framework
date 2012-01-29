@@ -8,7 +8,7 @@
  */
 (function () {
 
-    var Panel =  oo.getNS('oo.view').Panel = my.Class(oo.view.Dom, {
+    var Panel =  oo.getNS('oo.view').Panel = my.Class(oo.view.Dom, oo.core.mixins.Events, {
         // references elements registered into this view
         _uiElements: {},
         constructor: function constructor() {
@@ -58,11 +58,7 @@
                 anim_duration = Viewport.ANIM_DURATION;
             }
 
-            if (!this.panelIsEnable(index)) {
-                this._enablePanel(index);
-            }
-
-            this.getPanel(index).translateTo({x:0}, anim_duration);
+            this.translateTo({x:0}, anim_duration);
 
             this.triggerEvent('onShow');
         },

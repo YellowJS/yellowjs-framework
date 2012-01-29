@@ -1,9 +1,9 @@
 var oo = (function (oo) {
     
     // shorthand
-    var Dom = oo.view.Dom, exports = oo.getNS('oo.view'), global = this;
+    var exports = oo.getNS('oo.view'), global = this;
 
-    var Viewport = my.Class(Dom, oo.core.mixins.Events, {
+    var Viewport = exports.Viewport = oo.Class(oo.view.Dom, oo.core.mixins.Events, {
 
         STATIC : {
             ANIM_RTL : 'rtl',
@@ -119,6 +119,10 @@ var oo = (function (oo) {
 
             this.getPanel(index).show(direction || Viewport.ANIM_RTL);
 
+            if (!this.panelIsEnable(index)) {
+                this._enablePanel(index);
+            }
+
             this._focusedStack.push(index);
 
         },
@@ -144,8 +148,8 @@ var oo = (function (oo) {
         switchPanel : function switchPanel(oldPanel, newPanel, direction) {
             var dir, oldP, newP;
 
-            if (typeof arguments[1] == 'string' || 1 == arguments.length) {
-                dir = newPanel;
+            if (arguments.length <= 2) {
+                dir = newPanel || Viewport.ANIM_RTL;
                 newP = oldPanel;
                 oldP = this.getFocusedPanel(true);
             } else {
@@ -164,7 +168,7 @@ var oo = (function (oo) {
         register: function register(id, p) {
             this._panelClasses[id] = p;
         },
-        show: function show () {
+        show: function show (identifier, fn) {
             if (!this.hasPanel(identifier)) {
                 this.addPanel(identifier, true);
             }

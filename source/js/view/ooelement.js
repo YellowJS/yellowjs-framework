@@ -31,7 +31,7 @@ var oo = (function (oo){
         },
 
         // read only property
-        _needToRender: false,
+        _needToRender: true,
         needToRender: function needToRender() {
             return this._needToRender;
         },
@@ -64,7 +64,7 @@ var oo = (function (oo){
         },
         afterFetch : function afterFetch(data){
             this._needToRender = true;
-        },        
+        },
         setModel : function setModel(model){
             if (model instanceof oo.data.Model)
                 this._model = model;
@@ -79,7 +79,7 @@ var oo = (function (oo){
         },
         render: function render (data, tpl) {
             if (!data)
-                data = this._model.get();
+                data = this._model.getData();
 
             if (!tpl || '' === tpl)
                 tpl = this._tpl;
@@ -88,6 +88,7 @@ var oo = (function (oo){
             
             this.clear();
             this.appendHtml(tplEng.render(tpl, this.prepareData(data)));
+            this._needToRender = false;
         }
 
     });
