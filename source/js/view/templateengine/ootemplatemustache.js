@@ -8,7 +8,7 @@ var oo = (function (oo){
         },
         render: function (tpl, datas) {
             if(!datas && !tpl) {
-                throw Error('datas, tpl and domElem must exist');
+                throw new Error('datas, tpl and domElem must exist');
             }
 
             return Mustache.render(tpl, datas);

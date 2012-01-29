@@ -20,7 +20,7 @@ var oo = (function (oo){
             },
             unregister: function register (codename) {
                 delete templateRepository[codename];
-            }           
+            }
         },
         constructor: function (options) {
             /*if (options && 'name' in options && typeof options.name == 'string')
@@ -29,7 +29,7 @@ var oo = (function (oo){
                 throw 'Config object must contain a name property';*/
         },
         render: function (tpl, datas) {
-            throw 'Can\'t be called directly from Provider class';
+            throw 'Can\'t be called directly from Template class';
         }
     });
 

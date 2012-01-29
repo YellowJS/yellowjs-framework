@@ -56,16 +56,21 @@ describe("oocore.js", function() {
     });
 
 
-    describe ("class system", function() {
-        var Toto = oo.Class({
-            toto: function () {}
-        });
-        var Tata = oo.Class(Toto, {
-            tata: function () {}
+    describe("createController", function(){
+
+        it("test parameter",function(){
+            expect(function(){
+                var c = oo.createController();
+            }).toThrow('Wrong parameter');
         });
 
-        it("should be a function", function () {
-            expect('function' == typeof Toto).toBeTruthy();
+        var c = oo.createController({
+            'indexAction' : function indexAction(){
+            }
+        });
+
+        it('must return a function', function(){
+            expect( 'function' === typeof c).toBeTruthy();
         });
 
         describe("test made on an instance", function () {
@@ -110,8 +115,11 @@ describe("oocore.js", function() {
 
     });
 
-    /*describe("createController", function(){
-        oo.createController();
-    });*/
+    describe("getRouter",function(){
+       it('must return the router instance', function(){
+           var router = oo.getRouter();
+           expect(router instanceof oo.router.Router).toBeTruthy();
+       });
+    });
 
 });

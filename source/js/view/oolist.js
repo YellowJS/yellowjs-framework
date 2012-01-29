@@ -11,9 +11,13 @@ var oo = (function (oo) {
             EVT_ITEM_PRESSED: 'item-pressed',
             EVT_ITEM_RELEASED: 'item-released'
         },
-        _structTpl: '<ul>{{#data}}<li class="oo-list-item item-{{key}}">{{tpl}}</li>{{/data}}</ul>',
+        _structTpl: '<ul>{{#data}}<li data-id="{{key}}" class="oo-list-item">{{tpl}}</li>{{/data}}</ul>',
         _touchedItem: null,
         constructor: function constructor(conf) {
+            if (conf.structure) {
+                this._overrideStructure(conf.structure);
+            }
+
             List.Super.call(this, conf);
 
             this._initEvents();
@@ -32,7 +36,7 @@ var oo = (function (oo) {
                     var altTarget = t.findParentByCls('oo-list-item');
                     if (altTarget) {
                         t = altTarget;
-                        itemId = t.getDomObject().className.match(/item-(.*)/)[1] || t.getId();
+                        itemId = altTarget._dom.getAttribute('data-id') || t.getId();
                     }
                 }
                  
@@ -61,17 +65,25 @@ var oo = (function (oo) {
                     if (null != active)
                         active.classList.removeClass('active');
                 }
-            }, false);        
+            }, false);
             this.getDomObject().addEventListener(Touch.EVENT_END, function (e) {
                 check = checkTarget(e.target);
-                check.dom.classList.removeClass('active');            
                 if (false !== check && this._touchedItem == e.target) {
+                    check.dom.classList.removeClass('active');
                     that.triggerEvent(List.EVT_ITEM_RELEASED, [check.dom, check.id]);
                 }
             }, false);
         },
         prepareData: function prepareData(data) {
             return {'data': data};
+        },
+        _overrideStructure : function _overrideStructure(tpl){
+            
+            if(!tpl) {
+                throw Error("Template must be declared");
+            }
+
+            this._structTpl = tpl;
         }
     });
     

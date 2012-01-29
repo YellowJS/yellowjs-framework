@@ -32,8 +32,12 @@
                     "path" : "../source/js/core/"
                 },
                 {
+                    "text" : "oocontroller.js",
+                    "path" : "../source/js/router/"
+                },
+                {
                     "text" : "oorouter.js",
-                    "path" : "../source/js/controller/"
+                    "path" : "../source/js/router/"
                 },
                 {
                     "text" : "ooprovider.js",

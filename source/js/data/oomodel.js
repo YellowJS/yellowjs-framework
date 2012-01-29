@@ -28,7 +28,7 @@
             var defaultConf = {
                 success: oo.emptyFn,
                 params: {}
-            }
+            };
     
             callback = callback || {};
             if (typeof callback == 'function') {

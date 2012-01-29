@@ -108,16 +108,26 @@ var oo = (function (oo) {
 
             return obj;
         },
-
         /**
          * create a controller from the class passed in parameter
          */
-        createController: function createController() {
-            // to be implemented
+        createController: function createController(actions) {
+            if(!actions && ( 'object' !== typeof actions)){
+                throw new Error('Wrong parameter');
+            }
+
+            // force the class contructor to call its parent contrustor
+            var Tmp = actions.constructor = function () {
+                Tmp.Super.call(this);
+            };
+
+            var c = my.Class(oo.router.Controller, actions);
+
+            return c;
         },
 
         getRouter: function getRouter() {
-            // to be implemented
+            return oo.router.router || ( oo.router.router = new oo.router.Router());
         },
 
         getViewport: function getViewport() {
