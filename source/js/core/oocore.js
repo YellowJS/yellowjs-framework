@@ -7,24 +7,13 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var oo = (function (oo) {
-
-    // bootstrap oo apps
-
-    // var root = this;
-
-    // var previousOo = root.oo;
-
-    // var Flavius;
-    // Flavius = root.oo = {};
-
-    // Flavius;
+var oo = (function () {
 
     var _globalConfig = {
         templateEngine: 'mustache'
     };
 
-    var Core = my.Class({
+    return {
         /**
          * proxy to the my.Class
          */
@@ -155,14 +144,6 @@ var oo = (function (oo) {
             else
                 return _globalConfig;
         }
-    });
+    };
 
-    // oo.utils.namespace is now deprecated
-    // export an instance of Utils class on the right namespace
-    oo = new Core();
-    var ns = oo.getNS('oo.core');
-    ns.utils = oo;
-
-    return oo;
-
-})(oo || {});
+})();
