@@ -26,6 +26,12 @@ var oo = (function (oo) {
 
     var Core = my.Class({
         /**
+         * proxy to the my.Class
+         */
+        Class: function Class () {
+            return my.Class.apply(this, arguments);
+        },
+        /**
          * use oo.log instead of console.log
          *
          * @param {String} data - the data to log
@@ -34,7 +40,16 @@ var oo = (function (oo) {
          */
         log: function log (data) {
             if (window.console && window.console.log) {
+                var msg = ('string' !== typeof data && 'toString' in data) ? data.toString() : data;
                 console.log(data.toStirng());
+            }
+        },
+        warn: function warn (data) {
+            var msg = ('string' !== typeof data && 'toString' in data) ? data.toString() : data;
+            if (window.console && window.console.warn) {
+                console.warn(msg);
+            } else {
+                oo.log('/!\\ Warning : ' + msg);
             }
         },
         /**
