@@ -160,9 +160,9 @@ var oo = (function (oo) {
             oo.override(_globalConfig, opt);
         },
         getConfig : function getConfig(key){
-            if (key && key in _globalConfig) 
+            if (key && key in _globalConfig)
                 return _globalConfig[key];
-            else 
+            else
                 return _globalConfig;
         }
     });

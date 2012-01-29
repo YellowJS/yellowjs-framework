@@ -55,6 +55,59 @@ describe("oocore.js", function() {
         });
     });
 
+    describe ("class system", function() {
+        var Toto = oo.Class({
+            toto: function () {}
+        });
+        var Tata = oo.Class(Toto, {
+            tata: function () {}
+        });
+ 
+        it("should be a function", function () {
+            expect('function' == typeof Toto).toBeTruthy();
+        });
+ 
+        describe("test made on an instance", function () {
+            it("should have a method called toto", function () {
+                var o = new Toto();
+                expect('toto' in o).toBeTruthy();
+            });
+ 
+            describe("inheritance", function () {
+                it("should have a method called toto and another method called titi", function () {
+                    var o2 = new Tata();
+                    expect('toto' in o2).toBeTruthy();
+                    expect('tata' in o2).toBeTruthy();
+                });
+            });
+ 
+ 
+            describe("mixins", function () {
+                var Tutu = oo.Class(Toto, Tata, {
+                    tutu: function () {}
+                });
+                 
+                var o3;
+                beforeEach(function () {
+                    o3 = new Tutu();
+                });
+ 
+                it("should have a methods called toto tata, and tutu", function () {
+                    expect('toto' in o3).toBeTruthy();
+                    expect('tata' in o3).toBeTruthy();
+                    expect('tutu' in o3).toBeTruthy();
+                });
+ 
+                it ("should be an instance of Toto but not an instance of Tutu", function () {
+                    expect(o3 instanceof Toto).toBeTruthy();
+                    expect(o3 instanceof Tata).not.toBeTruthy();
+                });
+            });
+ 
+ 
+        });
+ 
+    });
 
     describe("createController", function(){
 
@@ -71,46 +124,6 @@ describe("oocore.js", function() {
 
         it('must return a function', function(){
             expect( 'function' === typeof c).toBeTruthy();
-        });
-
-        describe("test made on an instance", function () {
-            it("should have a method called toto", function () {
-                var o = new Toto();
-                expect('toto' in o).toBeTruthy();
-            });
-
-            describe("inheritance", function () {
-                it("should have a method called toto and another method called titi", function () {
-                    var o2 = new Tata();
-                    expect('toto' in o2).toBeTruthy();
-                    expect('tata' in o2).toBeTruthy();
-                });
-            });
-
-
-            describe("mixins", function () {
-                var Tutu = oo.Class(Toto, Tata, {
-                    tutu: function () {}
-                });
-                
-                var o3;
-                beforeEach(function () {
-                    o3 = new Tutu();
-                });
-
-                it("should have a methods called toto tata, and tutu", function () {
-                    expect('toto' in o3).toBeTruthy();
-                    expect('tata' in o3).toBeTruthy();
-                    expect('tutu' in o3).toBeTruthy();
-                });
-
-                it ("should be an instance of Toto but not an instance of Tutu", function () {
-                    expect(o3 instanceof Toto).toBeTruthy();
-                    expect(o3 instanceof Tata).not.toBeTruthy();
-                });
-            });
-
-
         });
 
     });

@@ -13,9 +13,9 @@ describe("oomodel.js", function() {
     //must be changed later due to async
     var dataProvider;
 
-    provider.fetch(function(datas){
+    provider.fetch({success:function(datas){
         dataProvider = datas;
-    });
+    }});
 
 
 
@@ -47,9 +47,9 @@ describe("oomodel.js", function() {
             it('obj must be in datas provider',function(){
                 var datasP;
                 model.save(obj);
-                provider.fetch(function(datas){
+                provider.fetch({success:function(datas){
                     dataProvider = datas;
-                });
+                }});
                 expect(dataProvider).toContain(obj);
             });
 
