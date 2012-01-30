@@ -1,6 +1,6 @@
-/** 
+/**
  * Abstract class that should be extended to create panels
- * 
+ *
  * @namespace oo.core
  * @private class
  *
@@ -18,7 +18,7 @@ var oo = (function (oo) {
             Panel.Super.call(this, document.createElement('div'));
 
             if ('init' in this)
-                this.init();            
+                this.init();
         },
         getEl: function getEl(id) {
             return this._uiElements[id];

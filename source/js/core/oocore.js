@@ -24,7 +24,14 @@ var oo = (function (oo) {
         templateEngine: 'mustache'
     };
 
-    var Core = my.Class({
+//    var Core = my.Class({
+    return {
+        /**
+         * proxy to the my.Class
+         */
+        Class: function Class () {
+            return my.Class.apply(this, arguments);
+        },
         /**
          * use oo.log instead of console.log
          *
@@ -34,7 +41,16 @@ var oo = (function (oo) {
          */
         log: function log (data) {
             if (window.console && window.console.log) {
+                var msg = ('string' !== typeof data && 'toString' in data) ? data.toString() : data;
                 console.log(data.toStirng());
+            }
+        },
+        warn: function warn (data) {
+            var msg = ('string' !== typeof data && 'toString' in data) ? data.toString() : data;
+            if (window.console && window.console.warn) {
+                console.warn(msg);
+            } else {
+                oo.log('/!\\ Warning : ' + msg);
             }
         },
         /**
@@ -145,19 +161,20 @@ var oo = (function (oo) {
             oo.override(_globalConfig, opt);
         },
         getConfig : function getConfig(key){
-            if (key && key in _globalConfig) 
+            if (key && key in _globalConfig)
                 return _globalConfig[key];
-            else 
+            else
                 return _globalConfig;
-        }        
-    });
+        }
+    };
+    // });
 
     // oo.utils.namespace is now deprecated
     // export an instance of Utils class on the right namespace
-    oo = new Core();
-    var ns = oo.getNS('oo.core');
-    ns.utils = oo;
+    // oo = new Core();
+    // var ns = oo.getNS('oo.core');
+    // ns.utils = oo;
 
-    return oo;
+    // return oo;
 
 })(oo || {});

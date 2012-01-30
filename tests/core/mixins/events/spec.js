@@ -1,7 +1,7 @@
 describe("ooevents.js", function() {
 
     var Cls = my.Class({}, oo.core.mixins.Events, {});
-    var obj = new Cls;
+    var obj = new Cls();
 
     var modifiedByListener = null;
 
@@ -14,19 +14,19 @@ describe("ooevents.js", function() {
         obj.addListener('toto', listener);
 
         it('should be an object', function () {
-            expect(obj.listeners instanceof Object).toBeTruthy();
+            expect(obj._listeners instanceof Object).toBeTruthy();
         });
 
         it('should have a property named \'toto\'', function () {
-            expect(('toto' in obj.listeners)).toBeTruthy();
+            expect(('toto' in obj._listeners)).toBeTruthy();
         });
 
         it('should be an array', function () {
-            expect(obj.listeners['toto'] instanceof Array).toBeTruthy();
+            expect(obj._listeners.toto instanceof Array).toBeTruthy();
         });
 
         it('should return the \'listener\' function', function () {
-            expect(obj.listeners['toto'][0].fn).toBe(listener);
+            expect(obj._listeners.toto[0].fn).toBe(listener);
         });
     });
 
@@ -42,7 +42,7 @@ describe("ooevents.js", function() {
         obj.removeListener('toto', listener);
 
         it('should not have any more listener', function() {
-            expect(obj.listeners['toto'].length).toEqual(0);
+            expect(obj._listeners.toto.length).toEqual(0);
         });
     });
 

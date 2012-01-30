@@ -22,7 +22,7 @@ var oo = (function (oo) {
             this._panelClasses = {};
             this._panels = [];
             this._panelsDic = [];
-            this._enabledPanels = [];        
+            this._enabledPanels = [];
             this._focusedStack = [];
         },
         /**
@@ -30,7 +30,7 @@ var oo = (function (oo) {
          * @param panel {String} identifier as string or index
          **/
         hasPanel : function hasPanel(panel) {
-           return -1 != this._panelsDic.indexOf(panel) ? true : false; 
+           return -1 != this._panelsDic.indexOf(panel) ? true : false;
         },
         /**
          * add a panel to the viewport
@@ -80,7 +80,7 @@ var oo = (function (oo) {
 
             // useless
             // hook to initialize view components such as vscroll or carousel
-            // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way    
+            // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way
             // this.triggerEvent('onEnablePanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
         },
         getFocusedPanel : function getFocusedPanel(getIndex){
@@ -92,7 +92,7 @@ var oo = (function (oo) {
             }
         },
         /**
-         * return the Panel as a oo.Dom object 
+         * return the Panel as a oo.Dom object
          **/
         getPanel : function getPanel(identifier) {
            return this._panels[this._identifierToIndex(identifier)] || false;

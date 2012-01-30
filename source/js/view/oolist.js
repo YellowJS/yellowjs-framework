@@ -62,7 +62,7 @@ var oo = (function (oo) {
                 if (this._touchedItem) {
                     this._touchedItem = null;
                     var active = that.find('.active');
-                    if (null != active)
+                    if (null !== active)
                         active.classList.removeClass('active');
                 }
             }, false);

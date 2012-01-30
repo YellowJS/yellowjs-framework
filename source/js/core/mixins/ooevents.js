@@ -1,6 +1,6 @@
-/** 
+/**
  * Contains class for event management
- * 
+ *
  * @namespace oo.core.mixins
  * @class Events
  *
@@ -60,7 +60,7 @@ var oo = (function (oo) {
          * trigerEvent(eventName, sender, params)
          *
          * use this one instead
-         * trigerEvent(eventName, params) 
+         * trigerEvent(eventName, params)
          */
         triggerEvent : function triggerEvent(eventName, params){
             // backward compatibility

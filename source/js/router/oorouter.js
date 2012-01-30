@@ -1,7 +1,7 @@
-/** 
+/**
  * Class providing url routing logic
  * handle management of history API
- * 
+ *
  * @namespace oo
  * @class Router
  *
@@ -130,7 +130,7 @@ var oo = (function(oo){
         },
         parseRoute: function parseRoute (route) {
             var routes = this._routes;
-            var routeObject = null, r;
+            var routeObject = null;
             
             for(var keyr in routes) {
                var r = routes[keyr];
@@ -161,7 +161,7 @@ var oo = (function(oo){
                     parts.shift();
                 }
 
-                if (!routeObject.action || routeObject.action == undefined) {
+                if (!routeObject.action || routeObject.action === undefined) {
                     routeObject.action = 'index';
                 } else {
                     parts.shift();
@@ -186,7 +186,7 @@ var oo = (function(oo){
         url: function url (routeName, params) {
             var route = this._routes[routeName];
             if (!route) {
-                throw Error('route name doesn’t exists');
+                throw Error('route name doesn\'t exists');
             }
             
             var paramsUrl = '';

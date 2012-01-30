@@ -43,11 +43,11 @@ var oo = (function (oo) {
                 this._updateClassList();
             }
         },
-        // set one or more css class (clear all class previously present) 
+        // set one or more css class (clear all class previously present)
         setClass : function setClass (clsName) {
             if (typeof clsName == 'string') {
                 clsName = clsName.split(' ');
-            }        
+            }
             this._list = clsName;
             this._updateClassList();
             
@@ -98,7 +98,7 @@ var oo = (function (oo) {
 
             if (typeof identifier == 'string') {
                 var n = document.querySelector(identifier);
-                if (null == n)
+                if (null === n)
                     throw "Invalid selector node doesn't exists";
 
                 this.setDomObject(n);
@@ -122,15 +122,15 @@ var oo = (function (oo) {
             this._dom = null;
         },
         generateAccessor : function generateAccessor (){
-            var p = this;
+            var p = this, i, len;
             /**
              * generates accessors fonction
              */
-            for (var i=0, len=prop.readOnly.length; i<len; i++) {
+            for (i=0, len=prop.readOnly.length; i<len; i++) {
                 eval(['p.get', prop.readOnly[i].charAt(0).toUpperCase(), prop.readOnly[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop.readOnly[i], ' : (window.getComputedStyle(this._dom).', prop.readOnly[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readOnly[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
             }
 
-            for (var i=0, len=prop.readWrite.length; i<len; i++) {
+            for (i=0, len=prop.readWrite.length; i<len; i++) {
                 eval(['p.get', prop.readWrite[i].charAt(0).toUpperCase(), prop.readWrite[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop.readWrite[i], ' : (window.getComputedStyle(this._dom).', prop.readWrite[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readWrite[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
                 eval(['p.set', prop.readWrite[i].charAt(0).toUpperCase(), prop.readWrite[i].slice(1), ' = function (val, unit) { if (this._cached[\'', prop.readWrite[i], '\'] || this._cached[[\'', prop.readWrite[i], '\', \'u\'].join(\'\')]) { this._cached[\'', prop.readWrite[i], '\'] = this._cached[[\'', prop.readWrite[i], '\', \'u\'].join(\'\')] = null; } this._dom.style.', prop.readWrite[i], ' = [val, (undefined !== unit ? unit : \'\')].join(\'\'); return this };'].join(''));
             }
@@ -209,9 +209,9 @@ var oo = (function (oo) {
         // find a child element of the current node according to the given selector
         find : function find (selector) {
             var n = this._dom.querySelector(selector);
-            if (null == n)
+            if (null === n)
                 return null;
-            else 
+            else
                 return new Dom(n);
         },
         findParentByCls : function findParentByCls (cls) {
