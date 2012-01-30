@@ -158,7 +158,7 @@ var oo = (function (oo) {
             return new ( oo.view.Element.get(type))(opt || null);
         },
         define : function define(opt){
-            oo.override(_globalConfig, opt);
+            this.override(_globalConfig, opt);
         },
         getConfig : function getConfig(key){
             if (key && key in _globalConfig)
