@@ -91,7 +91,7 @@ var oo = (function(oo){
                 var ctrl;
 
 
-                if (typeof this._registeredControllers[ctrlClass] !== 'function') {
+                if ( (typeof this._registeredControllers[ctrlClass] !== 'function') && ("undefined" !== typeof this._controllers[ctrlClass])) {
                     if ('undefined' === typeof this._registeredControllers[ctrlClass]) {
                         this._registeredControllers[ctrlClass] = new this._controllers[ctrlClass]();
                     }
