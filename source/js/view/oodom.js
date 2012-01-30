@@ -146,6 +146,7 @@ var oo = (function (oo) {
                 if (null === values) {
                     values = [0, 0, 0];
                 }
+
                 this._cached.webkitTranslations = [parseInt(values[1], 10), parseInt(values[2], 10)];
                 // this._cached.webkitTranslations = [parseInt(values[1], 10), parseInt(values[3], 10)];
             }
@@ -163,13 +164,13 @@ var oo = (function (oo) {
                 this._cached.webkitTranslations = null;
             }
 
+            
             this._dom.style.webkitTransform = value;
 
             return this;
         },
         setTranslations : function setTranslations (x, y, unit){
             unit = unit || 'px';
-
             this.setWebkitTransform(['translate3d(',  x , unit, ', ', y, unit, ', 0)'].join(''));
 
             return this;
@@ -276,9 +277,11 @@ var oo = (function (oo) {
         translateTo : function translateTo (coord, duration, listener, timingFunction) {
 
             if (typeof coord === 'object') {
-                coord.x = undefined !== coord.x ? coord.x : this.getTranslateX();
-                coord.y = undefined !== coord.y ? coord.y : this.getTranslateY();
+                coord.x = 'undefined' !== typeof coord.x ? coord.x : this.getTranslateX();
+                coord.y = 'undefined' !== typeof coord.y ? coord.y : this.getTranslateY();
             }
+
+
 
             // getWebkitTransitionDuration() returns a value in seconds
             var currentTransitionDuration = (this.getWebkitTransitionDuration() * 1000);
@@ -324,7 +327,7 @@ var oo = (function (oo) {
                 data = data || {};
                 this._cacheTpl = Mustache.to_html(this._template, data);
             }
-    
+            
             this.appendHtml(this._cacheTpl);
     
             return this;
