@@ -4,12 +4,17 @@ var oo = (function (oo) {
     var Dom = oo.view.Dom, Touch = oo.core.Touch;
     
     
-    var Carousel = my.Class(Dom, {
+    var Carousel = my.Class(oo.view.Element, {
         constructor : function constructor(selector, pager) {
             this._startX = 0;
             this._startTranslate = 0;
 
-            Carousel.Super.call(this, selector);
+            var conf = {
+                target: selector
+            };
+
+
+            Carousel.Super.call(this, conf);
             this._transitionDuration = 200;
 
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
@@ -67,6 +72,7 @@ var oo = (function (oo) {
 
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
                 var diff = Touch.getPositionX(e) - that._startX;
+
                 that.translateTo({x:(that._startTranslate + diff)}, 0);  
                 that._moved = true;
             }, false);
