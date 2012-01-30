@@ -5,7 +5,7 @@ var oo = (function (oo) {
     
     
     var Carousel = my.Class(oo.view.Element, {
-        constructor : function constructor(selector, pager) {
+        constructor : function constructor(selector, pager, items) {
             this._startX = 0;
             this._startTranslate = 0;
 
@@ -15,7 +15,15 @@ var oo = (function (oo) {
 
 
             Carousel.Super.call(this, conf);
+            
             this._transitionDuration = 200;
+
+            //if items, prepare first and second items
+            if (items){
+                this._items = items;
+                this._prepareView();
+            }
+
 
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             this._nbPanel = document.querySelectorAll([selector, ' > *'].join('')).length;
@@ -29,6 +37,9 @@ var oo = (function (oo) {
             this._moved = false;
 
             this.render();
+        },
+        _prepareView : function _prepareView(){
+          console.log(items);  
         },
         _buildPager : function _buildPager() {
             if (this._displayPager) {
@@ -73,7 +84,7 @@ var oo = (function (oo) {
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
                 var diff = Touch.getPositionX(e) - that._startX;
 
-                that.translateTo({x:(that._startTranslate + diff)}, 0);  
+                that.translateTo({x:(that._startTranslate + diff)}, 0);
                 that._moved = true;
             }, false);
 
