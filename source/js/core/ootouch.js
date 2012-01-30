@@ -1,6 +1,6 @@
-/** 
+/**
  * Contains static helper for touch management
- * 
+ *
  * @namespace oo
  * @class Touch
  *
@@ -9,7 +9,7 @@
 var oo = (function (oo) {
 
     var hasTouch = 'ontouchstart' in window ? true : false;
-    var getPosition = function getPosition (e, index) {        
+    var getPosition = function getPosition (e, index) {
         var touch = null;
         
         if (hasTouch) {
@@ -49,7 +49,7 @@ var oo = (function (oo) {
     } else {
         Touch.EVENT_START = 'touchstart';
         Touch.EVENT_MOVE  = 'touchmove';
-        Touch.EVENT_END   = 'touchend';        
+        Touch.EVENT_END   = 'touchend';
     }
     
     var exports = oo.getNS('oo.core');
@@ -57,4 +57,4 @@ var oo = (function (oo) {
     
     return oo;
 
-})(oo || {});        
+})(oo || {});

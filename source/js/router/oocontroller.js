@@ -1,7 +1,7 @@
-/** 
+/**
  * Class providing url routing logic
  * handle management of history API
- * 
+ *
  * @namespace oo
  * @class Router
  *

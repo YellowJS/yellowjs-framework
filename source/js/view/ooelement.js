@@ -22,7 +22,7 @@ var oo = (function (oo){
             },
 
             getTemplateEngine : function getTemplateEngine() {
-                if (null == Element.templateEngine)
+                if (null === Element.templateEngine)
                     Element.templateEngine = new (oo.view.templateengine.Template.get(oo.getConfig('templateEngine')))();
 
                 return Element.templateEngine;
