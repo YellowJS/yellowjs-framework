@@ -7,7 +7,7 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var oo = (function (oo) {
+var oo = (function () {
 
     // bootstrap oo apps
 
@@ -177,4 +177,4 @@ var oo = (function (oo) {
 
     // return oo;
 
-})(oo || {});
+})();
