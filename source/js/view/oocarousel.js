@@ -4,7 +4,7 @@ var oo = (function (oo) {
     var Dom = oo.view.Dom, Touch = oo.core.Touch;
     
     
-    var Carousel = my.Class(Dom, {
+    var Carousel = my.Class(oo.view.Dom, {
         constructor : function constructor(selector, pager) {
             this._startX = 0;
             this._startTranslate = 0;
