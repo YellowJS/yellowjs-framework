@@ -152,13 +152,13 @@ describe("oorouter.js", function() {
             var controller2 = oo.createController({c2Action:function c2Action(){}});
 
             var params = {
-              'ctl1Controller' : controller1,
-              'ctl2Controller' : controller2
+              'Ctl1Controller' : controller1,
+              'Ctl2Controller' : controller2
             };
             router.addControllers(params);
             
-            expect(router._controllers.ctl1Controller).toEqual(controller1);
-            expect(router._controllers.ctl2Controller).toEqual(controller2);
+            expect(router._controllers.Ctl1Controller).toEqual(controller1);
+            expect(router._controllers.Ctl2Controller).toEqual(controller2);
         });
     });
 
@@ -169,7 +169,7 @@ describe("oorouter.js", function() {
         var newRouter = new oo.router.Router();
         var controller1 = oo.createController({c11Action: callback});
         var controller2 = oo.createController({c22Action:callback2});
-        var c = oo.createController({indexAction:function indexAction(){ /*alert('index');*/}});
+        var c = oo.createController({indexAction:function indexAction(){ }});
 
         newRouter.addController('IndexController',c);
 
