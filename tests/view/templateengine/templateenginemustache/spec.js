@@ -5,7 +5,7 @@ describe("ootemplateenginemustache.js", function() {
 
     describe('render',function(){
       var tpl = '<li>{{title}}</li>';
-      var datas = (new oo.data.Fakeprovider({'name' : "test"}))._datas;
+      var datas = (new oo.data.FakeProvider({'name' : "test"}))._datas;
       var templateEngine = new oo.view.templateengine.TemplateEngineMustache();
       var content = templateEngine.render(datas, tpl);
 
