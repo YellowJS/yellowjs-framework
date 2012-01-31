@@ -56,7 +56,9 @@
             var tplEng = Element.getTemplateEngine();
             
             this.clear();
-            this.appendHtml(tplEng.render(tpl, data || {}));
+
+            return tplEng.render(tpl, data || {});
+            //this.appendHtml(tplEng.render(tpl, data || {}));
         }
 
     });
