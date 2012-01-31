@@ -234,6 +234,15 @@
 
             return this;
         },
+        // append a node on top to the current node children list
+        // wrapper for the native API
+        prependDomNode : function prependDomNode (domNode) {
+            //var ref = this._dom.firstChild;
+            //console.log(this._dom)
+            this._dom.insertBefore(domNode, this._dom.firstChild);
+
+            return this;
+        },
         // append a node to the current node children list
         // can be a native DOMObject or a oo.Dom object
         appendChild : function appendChild (node) {
@@ -242,6 +251,18 @@
                 this.appendDomNode(node.getDomObject());
             } else {
                 this.appendDomNode(node);
+            }
+
+            return this;
+        },
+        // append a node on top to the current node children list
+        // can be a native DOMObject or a oo.Dom object
+        prepend : function prepend (node) {
+            if (node instanceof Dom)
+            {
+                this.prependDomNode(node.getDomObject());
+            } else {
+                this.prependDomNode(node);
             }
 
             return this;
