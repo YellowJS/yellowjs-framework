@@ -5,11 +5,13 @@
         _data: [{
             'key' : 0,
             'firstname': 'claire',
-            'nickname': 'Claire_So'
+            'nickname': 'Claire_So',
+            'elementCls': 'elementA'
         }, {
             'key' : 2,
             'firstname': 'mathias',
-            'nickname': 'FreakDev'
+            'nickname': 'FreakDev',
+            'elementCls': 'elementA'
         }],
         constructor: function contructor (options) {
             FakeProvider.Super.call(this, options);

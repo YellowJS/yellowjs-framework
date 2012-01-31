@@ -61,6 +61,11 @@
       <div id="carousel"></div>
       <!-- include spec files here... -->
       <!-- include source files here... -->
+      <script type="text/javascript">
+        document.addEventListener('touchmove',function(e){
+          e.preventDefault();
+        },false);
+      </script>
       <script type="text/javascript" src="../../../source/js/vendor/my.class.js"></script>
       <script type="text/javascript" src="../../../source/js/vendor/mustache.js"></script>
       <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>
@@ -69,7 +74,9 @@
       <script type="text/javascript" src="../../../source/js/view/oodom.js"></script>
       <script type="text/javascript" src="../../../source/js/view/oopanel.js"></script>
       <script type="text/javascript" src="../../../source/js/view/ooelement.js"></script>
-      <script type="text/javascript" src="../../../source/js/view/oonode.js"></script>
+      <script type="text/javascript" src="../../../source/js/data/ooprovider.js"></script>
+      <script type="text/javascript" src="../../../source/js/data/oofakeprovider.js"></script>
+      <script type="text/javascript" src="../../../source/js/data/oomodel.js"></script>
       <script type="text/javascript" src="../../../source/js/view/oocarousel.js"></script>
       <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplate.js"></script>
       <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplatemustache.js"></script>

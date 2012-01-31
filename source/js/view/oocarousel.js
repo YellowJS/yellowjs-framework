@@ -12,6 +12,9 @@ var oo = (function (oo) {
     
     
     var Carousel = my.Class(oo.view.Element, {
+        _datas : null,
+        _elementCls : null,
+        _items : [],
         constructor : function constructor(selector, pager, opt) {
             this._startX = 0;
             this._startTranslate = 0;
@@ -20,32 +23,29 @@ var oo = (function (oo) {
                 target: selector
             };
 
+
             Carousel.Super.call(this, conf);
             
             this._transitionDuration = 200;
 
-            if (opt.model){
-               /* var keys = Object.keys(items);
-
-                if( ! (items[0] instanceof oo.view.Panel) ){
-                    throw new Error('Items must be instance of Panel Class');
+            if (opt){
+                if(!opt.hasOwnProperty('model') || !opt.hasOwnProperty('elementCls')){
+                    throw new Error('Options passed but missing model or elementCls');
                 }
 
-                this._items = items;
-                this._prepareView();*/
+                if('[object Object]' !== Object.prototype.toString.call(opt.elementCls)){
+                    throw new Error('elementCls must be an object');
+                }
+                
+                this._elementCls = opt.elementCls;
+                
+                                
+               this._prepareView(opt.model);
             }
-
-
-
-            return;
-
-
-
-
-
-
-            this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
+            
             this._nbPanel = document.querySelectorAll([selector, ' > *'].join('')).length;
+            this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
+            
 
             this._activePanel = 0;
             this._displayPager = (pager ? true : false);
@@ -57,23 +57,36 @@ var oo = (function (oo) {
 
             this.render();
         },
-        _prepareView : function _prepareView(){
-          //render the first and second panel
-          //var it = this._items
-          this._showPanel(0);
+        _prepareView : function _prepareView(model){
+            var that = this;
+            model.fetch(function(datas){
+                that._datas = datas;
+                that._addPanel(0);
+                that._addPanel(1);
+            });
         },
-        _showPanel : function _showPanel(id){
-            this._items[id].render();
-            this.appendChild(this._items[id]);
-
-            if(!this._current){
-                //add the second pannel
-                this._items[id+1].render();
-                this.appendChild(this._items[id+1]);
+        _addPanel : function _showPanel(id, before){
+            var item = this._items[id];
+            if(!item){
+                item = this._items[id] = this._prepareItem(id);
             }
 
+            this[(before ? 'prepend': 'appendChild')](item.getDomObject());
         },
+        _prepareItem : function _prepareItem(id){
+            var item , elementCls = this._datas[id].elementCls;
 
+            if( 'undefined' === this._elementCls[elementCls] || 'function' !== typeof this._elementCls[elementCls]){
+                throw new Error('element Cls must exist and be a function');
+            }
+
+            //if( this._elementCls[elementCls] && 'function' === typeof this._elementCls[elementCls]){
+                item = new this._elementCls[elementCls]();
+                item.appendHtml(item.render(this._datas[id]));
+            //}
+
+            return item;
+        },
         /*pager*/
         _buildPager : function _buildPager() {
             if (this._displayPager) {

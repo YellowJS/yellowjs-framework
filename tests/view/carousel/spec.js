@@ -1,43 +1,111 @@
 describe("oocarousel.js", function() {
     
-    describe('items must be instance of panel', function(){
-        it('should return error', function(){
-            expect(function () { var carousel = new oo.view.Carousel('#carousel', false, [{id:1, title:"page1"}]); }).toThrow('Items must be instance of Panel Class');
+
+    describe('constructor', function(){
+
+        var provider = new oo.data.FakeProvider({
+            "name" : "fdsfsdf"
         });
-    });
 
-    describe('...', function(){
-        var tpl = '<div>panel</div>';
-        
+        var model = oo.createModel({
+            'name' : "test",
+            'provider' : provider
+        });
+
+        /*test if model and templates exist*/
+        it('throw error',function(){
+            expect(function(){
+                var optCarousel = {
+                    model : model
+                };
+
+                var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
+            }).toThrow('Options passed but missing model or elementCls');
+
+            expect(function(){
+                var optCarousel = {
+                    elementCls : "templates"
+                };
+
+                var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
+            }).toThrow('Options passed but missing model or elementCls');
+
+            expect(function(){
+                var optCarousel = {
+                    model : model,
+                    elementCls : 'tesmp'
+                };
+
+                var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
+            }).toThrow('elementCls must be an object');
+
+            //it('template must be a function',function(){
+
+                expect(function(){
+                    var optCarousel = {
+                        model : model,
+                        elementCls : {'test' : 'test'}
+                    };
+                    var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
+                }).toThrow('element Cls must exist and be a function');
+                
+
+                //expect(carousel._elementCls.test).toEqual(fn);
+            
+        });
+
+        it('elemenCls must be in _elementCls',function(){
+            var elementCls = {};
+            
 
 
+            
+            elementCls.elementA = oo.Class(oo.view.Element, {
+                constructor : function () {
+                    elementCls.elementA.Super.call(this, {
+                        target:document.createElement('div'),
+                        template:"<div>{{firstname}}</div>"
+                    });
+                },
+                onRendered : function onRendered(){
+                    alert('element A');
+                }
+            });
+            var optCarousel = {
+                model : model,
+                elementCls : elementCls
+            };
 
-        /*var datas = [
-            {
-                id : 1,
-                title : 'article 1'
-            },
-            {
-                id : 2,
-                title : 'article 2'
-            }
-        ];*/
+            var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
 
+            expect(carousel._elementCls.elementA).toEqual(elementCls.elementA);
+        });
 
-        /*datas.forEach(function(item){
-            var panel = oo.createPanel({
-              id : item.id,
-              init : function init(){
-                    this.setTemplate(tpl);
-              }
+        it('..',function(){
+            var elementCls = {};
+            
+            elementCls.elementA = oo.Class(oo.view.Element, {
+                constructor : function () {
+                    elementCls.elementA.Super.call(this, {
+                        target:document.createElement('div'),
+                        template:"<div>{{firstname}}</div>"
+                    });
+                },
+                onRendered : function onRendered(){
+                    alert('element A');
+                }
             });
 
-            carouselItems.push( new panel() );
 
-        });*/
+            var optCarousel = {
+                model : model,
+                elementCls : elementCls
+            };
 
-        var carousel = new oo.view.Carousel('#carousel', false, carouselItems);
+            var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
 
+            
+        });
 
     });
 
