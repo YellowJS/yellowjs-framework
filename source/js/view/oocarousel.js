@@ -1,3 +1,10 @@
+/*
+ * Carousel :
+ * @selector : the dom selector of the container
+ * @pager : Boolean
+ * @items : Array of Panel object
+ */
+
 var oo = (function (oo) {
 
     // shorthand
@@ -5,7 +12,8 @@ var oo = (function (oo) {
     
     
     var Carousel = my.Class(oo.view.Element, {
-        constructor : function constructor(selector, pager, items) {
+        constructor : function constructor(selector, pager, opt) {
+
             this._startX = 0;
             this._startTranslate = 0;
 
@@ -13,16 +21,28 @@ var oo = (function (oo) {
                 target: selector
             };
 
-
             Carousel.Super.call(this, conf);
             
             this._transitionDuration = 200;
 
-            //if items, prepare first and second items
-            if (items){
+            if (opt.model){
+               /* var keys = Object.keys(items);
+
+                if( ! (items[0] instanceof oo.view.Panel) ){
+                    throw new Error('Items must be instance of Panel Class');
+                }
+
                 this._items = items;
-                this._prepareView();
+                this._prepareView();*/
             }
+
+
+
+            return;
+
+
+
+
 
 
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
@@ -39,8 +59,23 @@ var oo = (function (oo) {
             this.render();
         },
         _prepareView : function _prepareView(){
-          console.log(items);  
+          //render the first and second panel
+          //var it = this._items
+          this._showPanel(0);
         },
+        _showPanel : function _showPanel(id){
+            this._items[id].render();
+            this.appendChild(this._items[id]);
+
+            if(!this._current){
+                //add the second pannel
+                this._items[id+1].render();
+                this.appendChild(this._items[id+1]);
+            }
+
+        },
+
+        /*pager*/
         _buildPager : function _buildPager() {
             if (this._displayPager) {
                 this._pager = Dom.createElement('div');
