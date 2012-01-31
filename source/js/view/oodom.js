@@ -1,6 +1,6 @@
-var oo = (function (oo) {
+(function (oo) {
     // private class
-    var ClassList = my.Class({
+    var ClassList = oo.Class({
         constructor : function constructor (obj){
             this._dom = obj;
             this._list = obj.className.split(' ');
@@ -73,8 +73,7 @@ var oo = (function (oo) {
                     'webkitTransitionProperty', 'webkitTransitionTimingFunction', 'webkitTransitionDuration']
     };
 
-
-    var Dom = my.Class({
+    var Dom = oo.getNS('oo.view').Dom = oo.Class(oo.emptyFn, oo.core.mixins.Events,{
         STATIC: {
             CSSMATRIXPATTERN : /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/,
             
@@ -318,6 +317,7 @@ var oo = (function (oo) {
 
             return this;
         },
+        // deprecated
         render : function render (data, tpl, resetCache) {
             if (tpl) {
                 this.setTemplate(tpl);
@@ -333,12 +333,5 @@ var oo = (function (oo) {
             return this;
         }
     });
-    // static method
     
-    //oo.Dom = Dom;
-    var exports = oo.getNS('oo.view');
-    exports.Dom = Dom;
-    
-    return oo;
-    
-})(oo || {});
+})(oo);

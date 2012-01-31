@@ -13,7 +13,6 @@ var oo = (function (oo) {
     
     var Carousel = my.Class(oo.view.Element, {
         constructor : function constructor(selector, pager, opt) {
-
             this._startX = 0;
             this._startTranslate = 0;
 
