@@ -1,11 +1,11 @@
-var oo = (function (oo) {
+(function (oo) {
 
     // shorthand
     var Dom = oo.view.Dom,
         Touch = oo.core.Touch,
         ns = oo.getNS('oo.view');
     
-    var List = ns.List = my.Class(oo.view.Element, {
+    var List = ns.List = oo.Class(oo.view.ModelElement, {
         STATIC: {
             EVT_RENDER: 'render',
             EVT_ITEM_PRESSED: 'item-pressed',
@@ -88,7 +88,5 @@ var oo = (function (oo) {
     });
     
     oo.view.Element.register(List, 'list');
-
-    return oo;
     
 })(oo || {});

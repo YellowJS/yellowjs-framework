@@ -8,12 +8,12 @@
  */
 (function () {
 
-    var Panel =  oo.getNS('oo.view').Panel = my.Class(oo.view.Dom, {
+    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, {
         // references elements registered into this view
         _uiElements: {},
         constructor: function constructor() {
-            
-            Panel.Super.call(this, document.createElement('div'));
+
+            Panel.Super.call(this, {target: document.createElement('div')});
 
             if ('init' in this)
                 this.init();
