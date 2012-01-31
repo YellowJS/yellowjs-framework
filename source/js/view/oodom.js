@@ -73,8 +73,7 @@ var oo = (function (oo) {
                     'webkitTransitionProperty', 'webkitTransitionTimingFunction', 'webkitTransitionDuration']
     };
 
-
-    var Dom = my.Class({
+    var Dom = my.Class(oo.emptyFn, oo.core.mixins.Events,{
         STATIC: {
             CSSMATRIXPATTERN : /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/,
             

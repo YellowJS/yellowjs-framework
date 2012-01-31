@@ -5,7 +5,7 @@ var oo = (function (oo) {
         Touch = oo.core.Touch,
         ns = oo.getNS('oo.view');
     
-    var List = ns.List = my.Class(oo.view.Element, oo.core.mixins.Events, {
+    var List = ns.List = my.Class(oo.view.Element, {
         STATIC: {
             EVT_RENDER: 'render',
             EVT_ITEM_PRESSED: 'item-pressed',

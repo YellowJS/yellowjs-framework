@@ -3,7 +3,7 @@ var oo = (function (oo) {
     // shorthand
     var Dom = oo.view.Dom, exports = oo.getNS('oo.view'), global = this;
 
-    var Viewport = my.Class(Dom, oo.core.mixins.Events, {
+    var Viewport = my.Class(Dom, {
 
         STATIC : {
             ANIM_RTL : 'rtl',
