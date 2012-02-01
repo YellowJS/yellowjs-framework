@@ -177,56 +177,62 @@ var oo = (function (oo) {
             var touchMoveTempo;
 
             listNode.addEventListener(Touch.EVENT_START, function (e) {
-                that._startX = Touch.getPositionX(e);
-                that._startTranslate = that.getTranslateX();
-                touchMoveTempo = 0;
+                if(that._available){
+                    that._startX = Touch.getPositionX(e);
+                    that._startTranslate = that.getTranslateX();
+                    touchMoveTempo = 0;
+                }
             }, false);
 
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
-                var diff = Touch.getPositionX(e) - that._startX;
+                if(that._available){
+                    var diff = Touch.getPositionX(e) - that._startX;
 
-                that.translateTo({x:(that._startTranslate + diff)}, 0);
-                that._moved = true;
+                    that.translateTo({x:(that._startTranslate + diff)}, 0);
+                    that._moved = true;
+                }
             }, false);
 
             listNode.addEventListener(Touch.EVENT_END, function () {
-                that._moved = false;
+                if(that._available){
+                    that._moved = false;
 
-                var cVal = that.getTranslateX();
-                var tVal;
-                
-                if (cVal < 0) {
-
-                    cVal = Math.abs(cVal);
-
-                    var min = (that._panelWidth / 2),
-                        max = (that._panelWidth * (that._nbPanel -1) - min);
-
-                    for(var i = min; i <= max; i = i + that._panelWidth) {
-                        if (cVal < i) {
-                            break;
-                        }
-                    }
-
+                    var cVal = that.getTranslateX();
+                    var tVal;
                     
-                    if (cVal > max) {
-                        tVal = max + min;
+                    if (cVal < 0) {
+
+                        cVal = Math.abs(cVal);
+
+                        var min = (that._panelWidth / 2),
+                            max = (that._panelWidth * (that._nbPanel -1) - min);
+
+                        for(var i = min; i <= max; i = i + that._panelWidth) {
+                            if (cVal < i) {
+                                break;
+                            }
+                        }
+
+                        
+                        if (cVal > max) {
+                            tVal = max + min;
+                        } else {
+                            tVal = i - min;
+                        }
+
+                        tVal *= -1;
+
                     } else {
-                        tVal = i - min;
+                        tVal = 0;
                     }
 
-                    tVal *= -1;
+                    //that._activePanel = Math.abs(tVal / that._panelWidth);
 
-                } else {
-                    tVal = 0;
+                    that._updatePager();
+
+                    //that.translateTo({x:tVal}, that._transitionDuration);
+                    //that._startTranslate = tVal;
                 }
-
-                //that._activePanel = Math.abs(tVal / that._panelWidth);
-
-                that._updatePager();
-
-                //that.translateTo({x:tVal}, that._transitionDuration);
-                //that._startTranslate = tVal;
             }, false);
 
             //swipe
@@ -250,16 +256,30 @@ var oo = (function (oo) {
             this.showPanel(this._activePanel - 1);
         },
         onEndTransition : function onEndTransition(){
+            //console.log('this._newPanel : ' + typeof this._newPanel)
             if(this._newPanel > this._activePanel && this._newPanel < this._nbPanel){
-                //this.removeChild(this.getDomObject().firstChild);
-                //this._updateNext(this._newPanel+1);
-                console.log(typeof this._newPanel);
-                console.log( this._newPanel+1);
+                if(this._newPanel > 1){
+                    this.removeChild(this.getDomObject().firstChild);
+                    this.translateTo({x:this._startTranslate + this._panelWidth});
+                    this._startTranslate = this._startTranslate + this._panelWidth;
+                }
+                
                 this._addPanel(this._newPanel+1);
             }
 
-            if(this._newPanel < this._activePanel){
+            if(this._newPanel < this._activePanel && this._newPanel > 0 && this._newPanel < (this._nbPanel-1)){
+                
+                    this.removeChild(this.getDomObject().lastChild);
+                    this._addPanel(this._newPanel-1, true);
+
+                    this.translateTo({x:this._startTranslate - this._panelWidth});
+                    this._startTranslate = this._startTranslate - this._panelWidth;
+                
+
+                
+
                 //this._updateNext(this._newPanel-1);
+                
             }
 
 

@@ -88,7 +88,7 @@ describe("oocarousel.js", function() {
                 constructor : function () {
                     elementCls.elementA.Super.call(this, {
                         target:document.createElement('div'),
-                        template:"<div>{{title}}</div>"
+                        template:'<img src="{{picture}}" style=" height:200px; display:block;" />'
                     });
                 },
                 onRendered : function onRendered(){
