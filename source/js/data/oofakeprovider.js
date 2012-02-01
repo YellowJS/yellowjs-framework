@@ -12,6 +12,18 @@
             'firstname': 'mathias',
             'nickname': 'FreakDev',
             'elementCls': 'elementA'
+        },
+        {
+            'key' : 3,
+            'firstname': 'ff',
+            'nickname': 'FreakDev',
+            'elementCls': 'elementA'
+        },
+        {
+            'key' : 4,
+            'firstname': 'gg',
+            'nickname': 'FreakDev',
+            'elementCls': 'elementA'
         }],
         constructor: function contructor (options) {
             FakeProvider.Super.call(this, options);

@@ -43,7 +43,7 @@ var oo = (function (oo) {
                this._prepareView(opt.model);
             }
             
-            this._nbPanel = document.querySelectorAll([selector, ' > *'].join('')).length;
+            this._nbPanel = this._datas.length || document.querySelectorAll([selector, ' > *'].join('')).length;
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             
 
@@ -175,6 +175,9 @@ var oo = (function (oo) {
 
                 that._startTranslate = tVal;
             }, false);
+
+            //swipe
+            
         },
         render : function render(){
             
