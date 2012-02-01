@@ -7,11 +7,11 @@
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
 var oo = (function (oo) {
-
-    var view = oo.getNS('oo.view'), Touch = oo.core.Touch;
+ 
+    var view = oo.getNS('oo.view'), Touch = oo.core.Touch; 
     //Events = oo.Events;
-    
-    var Button = my.Class(oo.view.Dom, {
+     
+    var Button = my.Class(oo.view.Dom, oo.core.mixins.Events, {
         STATIC : {
             EVT_TOUCH : 'touch',
             EVT_RELEASE : 'release'
@@ -26,7 +26,7 @@ var oo = (function (oo) {
             this._dom.addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
         },
         _onTouch : function _onTouch(e) {
-            this.setActive(true);
+            this.setActive(true);            
             this.triggerEvent(Button.EVT_TOUCH, [this, e]);
         },
         _onRelease : function _onRelease(e) {
@@ -38,15 +38,15 @@ var oo = (function (oo) {
         },
         /**
          * set the active state of the button
-         * @param actice {bool} "true" to set as active "false" to not
+         * @param actice {bool} "true" to set as active "false" to not 
          **/
         setActive : function setActive (active) {
             this._active = !!active;
             this.classList[(this._active ? 'add' : 'remove') + 'Class']('active');
         }
     });
-    
+     
     view.Button = Button;
     return oo;
-    
+     
 })(oo || {});
