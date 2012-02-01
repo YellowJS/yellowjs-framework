@@ -8,11 +8,11 @@
  */
 var oo = (function (oo) {
 
-var hasTouch = 'ontouchstart' in window ? true : false;
+//var hasTouch = 'ontouchstart' in window ? true : false;
     var getPosition = function getPosition (e, index) {
         var touch = null;
          
-        if (hasTouch) {
+        if (Touch.HAS_TOUCH) {
             index = index || 0;
          
             touch = e.touches[index];
@@ -38,11 +38,12 @@ var hasTouch = 'ontouchstart' in window ? true : false;
             },
             getTarget : function getTarget(e, index) {
                 return e.touches[index || 0].target;
-            }
+            },
+            HAS_TOUCH : 'ontouchstart' in window ? true : false
         }
     });
      
-    if (!hasTouch) {
+    if (!Touch.HAS_TOUCH) {
         Touch.EVENT_START = 'mousedown';
         Touch.EVENT_MOVE  = 'mousemove';
         Touch.EVENT_END   = 'mouseup';

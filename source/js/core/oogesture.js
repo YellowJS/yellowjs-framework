@@ -8,7 +8,6 @@
  */
 var oo = (function (oo) {
     var Touch = oo.core.Touch;
-
     var Gesture = my.Class({
         constructor : function constructor(){
             var that = this;
@@ -82,13 +81,13 @@ var oo = (function (oo) {
         },
         stopGesture : function stopGesture(e){
             var that = this;
-            
+
             this.touchFlags.stopTime = Date.now();
 
             if (this.touchFlags.hasMoved){
                 var deltaX = this.touchFlags.lastX - this.touchFlags.startX,
                     deltaY = this.touchFlags.lastY - this.touchFlags.startY;
-                
+
                 if ( (Event.HAS_TOUCH && event.targetTouches.length == 1) || !Event.HAS_TOUCH ){
                     if (Math.abs(deltaX) > 30 && Math.abs(deltaY) < 30 ) {
                         if ( deltaX > 0 ) {

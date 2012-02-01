@@ -122,7 +122,7 @@ var oo = (function (oo) {
             var that = this;
             var touchMoveTempo;
 
-            listNode.addEventListener(Touch.EVENT_START, function (e) {
+            /*listNode.addEventListener(Touch.EVENT_START, function (e) {
                 that._startX = Touch.getPositionX(e);
                 that._startTranslate = that.getTranslateX();
                 touchMoveTempo = 0;
@@ -174,10 +174,14 @@ var oo = (function (oo) {
                 that._updatePager();
 
                 that._startTranslate = tVal;
-            }, false);
+            }, false);*/
 
             //swipe
-            
+            console.log(document.getElementById('carousel'));
+            console.log(listNode);
+            document.getElementById('carousel').addEventListener('swipeRight',function(){
+                alert('right');
+            },false);
         },
         render : function render(){
             
