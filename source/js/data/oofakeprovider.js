@@ -7,12 +7,14 @@
             'firstname': 'claire',
             'nickname': 'Claire_So',
             'title' : 'article 1',
+            'picture' : '1.jpg',
             'elementCls': 'elementA'
         }, {
             'key' : 2,
             'firstname': 'mathias',
             'nickname': 'FreakDev',
             'title' : 'article 2',
+            'picture' : '2.jpg',
             'elementCls': 'elementA'
         },
         {
@@ -20,6 +22,7 @@
             'firstname': 'ff',
             'nickname': 'FreakDev',
             'title' : 'article 3',
+            'picture' : '3.jpg',
             'elementCls': 'elementA'
         },
         {
@@ -27,6 +30,7 @@
             'firstname': 'gg',
             'nickname': 'FreakDev',
             'title' : 'article 4',
+            'picture' : '4.jpg',
             'elementCls': 'elementA'
         }],
         constructor: function contructor (options) {
