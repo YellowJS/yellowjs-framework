@@ -89,7 +89,7 @@ var oo = (function (oo) {
                     deltaY = this.touchFlags.lastY - this.touchFlags.startY;
 
                 if ( (Event.HAS_TOUCH && event.targetTouches.length == 1) || !Event.HAS_TOUCH ){
-                    if (Math.abs(deltaX) > 30 && Math.abs(deltaY) < 30 ) {
+                    if (Math.abs(deltaX) > 30 && Math.abs(deltaY) < 100 ) {
                         if ( deltaX > 0 ) {
                             this.fireEvent(that.touchFlags.el, "swipeLeft", true, true);
                         } else {

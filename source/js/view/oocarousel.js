@@ -257,10 +257,11 @@ var oo = (function (oo) {
         },
         onEndTransition : function onEndTransition(){
             //console.log('this._newPanel : ' + typeof this._newPanel)
+            var domElem = this.getDomObject();
             if(this._newPanel > this._activePanel && this._newPanel < this._nbPanel){
                 if(this._newPanel > 1){
-                    this.removeChild(this.getDomObject().firstChild);
                     this.translateTo({x:this._startTranslate + this._panelWidth});
+                    this.removeChild(this.getDomObject().firstChild);
                     this._startTranslate = this._startTranslate + this._panelWidth;
                 }
                 
@@ -270,9 +271,11 @@ var oo = (function (oo) {
             if(this._newPanel < this._activePanel && this._newPanel > 0 && this._newPanel < (this._nbPanel-1)){
                 
                     this.removeChild(this.getDomObject().lastChild);
+                    
+                    this.translateTo({x:this._startTranslate - this._panelWidth});
                     this._addPanel(this._newPanel-1, true);
 
-                    this.translateTo({x:this._startTranslate - this._panelWidth});
+                    
                     this._startTranslate = this._startTranslate - this._panelWidth;
                 
 
