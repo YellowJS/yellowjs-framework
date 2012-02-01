@@ -7,7 +7,7 @@
  * @author Claire Sosset <claire.sosset@gmail.com> || @claire_so
  */
 var oo = (function (oo) {
-    var Touch = oo.View.Touch;
+    var Touch = oo.core.Touch;
 
     var Gesture = my.Class({
         constructor : function constructor(){
@@ -126,7 +126,7 @@ var oo = (function (oo) {
     
     
     var gesture = new Gesture();
-    var exports = oo.core.utils.getNS('oo.core');
+    var exports = oo.getNS('oo.core');
     exports.Gesture = gesture;
     
     return oo;
