@@ -6,23 +6,27 @@
             'key' : 0,
             'firstname': 'claire',
             'nickname': 'Claire_So',
+            'title' : 'article 1',
             'elementCls': 'elementA'
         }, {
             'key' : 2,
             'firstname': 'mathias',
             'nickname': 'FreakDev',
+            'title' : 'article 2',
             'elementCls': 'elementA'
         },
         {
             'key' : 3,
             'firstname': 'ff',
             'nickname': 'FreakDev',
+            'title' : 'article 3',
             'elementCls': 'elementA'
         },
         {
             'key' : 4,
             'firstname': 'gg',
             'nickname': 'FreakDev',
+            'title' : 'article 4',
             'elementCls': 'elementA'
         }],
         constructor: function contructor (options) {

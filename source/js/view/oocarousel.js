@@ -15,6 +15,8 @@ var oo = (function (oo) {
         _datas : null,
         _elementCls : null,
         _items : [],
+        _available : true,
+        _newPanel : null,
         constructor : function constructor(selector, pager, opt) {
             this._startX = 0;
             this._startTranslate = 0;
@@ -43,7 +45,7 @@ var oo = (function (oo) {
                this._prepareView(opt.model);
             }
             
-            this._nbPanel = this._datas.length || document.querySelectorAll([selector, ' > *'].join('')).length;
+            this._nbPanel = this._datas.length -1 || document.querySelectorAll([selector, ' > *'].join('')).length;
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             
 
@@ -63,15 +65,67 @@ var oo = (function (oo) {
                 that._datas = datas;
                 that._addPanel(0);
                 that._addPanel(1);
+                //that._addPanel(2);
             });
         },
-        _addPanel : function _showPanel(id, before){
+        _addPanel : function _addPanel(id, before){
+            var item = this._getItem(id);
+
+            this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
+        },
+        showPanel : function showPanel(id){
+            if('undefined' === typeof id){
+                throw new Error("Missing 'id' of the panel");
+            }
+
+            if(!this._available) return;
+
+            this._available = false;
+
+            //before transition
+            /*if(id > this._activePanel+1){
+                this._updateNext(id);
+            }
+            if(id < this._activePanel-1){
+                this._updatePrev(id);
+            }*/
+
+            //setTransition
+            var s = (id < this._activePanel ? +1 : -1 ), nT;
+
+
+            if(id >= 0 && id <= this._nbPanel){
+                nT =  this._startTranslate + s * this._panelWidth;
+            } else {
+                if(id < 0){
+                    nT = 0;
+                    id=0;
+                } else {
+                    nT =  this._startTranslate;
+                    id = this._nbPanel;
+                }
+            }
+            
+            this.translateTo({x:nT}, this._transitionDuration);
+            this._startTranslate = nT;
+
+            //store new id for endTransition
+            this._newPanel = id;
+        },
+        _updateNext : function _updateNext(nextId){
+            //remove first dom child
+            //remove last
+            //this.removeChild();
+
+            //appendChild
+            //this._addPanel(nextId);
+        },
+        _getItem : function _getItem(id){
             var item = this._items[id];
             if(!item){
                 item = this._items[id] = this._prepareItem(id);
             }
-
-            this[(before ? 'prepend': 'appendChild')](item.getDomObject());
+            return item;
         },
         _prepareItem : function _prepareItem(id){
             var item , elementCls = this._datas[id].elementCls;
@@ -122,7 +176,7 @@ var oo = (function (oo) {
             var that = this;
             var touchMoveTempo;
 
-            /*listNode.addEventListener(Touch.EVENT_START, function (e) {
+            listNode.addEventListener(Touch.EVENT_START, function (e) {
                 that._startX = Touch.getPositionX(e);
                 that._startTranslate = that.getTranslateX();
                 touchMoveTempo = 0;
@@ -145,7 +199,7 @@ var oo = (function (oo) {
 
                     cVal = Math.abs(cVal);
 
-                    var min = (that._panelWidth / 2), 
+                    var min = (that._panelWidth / 2),
                         max = (that._panelWidth * (that._nbPanel -1) - min);
 
                     for(var i = min; i <= max; i = i + that._panelWidth) {
@@ -167,24 +221,53 @@ var oo = (function (oo) {
                     tVal = 0;
                 }
 
-                that._activePanel = Math.abs(tVal / that._panelWidth);
-
-                that.translateTo({x:tVal}, that._transitionDuration);
+                //that._activePanel = Math.abs(tVal / that._panelWidth);
 
                 that._updatePager();
 
-                that._startTranslate = tVal;
-            }, false);*/
+                //that.translateTo({x:tVal}, that._transitionDuration);
+                //that._startTranslate = tVal;
+            }, false);
 
             //swipe
-            console.log(document.getElementById('carousel'));
-            console.log(listNode);
-            document.getElementById('carousel').addEventListener('swipeRight',function(){
-                alert('right');
+            listNode.addEventListener('swipeRight',function(e){
+                that.onSwipeRight.call(that);
+            },false);
+
+            listNode.addEventListener('swipeLeft',function(e){
+                that.onSwipeLeft.call(that);
+            },false);
+
+            listNode.addEventListener('webkitTransitionEnd',function(e){
+                that.onEndTransition.apply(that);
+                
             },false);
         },
+        onSwipeRight : function onSwipeRight(){
+            this.showPanel(this._activePanel + 1);
+        },
+        onSwipeLeft : function onSwipeLeft(){
+            this.showPanel(this._activePanel - 1);
+        },
+        onEndTransition : function onEndTransition(){
+            if(this._newPanel > this._activePanel && this._newPanel < this._nbPanel){
+                //this.removeChild(this.getDomObject().firstChild);
+                //this._updateNext(this._newPanel+1);
+                console.log(typeof this._newPanel);
+                console.log( this._newPanel+1);
+                this._addPanel(this._newPanel+1);
+            }
+
+            if(this._newPanel < this._activePanel){
+                //this._updateNext(this._newPanel-1);
+            }
+
+
+            this._activePanel = this._newPanel;
+            this._newPanel = null;
+            this._available = true;
+        },
         render : function render(){
-            
             // update css if needed
             if (this._pager) {
                 (new Dom(this.getDomObject().parentNode)).appendChild(this._pager);

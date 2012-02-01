@@ -13,7 +13,7 @@ describe("oocarousel.js", function() {
         });
 
         /*test if model and templates exist*/
-        it('throw error',function(){
+        /*it('throw error',function(){
             expect(function(){
                 var optCarousel = {
                     model : model
@@ -52,9 +52,9 @@ describe("oocarousel.js", function() {
 
                 //expect(carousel._elementCls.test).toEqual(fn);
             
-        });
+        });*/
 
-        it('elemenCls must be in _elementCls',function(){
+       /* it('elemenCls must be in _elementCls',function(){
             var elementCls = {};
             
 
@@ -79,16 +79,16 @@ describe("oocarousel.js", function() {
             var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
 
             expect(carousel._elementCls.elementA).toEqual(elementCls.elementA);
-        });
+        });*/
 
-        it('..',function(){
+        it('showPanel',function(){
             var elementCls = {};
             
             elementCls.elementA = oo.Class(oo.view.Element, {
                 constructor : function () {
                     elementCls.elementA.Super.call(this, {
                         target:document.createElement('div'),
-                        template:"<div>{{firstname}}</div>"
+                        template:"<div>{{title}}</div>"
                     });
                 },
                 onRendered : function onRendered(){
@@ -104,6 +104,9 @@ describe("oocarousel.js", function() {
 
             var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
 
+            expect(function(){
+                carousel.showPanel();
+            }).toThrow("Missing 'id' of the panel");
             
         });
 

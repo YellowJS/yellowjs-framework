@@ -257,7 +257,7 @@
         },
         // append a node on top to the current node children list
         // can be a native DOMObject or a oo.Dom object
-        prepend : function prepend (node) {
+        prependChild : function prependChild (node) {
             if (node instanceof Dom)
             {
                 this.prependDomNode(node.getDomObject());
@@ -271,6 +271,9 @@
             this._dom.innerHTML = [this._dom.innerHTML, html].join('');
 
             return this;
+        },
+        removeChild : function removeChild(node){
+            this._dom.removeChild(node);
         },
         clear : function clear () {
             this._dom.innerHTML = '';
