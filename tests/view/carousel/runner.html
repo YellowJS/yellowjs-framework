@@ -8,11 +8,25 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style type="text/css">
-    body {margin:0; padding:0;}
+    *{ margin:0; padding:0;}
+    body { -webkit-transform:trasnlateZ(0); }
     body, html { overflow:hidden; height:100%; width:100%;}
-    #carousel { width:500%; height:200px; -webkit-transform:translate3d(0,0,0); }
-    #carousel > div { display: block; float:left; width:20%; height:200px;}
+
+    #carousel { width:2304px; height:400px; -webkit-transform:translate3d(0,0,0); -webkit-backface-visibility:hidden;}
+    #carousel > div { display: block; float:left; height:200px; width:25%;}
     .dot { display: inline-block; width:20px; height:20px; background: #ccc; border-radius:20px;}
+
+    @media screen and (min-width: 768px) and (max-width:1024px) {
+      #carousel > div { width:768px;}
+    }
+
+    @media screen and (max-width: 768px) {
+      #carousel > div { width:768px;}
+    }
+
+    @media screen and (max-width: 480px) {
+      #carousel > div { width:320px;}
+    }
   </style>
 
 
@@ -61,6 +75,7 @@
 
   <body>
       <div id="carousel"></div>
+      <a href="#" id="showpanel">Panel 4</a>
       <!-- include spec files here... -->
       <!-- include source files here... -->
       <script type="text/javascript">

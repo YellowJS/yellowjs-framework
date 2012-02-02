@@ -32,7 +32,56 @@
             'title' : 'article 4',
             'picture' : '4.jpg',
             'elementCls': 'elementA'
-        }],
+        },
+        {
+            'key' : 5,
+            'firstname': 'gg',
+            'nickname': 'FreakDev',
+            'title' : 'article 5',
+            'picture' : '3.jpg',
+            'elementCls': 'elementA'
+        },
+        {
+            'key' : 6,
+            'firstname': 'gg',
+            'nickname': 'FreakDev',
+            'title' : 'article 6',
+            'picture' : '1.jpg',
+            'elementCls': 'elementA'
+        },
+        {
+            'key' : 7,
+            'firstname': 'gg',
+            'nickname': 'FreakDev',
+            'title' : 'article 7',
+            'picture' : '3.jpg',
+            'elementCls': 'elementA'
+        },
+        {
+            'key' : 8,
+            'firstname': 'gg',
+            'nickname': 'FreakDev',
+            'title' : 'article 8',
+            'picture' : '4.jpg',
+            'elementCls': 'elementA'
+        },
+        {
+            'key' : 9,
+            'firstname': 'gg',
+            'nickname': 'FreakDev',
+            'title' : 'article 9',
+            'picture' : '1.jpg',
+            'elementCls': 'elementA'
+        },
+        {
+            'key' : 10,
+            'firstname': 'gg',
+            'nickname': 'FreakDev',
+            'title' : 'article 10',
+            'picture' : '2.jpg',
+            'elementCls': 'elementA'
+        }
+        ],
         constructor: function contructor (options) {
             FakeProvider.Super.call(this, options);
         },

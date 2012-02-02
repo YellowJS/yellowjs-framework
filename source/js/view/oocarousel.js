@@ -17,6 +17,9 @@ var oo = (function (oo) {
         _items : [],
         _available : true,
         _newPanel : null,
+        _upPrev : false,
+        _upNext : false,
+        _fromLimit:true,
         constructor : function constructor(selector, pager, opt) {
             this._startX = 0;
             this._startTranslate = 0;
@@ -83,14 +86,18 @@ var oo = (function (oo) {
             this._available = false;
 
             //before transition
-            /*if(id > this._activePanel+1){
+            if(id > this._activePanel+1){
                 this._updateNext(id);
+                this._upPrev = true;
             }
+            
             if(id < this._activePanel-1){
                 this._updatePrev(id);
-            }*/
+                this._upNext = true;
+            }
 
             //setTransition
+            
             var s = (id < this._activePanel ? +1 : -1 ), nT;
 
 
@@ -105,20 +112,22 @@ var oo = (function (oo) {
                     id = this._nbPanel;
                 }
             }
-            
+            this._items[id].onEnable();
             this.translateTo({x:nT}, this._transitionDuration);
             this._startTranslate = nT;
-
             //store new id for endTransition
             this._newPanel = id;
         },
         _updateNext : function _updateNext(nextId){
-            //remove first dom child
             //remove last
-            //this.removeChild();
+            this.removeChild(this.getDomObject().lastChild);
 
             //appendChild
-            //this._addPanel(nextId);
+            this._addPanel(nextId);
+        },
+        _updatePrev : function _updatePrev(idPrev){
+            this.removeChild(this.getDomObject().firstChild);
+            this._addPanel(idPrev,true);
         },
         _getItem : function _getItem(id){
             var item = this._items[id];
@@ -134,10 +143,8 @@ var oo = (function (oo) {
                 throw new Error('element Cls must exist and be a function');
             }
 
-            //if( this._elementCls[elementCls] && 'function' === typeof this._elementCls[elementCls]){
-                item = new this._elementCls[elementCls]();
-                item.appendHtml(item.render(this._datas[id]));
-            //}
+            item = new this._elementCls[elementCls]();
+            item.appendHtml(item.render(this._datas[id]));
 
             return item;
         },
@@ -197,10 +204,21 @@ var oo = (function (oo) {
                 if(that._available){
                     that._moved = false;
 
-                    var cVal = that.getTranslateX();
-                    var tVal;
+                    var cVal = that.getTranslateX(),
+                        diff = cVal - that._startTranslate;
+
+                    if(Math.abs(diff) > 30){
+                        if( cVal - that._startTranslate < 0 ){
+                            that.onSwipeRight();
+                        } else {
+                            that.onSwipeLeft();
+                        }
+                    } else {
+                        that.translateTo({x:(that._startTranslate)}, that._transitionDuration);
+                    }
                     
-                    if (cVal < 0) {
+                    
+                    /*if (cVal < 0) {
 
                         cVal = Math.abs(cVal);
 
@@ -224,7 +242,7 @@ var oo = (function (oo) {
 
                     } else {
                         tVal = 0;
-                    }
+                    }*/
 
                     //that._activePanel = Math.abs(tVal / that._panelWidth);
 
@@ -235,14 +253,18 @@ var oo = (function (oo) {
                 }
             }, false);
 
+            window.addEventListener("orientationchange",function(){
+                that.refresh.call(that);
+            },false);
+
             //swipe
-            listNode.addEventListener('swipeRight',function(e){
+            /*listNode.addEventListener('swipeRight',function(e){
                 that.onSwipeRight.call(that);
             },false);
 
             listNode.addEventListener('swipeLeft',function(e){
                 that.onSwipeLeft.call(that);
-            },false);
+            },false);*/
 
             listNode.addEventListener('webkitTransitionEnd',function(e){
                 that.onEndTransition.apply(that);
@@ -251,43 +273,57 @@ var oo = (function (oo) {
         },
         onSwipeRight : function onSwipeRight(){
             this.showPanel(this._activePanel + 1);
+            console.log('right')
         },
         onSwipeLeft : function onSwipeLeft(){
             this.showPanel(this._activePanel - 1);
+            console.log('left')
         },
         onEndTransition : function onEndTransition(){
-            //console.log('this._newPanel : ' + typeof this._newPanel)
-            var domElem = this.getDomObject();
-            if(this._newPanel > this._activePanel && this._newPanel < this._nbPanel){
-                if(this._newPanel > 1){
+            //mmmmmm
+            if(this._activePanel == this._newPanel) {
+                this._available = true;
+                return;
+            }
+
+            if(this._newPanel > this._activePanel){
+                if(!this._fromLimit){
+                    //already 3 items in the carousel
                     this.translateTo({x:this._startTranslate + this._panelWidth});
                     this.removeChild(this.getDomObject().firstChild);
                     this._startTranslate = this._startTranslate + this._panelWidth;
                 }
-                
-                this._addPanel(this._newPanel+1);
+
+                if(this._newPanel < this._nbPanel){
+                    this._addPanel(this._newPanel+1);
+                }
             }
 
-            if(this._newPanel < this._activePanel && this._newPanel > 0 && this._newPanel < (this._nbPanel-1)){
-                
+            if(this._newPanel < this._activePanel){
+                if(!this._fromLimit){
                     this.removeChild(this.getDomObject().lastChild);
-                    
+                }
+
+                if(this._newPanel > 0){
                     this.translateTo({x:this._startTranslate - this._panelWidth});
                     this._addPanel(this._newPanel-1, true);
-
-                    
                     this._startTranslate = this._startTranslate - this._panelWidth;
-                
-
-                
-
-                //this._updateNext(this._newPanel-1);
-                
+                }
             }
 
+            if(this._upPrev){
+                this._updatePrev(this._newPanel -1);
+                this._upPrev = false;
+            }
+            if(this._upNext){
+                this._updateNext(this._newPanel +1);
+                this._upNext = false;
+            }
+            
+
+            this._fromLimit = (this._newPanel < 1 || this._newPanel == this._nbPanel) ? true : false;
 
             this._activePanel = this._newPanel;
-            this._newPanel = null;
             this._available = true;
         },
         render : function render(){
@@ -297,6 +333,16 @@ var oo = (function (oo) {
             }
 
             this._initListeners();
+        },
+        refresh : function refresh(){
+            //get new with and translate to _startTranslate
+            var oldW = this._panelWidth, diff;
+            this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
+
+            diff = oldW - this._panelWidth;
+
+            this.translateTo({x:this._startTranslate + diff},0);
+            this._startTranslate = this._startTranslate + diff;
         }
     });
     

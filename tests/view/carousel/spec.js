@@ -88,11 +88,11 @@ describe("oocarousel.js", function() {
                 constructor : function () {
                     elementCls.elementA.Super.call(this, {
                         target:document.createElement('div'),
-                        template:'<img src="{{picture}}" style=" height:200px; width:100%; display:block;" />'
+                        template:'<h1>{{title}}</h1><img src="{{picture}}" style=" height:200px; display:block;" />'
                     });
                 },
-                onRendered : function onRendered(){
-                    alert('element A');
+                onEnable : function onEnable(){
+                    console.log('element A');
                 }
             });
 
@@ -102,11 +102,20 @@ describe("oocarousel.js", function() {
                 elementCls : elementCls
             };
 
-            var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
+            window.carousel = new oo.view.Carousel('#carousel', false, optCarousel);
 
             expect(function(){
                 carousel.showPanel();
             }).toThrow("Missing 'id' of the panel");
+           
+            var lnk = document.querySelector('#showpanel');
+            
+            lnk.addEventListener('click',function(e){
+                e.preventDefault();
+                carousel.showPanel(4);
+            },false);
+           
+           
             
         });
 
