@@ -50,6 +50,7 @@
             var that = this;
             var check;
             this.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
+
                 this._touchedItem = e.target;
                 check = checkTarget(e.target);
                 if (false !== check) {

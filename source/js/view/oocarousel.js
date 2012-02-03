@@ -47,9 +47,7 @@ var oo = (function (oo) {
                 }
                 
                 this._elementCls = opt.elementCls;
-                
-                                
-               this._prepareView(opt.model);
+                this._prepareView(opt.model);
             }
             
             this._nbPanel = this._datas.length -1 || document.querySelectorAll([opt.el, ' > *'].join('')).length;

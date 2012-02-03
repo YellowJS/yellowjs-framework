@@ -9,14 +9,23 @@
  */
 var oo = (function(oo){
 
+    var ns = oo.getNS('oo.router'), Pager = oo.view.Pager;
+    console.log(Pager)
 
-    var ns = oo.getNS('oo.router');
 
-    var Router = ns.Router= my.Class({
+    var Router = ns.Router= my.Class(null, oo.core.mixins.Events,{
         constructor : function constructor(){
             this._routes = {};
             this._registeredControllers = {};
             this._controllers = {};
+
+            var that = this;
+            this.addListener(Pager.NAVIGATE,function(route){
+                console.log('ljlkj')
+                that.load(route);
+            });
+
+
         },
         addRoutes : function addRoutes(routes){
             if(!routes || (Object.prototype.toString.call( routes ) !== '[object Object]')){

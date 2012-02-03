@@ -6,7 +6,6 @@
         _model : null,
 
         constructor: function constructor (options) {
-            
             if( options.hasOwnProperty('model') ){
                 this.setModel(options.model);
                 delete options.model;
@@ -20,7 +19,8 @@
 
         },
         afterFetch : function afterFetch(data){
-            this.render(data);
+            var output = this.render(data, this._tpl);
+            this.appendHtml(output);
         },
         setModel : function setModel(model){
             if (model instanceof oo.data.Model)
@@ -34,9 +34,9 @@
         render: function render (data, tpl) {
             if (!data)
                 data = {};
-
-            ModelElement.Super.prototype.render.call(this, this.prepareData(data));
-
+            
+            return ModelElement.Super.prototype.render.call(this, this.prepareData(data));
+            
         }
 
     });
