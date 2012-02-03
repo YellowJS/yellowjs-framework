@@ -98,11 +98,14 @@ describe("oocarousel.js", function() {
 
 
             var optCarousel = {
+                el : "#carousel",
+                pager : false,
                 model : model,
                 elementCls : elementCls
             };
 
-            window.carousel = new oo.view.Carousel('#carousel', false, optCarousel);
+            //window.carousel = new oo.view.Carousel('#carousel', false, optCarousel);
+            window.carousel = oo.createElement('carousel',optCarousel);
 
             expect(function(){
                 carousel.showPanel();

@@ -8,10 +8,10 @@
 var oo = (function (oo) {
 
     // shorthand
-    var Dom = oo.view.Dom, Touch = oo.core.Touch;
+    var Dom = oo.view.Dom, Touch = oo.core.Touch, ns = oo.getNS('oo.view');
     
     
-    var Carousel = my.Class(oo.view.Element, {
+    var Carousel = ns.Carousel = my.Class(oo.view.Element, {
         _datas : null,
         _elementCls : null,
         _items : [],
@@ -20,12 +20,16 @@ var oo = (function (oo) {
         _upPrev : false,
         _upNext : false,
         _fromLimit:true,
-        constructor : function constructor(selector, pager, opt) {
+        constructor : function constructor(opt) {
+            if(!opt){
+                throw new Error('Missing options');
+            }
+
             this._startX = 0;
             this._startTranslate = 0;
 
             var conf = {
-                target: selector
+                target: opt.el || (document.createElement('div'))
             };
 
 
@@ -48,12 +52,12 @@ var oo = (function (oo) {
                this._prepareView(opt.model);
             }
             
-            this._nbPanel = this._datas.length -1 || document.querySelectorAll([selector, ' > *'].join('')).length;
+            this._nbPanel = this._datas.length -1 || document.querySelectorAll([opt.el, ' > *'].join('')).length;
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             
 
             this._activePanel = 0;
-            this._displayPager = (pager ? true : false);
+            this._displayPager = (opt.pager ? true : false);
 
             this._pager = null;
             this._buildPager();
@@ -345,8 +349,8 @@ var oo = (function (oo) {
         }
     });
     
-    var exports = oo.getNS('oo.view');
-    exports.Carousel = Carousel;
+
+    oo.view.Element.register(Carousel, 'carousel');
     
     return oo;
     
