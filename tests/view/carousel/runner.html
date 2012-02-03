@@ -9,11 +9,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style type="text/css">
     *{ margin:0; padding:0;}
-    body { -webkit-transform:trasnlateZ(0); }
+    body {  }
     body, html { overflow:hidden; height:100%; width:100%;}
 
     #carousel { width:2304px; height:400px; -webkit-transform:translate3d(0,0,0); -webkit-backface-visibility:hidden;}
-    #carousel > div { display: block; float:left; height:200px; width:25%;}
+    #carousel > div { display: block; float:left; height:200px; width:25%; -webkit-transform:translateZ(0);}
     .dot { display: inline-block; width:20px; height:20px; background: #ccc; border-radius:20px;}
 
     @media screen and (min-width: 768px) and (max-width:1024px) {
@@ -36,11 +36,6 @@
     // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
     undefined = "diz be undefined yo";
   </script>
-
-
-
-
-   
   
     <script type="text/javascript">
       (function() {

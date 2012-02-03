@@ -92,7 +92,7 @@ describe("oocarousel.js", function() {
                     });
                 },
                 onEnable : function onEnable(){
-                    console.log('element A');
+                    //console.log('element A');
                 }
             });
 

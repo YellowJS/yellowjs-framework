@@ -207,7 +207,7 @@ var oo = (function (oo) {
                     var cVal = that.getTranslateX(),
                         diff = cVal - that._startTranslate;
 
-                    if(Math.abs(diff) > 30){
+                    if(Math.abs(diff) > 50){
                         if( cVal - that._startTranslate < 0 ){
                             that.onSwipeRight();
                         } else {
@@ -273,11 +273,9 @@ var oo = (function (oo) {
         },
         onSwipeRight : function onSwipeRight(){
             this.showPanel(this._activePanel + 1);
-            console.log('right')
         },
         onSwipeLeft : function onSwipeLeft(){
             this.showPanel(this._activePanel - 1);
-            console.log('left')
         },
         onEndTransition : function onEndTransition(){
             //mmmmmm
@@ -288,9 +286,10 @@ var oo = (function (oo) {
 
             if(this._newPanel > this._activePanel){
                 if(!this._fromLimit){
+
                     //already 3 items in the carousel
-                    this.translateTo({x:this._startTranslate + this._panelWidth});
                     this.removeChild(this.getDomObject().firstChild);
+                    this.translateTo({x:this._startTranslate + this._panelWidth});
                     this._startTranslate = this._startTranslate + this._panelWidth;
                 }
 
