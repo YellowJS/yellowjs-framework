@@ -32,7 +32,6 @@ var oo = (function (oo) {
                     Event.triggerEvent('navigate'n url)
 
                 */
-                console.log(that)
                 that.triggerEvent(Pager.NAVIGATE, ['test']);
 
             });

@@ -20,6 +20,5 @@ describe("oopager.js", function() {
     var pager = oo.createElement('pager',opt);
 
     modelArticle.fetch();
-    
 
 });
