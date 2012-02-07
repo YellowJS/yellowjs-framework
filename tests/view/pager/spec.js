@@ -1,6 +1,9 @@
 describe("oopager.js", function() {
-    var router = oo.getRouter();
-    console.log(router);
+    /*var router = oo.getRouter();
+    router.addEventListener('navigate',function(){
+        alert('ok');
+    });*/
+    
     
     var provider = new oo.data.FakeProvider({
         "name" : "fdsfsdf"
@@ -18,6 +21,10 @@ describe("oopager.js", function() {
     };
 
     var pager = oo.createElement('pager',opt);
+    pager.addEventListener('navigate',function(){
+        app.router();
+        
+    });
 
     modelArticle.fetch();
 

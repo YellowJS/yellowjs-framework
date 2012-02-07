@@ -9,7 +9,7 @@
  */
 var oo = (function(oo){
 
-    var ns = oo.getNS('oo.router'), Pager = oo.view.Pager;
+    var ns = oo.getNS('oo.router');
 
 
     var Router = ns.Router= my.Class(null, oo.core.mixins.Events,{
@@ -19,14 +19,6 @@ var oo = (function(oo){
             this._controllers = {};
 
             var that = this;
-
-            this.addListener(Pager.NAVIGATE,function(route){
-                alert('pager listener');
-                //that.load(route);
-            });
-
-            console.log(this);
-
 
         },
         addRoutes : function addRoutes(routes){
