@@ -68,6 +68,10 @@
                     "path" : "../source/js/view/templateengine/"
                 },
                 {
+                    "text" : "ootemplatehandlebars.js",
+                    "path" : "../source/js/view/templateengine/"
+                },
+                {
                     "text" : "oodom.js",
                     "path" : "../source/js/view/"
                 },
