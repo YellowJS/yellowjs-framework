@@ -90,6 +90,10 @@
                 {
                     "text" : "oolist.js",
                     "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oobutton.js",
+                    "path" : "../source/js/view/"
                 }
             ]
         }
