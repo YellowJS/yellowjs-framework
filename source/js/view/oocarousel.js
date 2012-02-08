@@ -199,7 +199,6 @@ var oo = (function (oo) {
           var that = this;
           this._pager = this._displayPager;
           this._pager.addListener(oo.view.List.EVT_ITEM_RELEASED, function(dom, id){
-
             that.showPanel(parseInt(id,10));
           });
         },
