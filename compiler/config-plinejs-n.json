@@ -80,6 +80,10 @@
                     "path" : "../source/js/view/"
                 },
                 {
+                    "text" : "oomodelelement.js",
+                    "path" : "../source/js/view/"
+                },
+                {
                     "text" : "ooviewport.js",
                     "path" : "../source/js/view/"
                 },
@@ -93,6 +97,10 @@
                 },
                 {
                     "text" : "oobutton.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oocarousel.js",
                     "path" : "../source/js/view/"
                 }
             ]

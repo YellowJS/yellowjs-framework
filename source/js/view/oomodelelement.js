@@ -11,10 +11,6 @@
                 delete options.model;
             }
 
-            if (this._model){
-                this._model.addListener(oo.data.Model.AFTER_FETCH, oo.createDelegate(this.afterFetch, this));
-            }
-            
             ModelElement.Super.call(this, options);
 
         },

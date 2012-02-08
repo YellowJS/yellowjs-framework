@@ -11,7 +11,7 @@ var oo = (function (oo) {
     var Dom = oo.view.Dom, Touch = oo.core.Touch, ns = oo.getNS('oo.view');
     
     
-    var Carousel = ns.Carousel = my.Class(oo.view.Element, {
+    var Carousel = ns.Carousel = my.Class(oo.view.ModelElement, {
         _datas : null,
         _elementCls : null,
         _items : [],
@@ -47,15 +47,30 @@ var oo = (function (oo) {
                 }
                 
                 this._elementCls = opt.elementCls;
-                this._prepareView(opt.model);
+                this._prepareModel(opt);
+            } else {
+              this._prepareView();
             }
             
+        },
+        _prepareModel : function _prepareModel(opt){
+          var that = this;
+            this.setModel(opt.model);
+            //this.after
+            this._model.fetch(function(datas){
+                that._datas = datas;
+                that._addPanel(0);
+                that._addPanel(1);
+                that._prepareView();
+            });
+        },
+        _prepareView : function _prepareView(opt){
             this._nbPanel = this._datas.length -1 || document.querySelectorAll([opt.el, ' > *'].join('')).length;
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             
 
             this._activePanel = 0;
-            this._displayPager = (opt.pager ? true : false);
+            this._displayPager = (opt && opt.pager ? true : false);
 
             this._pager = null;
             this._buildPager();
@@ -63,15 +78,6 @@ var oo = (function (oo) {
             this._moved = false;
 
             this.render();
-        },
-        _prepareView : function _prepareView(model){
-            var that = this;
-            model.fetch(function(datas){
-                that._datas = datas;
-                that._addPanel(0);
-                that._addPanel(1);
-                //that._addPanel(2);
-            });
         },
         _addPanel : function _addPanel(id, before){
             var item = this._getItem(id);
