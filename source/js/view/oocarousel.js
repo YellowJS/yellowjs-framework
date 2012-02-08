@@ -67,7 +67,13 @@ var oo = (function (oo) {
         _prepareView : function _prepareView(opt){
             this._nbPanel = this._datas.length -1 || document.querySelectorAll([opt.el, ' > *'].join('')).length;
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
-            
+            var c = this.getDomObject().children, i = 0, len = c.length;
+
+            for ( i ; i < len; i++){
+              c[i].style.width = this._panelWidth + 'px';
+            }
+
+            this.setWidth( (this._model) ? this._panelWidth*3 : this._panelWidth*this._nbPanel ,'px' );
 
             this._activePanel = 0;
             this._displayPager = (opt && opt.pager ? true : false);
@@ -81,7 +87,9 @@ var oo = (function (oo) {
         },
         _addPanel : function _addPanel(id, before){
             var item = this._getItem(id);
-
+            if(this._panelWidth){
+              item.setWidth(this._panelWidth,'px');
+            }
             this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
         },
         showPanel : function showPanel(id){
