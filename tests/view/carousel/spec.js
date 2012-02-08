@@ -97,9 +97,22 @@ describe("oocarousel.js", function() {
             });
 
 
+            /*var list2 = oo.createElement('list', {
+                model : model,
+                'template' : '<span class="h1">{{firstname}}</span> | <span class="h2">{{nickname}}</span>',
+                'target' : '#target'
+            });*/
+            
+            
+            var list  = oo.createElement('list', {
+                'template' : 'test',
+                'target' : '#list'
+            });
+
+
             var optCarousel = {
                 el : "#carousel",
-                pager : false,
+                pager : list,
                 model : model,
                 elementCls : elementCls
             };
@@ -107,7 +120,7 @@ describe("oocarousel.js", function() {
             //window.carousel = new oo.view.Carousel('#carousel', false, optCarousel);
             window.carousel = oo.createElement('carousel',optCarousel);
 
-            expect(function(){
+            /*expect(function(){
                 carousel.showPanel();
             }).toThrow("Missing 'id' of the panel");
            
@@ -116,7 +129,7 @@ describe("oocarousel.js", function() {
             lnk.addEventListener('click',function(e){
                 e.preventDefault();
                 carousel.showPanel(4);
-            },false);
+            },false);*/
            
            
             

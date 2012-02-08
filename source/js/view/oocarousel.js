@@ -93,7 +93,6 @@ var oo = (function (oo) {
             this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
         },
         showPanel : function showPanel(id){
-            
             if('undefined' === typeof id){
                 throw new Error("Missing 'id' of the panel");
             }
@@ -200,7 +199,8 @@ var oo = (function (oo) {
           var that = this;
           this._pager = this._displayPager;
           this._pager.addListener(oo.view.List.EVT_ITEM_RELEASED, function(dom, id){
-            that.showPanel(id);
+
+            that.showPanel(parseInt(id,10));
           });
         },
         _updatePager : function _updatePager() {
