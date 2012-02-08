@@ -61,7 +61,7 @@ var oo = (function (oo) {
                 that._datas = datas;
                 that._addPanel(0);
                 that._addPanel(1);
-                that._prepareView();
+                that._prepareView(opt);
             });
         },
         _prepareView : function _prepareView(opt){
@@ -76,7 +76,7 @@ var oo = (function (oo) {
             this.setWidth( (this._model) ? this._panelWidth*3 : this._panelWidth*this._nbPanel ,'px' );
 
             this._activePanel = 0;
-            this._displayPager = (opt && opt.pager ? true : false);
+            this._displayPager = (opt && opt.pager ? opt.pager : false);
 
             this._pager = null;
             this._buildPager();
@@ -93,13 +93,17 @@ var oo = (function (oo) {
             this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
         },
         showPanel : function showPanel(id){
+            
             if('undefined' === typeof id){
                 throw new Error("Missing 'id' of the panel");
             }
 
-            if(!this._available) return;
+            if(id === this._activePanel) return;
+
+            if(!this._datas[id] || id === this._activePanel || !this._available) return;
 
             this._available = false;
+
 
             //before transition
             if(id > this._activePanel+1){
@@ -111,6 +115,7 @@ var oo = (function (oo) {
                 this._updatePrev(id);
                 this._upNext = true;
             }
+
 
             //setTransition
             
@@ -153,6 +158,7 @@ var oo = (function (oo) {
             return item;
         },
         _prepareItem : function _prepareItem(id){
+          console.log(this._datas[id]);
             var item , elementCls = this._datas[id].elementCls;
 
             if( 'undefined' === this._elementCls[elementCls] || 'function' !== typeof this._elementCls[elementCls]){
@@ -167,22 +173,38 @@ var oo = (function (oo) {
         /*pager*/
         _buildPager : function _buildPager() {
             if (this._displayPager) {
-                this._pager = Dom.createElement('div');
-                this._pager.classList.addClass('carousel-pager');
 
-                this._pager.setTemplate('{{#bullet}}<i class="dot"></i>{{/bullet}}');
-
-                var data = [];
-                for(var i=0; i<this._nbPanel; i++) {
-                    data.push(i);
+                if( 'boolean' === typeof this._displayPager) {
+                  this._buildPagerItem();
+                } else {
+                  this._buildPagerList();
                 }
-
-                this._pager.render({bullet: data});
             }
 
             this._updatePager();
         },
+        _buildPagerItem : function _buildPagerItem(){
+          this._pager = Dom.createElement('div');
+          this._pager.classList.addClass('carousel-pager');
+
+          this._pager.setTemplate('{{#bullet}}<i class="dot"></i>{{/bullet}}');
+
+          var data = [];
+          for(var i=0; i<this._nbPanel; i++) {
+              data.push(i);
+          }
+
+          this._pager.render({bullet: data});
+        },
+        _buildPagerList : function _buildPagerList(){
+          var that = this;
+          this._pager = this._displayPager;
+          this._pager.addListener(oo.view.List.EVT_ITEM_RELEASED, function(dom, id){
+            that.showPanel(id);
+          });
+        },
         _updatePager : function _updatePager() {
+          return
             if (this._displayPager) {
                 var current = this._pager.getDomObject().querySelector('.dot.active');
                 if (current) {
@@ -343,8 +365,14 @@ var oo = (function (oo) {
         },
         render : function render(){
             // update css if needed
-            if (this._pager) {
-                (new Dom(this.getDomObject().parentNode)).appendChild(this._pager);
+            if (this._pager ) {
+                if('boolean' === typeof this._displayPager){
+                    (new Dom(this.getDomObject().parentNode)).appendChild(this._pager);
+                } else {
+                    //render list
+                    this._pager.appendHtml(this._pager.render(this._datas));
+                }
+                
             }
 
             this._initListeners();
