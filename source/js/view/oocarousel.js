@@ -20,6 +20,7 @@ var oo = (function (oo) {
         _upPrev : false,
         _upNext : false,
         _fromLimit:true,
+        _activePanel: null,
         constructor : function constructor(opt) {
             if(!opt){
                 throw new Error('Missing options');
@@ -54,7 +55,6 @@ var oo = (function (oo) {
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             
 
-            this._activePanel = 0;
             this._displayPager = (opt.pager ? true : false);
 
             this._pager = null;
@@ -69,6 +69,7 @@ var oo = (function (oo) {
             model.fetch(function(datas){
                 that._datas = datas;
                 that._addPanel(0);
+                this._activePanel = 0;
                 that._addPanel(1);
                 //that._addPanel(2);
             });
@@ -77,6 +78,8 @@ var oo = (function (oo) {
             var item = this._getItem(id);
 
             this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
+
+            item.onEnable();
         },
         showPanel : function showPanel(id){
             if('undefined' === typeof id){
@@ -114,7 +117,7 @@ var oo = (function (oo) {
                     id = this._nbPanel;
                 }
             }
-            this._items[id].onEnable();
+
             this.translateTo({x:nT}, this._transitionDuration);
             this._startTranslate = nT;
             //store new id for endTransition
@@ -132,11 +135,12 @@ var oo = (function (oo) {
             this._addPanel(idPrev,true);
         },
         _getItem : function _getItem(id){
-            var item = this._items[id];
-            if(!item){
-                item = this._items[id] = this._prepareItem(id);
+            var items = this._items;
+            if (!items[id]) {
+                items[id] = this._prepareItem(id);
             }
-            return item;
+
+            return items[id];
         },
         _prepareItem : function _prepareItem(id){
             var item , elementCls = this._datas[id].elementCls;

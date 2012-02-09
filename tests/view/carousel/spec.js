@@ -88,11 +88,11 @@ describe("oocarousel.js", function() {
                 constructor : function () {
                     elementCls.elementA.Super.call(this, {
                         target:document.createElement('div'),
-                        template:'<h1>{{title}}</h1><img src="{{picture}}" style=" height:200px; display:block;" />'
+                        template:'<div class="outer" style="height: 500px; overflow:hidden"><div class="content"><h1>{{title}}</h1><img src="{{picture}}" style=" height:2000px; display:block;" /></div>'
                     });
                 },
                 onEnable : function onEnable(){
-                    //console.log('element A');
+                    var scroll = new oo.view.Scroll('.outer');
                 }
             });
 

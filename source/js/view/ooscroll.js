@@ -10,7 +10,7 @@ var oo = (function (oo) {
             BOTH : 'b',
             NONE : 'none'
         },
-        constructor : function constructor(identifier, orientation, displayScroll){
+        constructor : function constructor(identifier, orientation, displayScroll) {
             
             this._wrapper = new Dom(identifier);
             this._content = this._wrapper.find('.content');
@@ -19,22 +19,22 @@ var oo = (function (oo) {
             this._displayScroll = displayScroll || Scroll.BOTH;
 
             this._vscrollbarWrapper = null;
-            this._vscrollbar = null;       
+            this._vscrollbar = null;
 
             this._hscrollbarWrapper = null;
             this._hscrollbar = null;
 
             // due to a bug in the oo.Dom cache management this value couldn't be set in the constructor
-            // this._maxVScrollTranslate = (this._wrapper.getHeight() - this._vscrollbar.getHeight());        
+            // this._maxVScrollTranslate = (this._wrapper.getHeight() - this._vscrollbar.getHeight());
             this._maxvScrollTranslate = null;
-            this._maxhScrollTranslate = null;        
+            this._maxhScrollTranslate = null;
 
             this._buildScrollbars();
 
             this.initSizes();
 
             this._startY = 0;
-            this._startX = 0;        
+            this._startX = 0;
 
             this._touchStartY = null;
             this._touchInterY = null;
@@ -59,24 +59,24 @@ var oo = (function (oo) {
 
             // for VScroll
             if (Scroll.VERTICAL == this._orientation || Scroll.BOTH == this._orientation) {
-                this._vscrollbar.setDisplay('');            
+                this._vscrollbar.setDisplay('');
                 this._maxvTranslate = (this._wrapper.getHeight() - this._content.getHeight());
                 if (this._maxvTranslate > 0) {
                     this._maxvTranslate = 0;
                     this._vscrollbar.setDisplay('none');
-                }            
+                }
                 this._determineScrollbarSize(Scroll.VERTICAL);
                 this._vscrollbar.translateTo({y: 0}, 0);
             }
 
-            // for HScroll        
+            // for HScroll
             if (Scroll.HORIZONTAL == this._orientation || Scroll.BOTH == this._orientation) {
-                this._hscrollbar.setDisplay('');            
-                this._maxhTranslate = (this._content.getWidth() - this._wrapper.getWidth());            
+                this._hscrollbar.setDisplay('');
+                this._maxhTranslate = (this._content.getWidth() - this._wrapper.getWidth());
                 if (this._maxhTranslate < 0) {
                     this._maxhTranslate = 0;
                     this._hscrollbar.setDisplay('none');
-                }            
+                }
                 this._determineScrollbarSize(Scroll.HORIZONTAL);
                 this._hscrollbar.translateTo({x: 0}, 0);
             }
@@ -102,10 +102,10 @@ var oo = (function (oo) {
                 this._hscrollbar = Dom.createElement('div');
 
                 this._hscrollbar.classList.addClass('oo-scrollbar');
-                this._hscrollbar.setHeight(100, '%');            
+                this._hscrollbar.setHeight(100, '%');
 
                 this._hscrollbarWrapper.classList.addClass('oo-scroll-wrapper');
-                this._hscrollbarWrapper.classList.addClass('oo-hscroll-wrapper');            
+                this._hscrollbarWrapper.classList.addClass('oo-hscroll-wrapper');
                 this._hscrollbarWrapper.appendChild(this._hscrollbar);
             }
         },
@@ -155,9 +155,9 @@ var oo = (function (oo) {
                 that._touchStartY = that._touchInterY = Touch.getPositionY(e);
                 that._touchStartX = that._touchInterX = Touch.getPositionX(e);
 
-                that._startTime = (new Date).getTime();
+                that._startTime = (new Date()).getTime();
                 that._startY = that._content.getTranslateY(false, true);
-                that._startX = that._content.getTranslateX(false, true);            
+                that._startX = that._content.getTranslateX(false, true);
             }, false);
 
             // move event listener
@@ -182,11 +182,11 @@ var oo = (function (oo) {
                 }
 
                 touchMoveTempo++;
-                //if (touchMoveTempo > 7) {
+                // if (touchMoveTempo > 300) {
                 //     that._touchInterY = Touch.getPositionY(e);
-                //     that._startTime = (new Date).getTime();
+                //     that._startTime = (new Date()).getTime();
                 //     touchMoveTempo = 0;
-                //}
+                // }
 
                 e.preventDefault();
 
@@ -195,15 +195,15 @@ var oo = (function (oo) {
             // end event listener
             listNode.addEventListener(Touch.EVENT_END, function (e) {
 
-                var stopTime = (new Date).getTime();
-                var duration = stopTime - that._startTime;            
+                var stopTime = (new Date()).getTime();
+                var duration = stopTime - that._startTime;
                 var deceleration = 0.0006;
                 var newTime = 500;
 
                 function adjustPos (orientation) {
                     var cVal = that._content[['getTranslate', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](false, true);
                     var tVal = null;
-                    var stop = Touch[['getPosition', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](e);        
+                    var stop = Touch[['getPosition', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](e);
 
                     var dist = stop - that[['_touchInter', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')];
                     var speed = Math.abs(dist) / duration;
@@ -222,7 +222,7 @@ var oo = (function (oo) {
                     if (tVal !== null) {
                         var coord = {};
                         coord[(Scroll.VERTICAL == orientation ? 'y' : 'x')] = tVal;
-                        that._content.translateTo(coord, newTime, function () { that._content.stopAnimation(); });
+                        that._content.translateTo(coord, newTime, function () { that._content.stopAnimation(); }, 'ease-out');
 
                         coord[(Scroll.VERTICAL == orientation ? 'y' : 'x')] = that._determineScrollbarTranslate(tVal, orientation);
                         that[['_', orientation, 'scrollbar'].join('')].translateTo(coord, newTime, function () { that[['_', orientation, 'scrollbar'].join('')].stopAnimation(); }, 'ease-out');
@@ -232,7 +232,7 @@ var oo = (function (oo) {
 
                 }
 
-                if (Scroll.VERTICAL == that._orientation || Scroll.BOTH == that._orientation) {                
+                if (Scroll.VERTICAL == that._orientation || Scroll.BOTH == that._orientation) {
                     adjustPos(Scroll.VERTICAL);
                 }
 
@@ -246,7 +246,7 @@ var oo = (function (oo) {
         _render : function _render(){
             this._wrapper.classList.addClass('oo-list-wrapper');
 
-            this._initListeners();        
+            this._initListeners();
 
             this._renderScrollbars();
         },
