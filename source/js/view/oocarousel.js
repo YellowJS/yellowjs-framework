@@ -35,7 +35,7 @@ var oo = (function (oo) {
 
             Carousel.Super.call(this, conf);
             
-            this._transitionDuration = 200;
+            this._transitionDuration = opt.duration || 200;
 
             if (opt){
                 if(!opt.hasOwnProperty('model') || !opt.hasOwnProperty('elementCls')){
@@ -129,7 +129,7 @@ var oo = (function (oo) {
                     }
                 }
             }
-            
+
             this._items[id].onEnable();
             this.translateTo({x:nT}, this._transitionDuration);
             this._startTranslate = nT;
@@ -243,7 +243,7 @@ var oo = (function (oo) {
           var that = this;
           this._pager = this._displayPager;
           this._pager.addListener(oo.view.List.EVT_ITEM_RELEASED, function(dom, id){
-            if(parseInt(id,10) === that._activePanel) return;
+            if(parseInt(id,10) === that._activePanel || !that._available) return;
 
             that.showPanel(parseInt(id,10));
           });
