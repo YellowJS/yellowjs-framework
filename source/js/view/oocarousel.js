@@ -97,9 +97,51 @@ var oo = (function (oo) {
                 throw new Error("Missing 'id' of the panel");
             }
 
-            if(id === this._activePanel) return;
+
+
+            if( id !== this._activePanel && this._datas[id] && this._available){
+                //before transition add the new panel if it not in the dom
+                if(id > this._activePanel+1){
+                    this._updateNext(id);
+                    this._upPrev = true;
+                }
+                
+                if(id < this._activePanel-1){
+                    this._updatePrev(id);
+                    this._upNext = true;
+                }
+            }
+            this._available = false;
+            var s = (id < this._activePanel ? +1 : -1 ), nT;
+
+            if(id >= 0 && id <= this._nbPanel && id !== this._activePanel){
+                nT =  this._startTranslate + s * this._panelWidth;
+            } else {
+                if( id === this._activePanel) {
+                    nT =  this._startTranslate;
+                } else {
+                   if(id < 0){
+                        nT = 0;
+                        id = 0;
+                    } else {
+                        nT =  this._startTranslate;
+                        id = this._nbPanel;
+                    }
+                }
+            }
+            
+            this._items[id].onEnable();
+            this.translateTo({x:nT}, this._transitionDuration);
+            this._startTranslate = nT;
+            //store new id for endTransition
+            this._newPanel = id;
+
+            /*if(id === this._activePanel) return;
 
             if(!this._datas[id] || id === this._activePanel || !this._available) return;
+
+            
+
 
             this._available = false;
 
@@ -136,7 +178,10 @@ var oo = (function (oo) {
             this.translateTo({x:nT}, this._transitionDuration);
             this._startTranslate = nT;
             //store new id for endTransition
-            this._newPanel = id;
+            this._newPanel = id;*/
+        },
+        _moveToStartPlace : function _replace(){
+            
         },
         _updateNext : function _updateNext(nextId){
             //remove last
@@ -157,7 +202,6 @@ var oo = (function (oo) {
             return item;
         },
         _prepareItem : function _prepareItem(id){
-          console.log(this._datas[id]);
             var item , elementCls = this._datas[id].elementCls;
 
             if( 'undefined' === this._elementCls[elementCls] || 'function' !== typeof this._elementCls[elementCls]){
@@ -199,6 +243,8 @@ var oo = (function (oo) {
           var that = this;
           this._pager = this._displayPager;
           this._pager.addListener(oo.view.List.EVT_ITEM_RELEASED, function(dom, id){
+            if(parseInt(id,10) === that._activePanel) return;
+
             that.showPanel(parseInt(id,10));
           });
         },

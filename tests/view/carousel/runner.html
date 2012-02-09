@@ -12,20 +12,20 @@
     body {  }
     body, html { overflow:hidden; height:100%; width:100%;}
 
-    #carousel { width:2304px; height:400px; -webkit-transform:translate3d(0,0,0); -webkit-backface-visibility:hidden;}
-    #carousel > div { display: block; float:left; height:200px; width:25%; -webkit-transform:translateZ(0);}
+    #carousel {height:400px; -webkit-transform:translate3d(0,0,0); -webkit-backface-visibility:hidden;}
+    #carousel > div { display: block; float:left; height:200px; width:100%;  -webkit-transform:translateZ(0);}
     .dot { display: inline-block; width:20px; height:20px; background: #ccc; border-radius:20px;}
 
     @media screen and (min-width: 768px) and (max-width:1024px) {
-      #carousel > div { width:768px;}
+      /*#carousel > div { width:768px;}*/
     }
 
     @media screen and (max-width: 768px) {
-      #carousel > div { width:768px;}
+      /*#carousel > div { width:768px;}*/
     }
 
     @media screen and (max-width: 480px) {
-      #carousel > div { width:320px;}
+      /*#carousel > div { width:320px;}*/
     }
   </style>
 
