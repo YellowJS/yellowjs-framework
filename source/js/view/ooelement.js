@@ -58,8 +58,18 @@
             this.clear();
             return tplEng.render(tpl, data || {});
             //this.appendHtml(tplEng.render(tpl, data || {}));
+        },
+        // do exactly the same thing as the oo.createElement, but add a prefix to the el property
+        // in order to "scope" the newly created element into the current one
+        createElement: function createElement (type, opt) {
+            if (opt.el)
+                opt.el = '#' + this.getId() + ' ' + opt.el;
+            return oo.createElement(type, opt);
+        },
+        setScrollable: function setScrollable (orientation) {
+            //if (null === this.getDomObject.querySelector('.content'))
+            var scroll = new oo.view.Scroll(this.getDomObject(), orientation, orientation);
         }
-
     });
 
     oo.view.Element.register(Element, 'node');
