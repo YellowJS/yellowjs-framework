@@ -47,6 +47,7 @@ var oo = (function (oo) {
     });
      
     view.Button = Button;
+    oo.view.Element.register(Button, 'button');
     return oo;
      
 })(oo || {});

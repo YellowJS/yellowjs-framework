@@ -54,9 +54,8 @@
 
             if(!tpl) return;
             var tplEng = Element.getTemplateEngine();
-            
-            this.clear();
 
+            this.clear();
             return tplEng.render(tpl, data || {});
             //this.appendHtml(tplEng.render(tpl, data || {}));
         }

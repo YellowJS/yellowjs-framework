@@ -11,21 +11,20 @@
     *{ margin:0; padding:0;}
     body {  }
     body, html { overflow:hidden; height:100%; width:100%;}
-
-    #carousel {height:400px; -webkit-transform:translate3d(0,0,0); -webkit-backface-visibility:hidden;}
-    #carousel > div { display: block; float:left; height:200px; width:100%;  -webkit-transform:translateZ(0);}
-    .dot { display: inline-block; width:20px; height:20px; background: #ccc; border-radius:20px;}
+    #pager { overflow: hidden;}
+    #pager li { width:200px; height:142px; float: left; list-style:none; margin-left:20px;}
+    #pager img { max-width:100%}
 
     @media screen and (min-width: 768px) and (max-width:1024px) {
-      /*#carousel > div { width:768px;}*/
+      
     }
 
     @media screen and (max-width: 768px) {
-      /*#carousel > div { width:768px;}*/
+      
     }
 
     @media screen and (max-width: 480px) {
-      /*#carousel > div { width:320px;}*/
+      
     }
   </style>
 
@@ -69,9 +68,8 @@
   </head>
 
   <body>
-      <div id="carousel"></div>
-      <a href="#" id="showpanel">Panel 4</a>
-      <div id="list"></div>
+      <div id="pager"></div>
+      
       <!-- include spec files here... -->
       <!-- include source files here... -->
       <script type="text/javascript">
@@ -83,20 +81,22 @@
       <script type="text/javascript" src="../../../source/js/vendor/mustache.js"></script>
       <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>
       <script type="text/javascript" src="../../../source/js/core/mixins/ooevents.js"></script>
+
       <script type="text/javascript" src="../../../source/js/core/ootouch.js"></script>  
-      <script type="text/javascript" src="../../../source/js/core/oogesture.js"></script>
       <script type="text/javascript" src="../../../source/js/view/oodom.js"></script>
-      <script type="text/javascript" src="../../../source/js/view/oopanel.js"></script>
       <script type="text/javascript" src="../../../source/js/view/ooelement.js"></script>
       <script type="text/javascript" src="../../../source/js/view/oomodelelement.js"></script>
       <script type="text/javascript" src="../../../source/js/data/ooprovider.js"></script>
       <script type="text/javascript" src="../../../source/js/data/oofakeprovider.js"></script>
       <script type="text/javascript" src="../../../source/js/data/oomodel.js"></script>
-      <script type="text/javascript" src="../../../source/js/view/oocarousel.js"></script>
       <script type="text/javascript" src="../../../source/js/view/oolist.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/oopager.js"></script>
       <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplate.js"></script>
       <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplatemustache.js"></script>
       <script type="text/javascript" src="../../../source/js/view/ooviewport.js"></script>
+      <script type="text/javascript" src="../../../source/js/router/oocontroller.js"></script>
+      <script type="text/javascript" src="../../../source/js/router/oorouter.js"></script>
        <script type="text/javascript" src="spec.js"></script>
+
   </body>
   </html>

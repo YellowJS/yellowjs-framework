@@ -85,33 +85,60 @@ describe("oocarousel.js", function() {
         });*/
     });
 
-    it('showPanel',function(){
-        var elementCls = {};
-        
-        elementCls.elementA = oo.Class(oo.view.Element, {
-            constructor : function () {
-                elementCls.elementA.Super.call(this, {
-                    target:document.createElement('div'),
-                    template:'<img src="{{picture}}" style=" height:200px; width:100%; display:block;" />'
-                });
-            },
-            onRendered : function onRendered(){
-                alert('element A');
-            }
+        it('showPanel',function(){
+            var elementCls = {};
+            
+            elementCls.elementA = oo.Class(oo.view.Element, {
+                constructor : function () {
+                    elementCls.elementA.Super.call(this, {
+                        target:document.createElement('div'),
+                        template:'<h1>{{title}}</h1><img src="{{picture}}" style=" height:200px; display:block;" />'
+                    });
+                },
+                onEnable : function onEnable(){
+                    //console.log('element A');
+                }
+            });
+
+
+            /*var list2 = oo.createElement('list', {
+                model : model,
+                'template' : '<span class="h1">{{firstname}}</span> | <span class="h2">{{nickname}}</span>',
+                'target' : '#target'
+            });*/
+            
+            
+            var list  = oo.createElement('list', {
+                'template' : 'test',
+                'target' : '#list'
+            });
+
+
+            var optCarousel = {
+                el : "#carousel",
+                pager : list,
+                model : model,
+                elementCls : elementCls
+            };
+
+            //window.carousel = new oo.view.Carousel('#carousel', false, optCarousel);
+            window.carousel = oo.createElement('carousel',optCarousel);
+
+            /*expect(function(){
+                carousel.showPanel();
+            }).toThrow("Missing 'id' of the panel");
+           
+            var lnk = document.querySelector('#showpanel');
+            
+            lnk.addEventListener('click',function(e){
+                e.preventDefault();
+                carousel.showPanel(4);
+            },false);*/
+           
+           
+            
         });
 
-
-        var optCarousel = {
-            model : model,
-            elementCls : elementCls
-        };
-
-        var carousel = new oo.view.Carousel('#carousel', false, optCarousel);
-
-        expect(function(){
-            carousel.showPanel();
-        }).toThrow("Missing 'id' of the panel");
-        
     });
 
 });

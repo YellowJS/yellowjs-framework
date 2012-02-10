@@ -31,7 +31,7 @@
                 var t = new Dom(target);
                 var itemId;
                 if (t.classList.hasClass('oo-list-item')) {
-                    itemId = t.getDomObject().className.match(/item-(.*)/)[1] || t.getId();
+                    itemId = t.getDomObject().getAttribute('data-id') || t.getId();
                 } else {
                     var altTarget = t.findParentByCls('oo-list-item');
                     if (altTarget) {
@@ -50,6 +50,7 @@
             var that = this;
             var check;
             this.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
+
                 this._touchedItem = e.target;
                 check = checkTarget(e.target);
                 if (false !== check) {
