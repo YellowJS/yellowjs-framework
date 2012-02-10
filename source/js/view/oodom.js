@@ -96,17 +96,14 @@
             this._cacheTpl = null;
 
             if (typeof identifier == 'string') {
-                var n = document.querySelector(identifier);
-                if (null === n)
-                    throw "Invalid selector node doesn't exists";
-
-                this.setDomObject(n);
+                this._identifier = identifier;
             }
-            else /*if (identifier instanceof DOMNode)*/ {
+            else if (identifier instanceof Object) {
                 this.setDomObject(identifier);
+            } else {
+                throw "Fatal Error : No identifier !";
             }
             this.generateAccessor();
-            this.classList = new ClassList(this._dom);
         },
         // destructor
         destroy : function destroy (){
@@ -126,12 +123,12 @@
              * generates accessors fonction
              */
             for (i=0, len=prop.readOnly.length; i<len; i++) {
-                eval(['p.get', prop.readOnly[i].charAt(0).toUpperCase(), prop.readOnly[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop.readOnly[i], ' : (window.getComputedStyle(this._dom).', prop.readOnly[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readOnly[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
+                eval(['p.get', prop.readOnly[i].charAt(0).toUpperCase(), prop.readOnly[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this.getDomObject()).', prop.readOnly[i], ' : (window.getComputedStyle(this.getDomObject()).', prop.readOnly[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readOnly[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
             }
 
             for (i=0, len=prop.readWrite.length; i<len; i++) {
-                eval(['p.get', prop.readWrite[i].charAt(0).toUpperCase(), prop.readWrite[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this._dom).', prop.readWrite[i], ' : (window.getComputedStyle(this._dom).', prop.readWrite[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readWrite[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
-                eval(['p.set', prop.readWrite[i].charAt(0).toUpperCase(), prop.readWrite[i].slice(1), ' = function (val, unit) { if (this._cached[\'', prop.readWrite[i], '\'] || this._cached[[\'', prop.readWrite[i], '\', \'u\'].join(\'\')]) { this._cached[\'', prop.readWrite[i], '\'] = this._cached[[\'', prop.readWrite[i], '\', \'u\'].join(\'\')] = null; } this._dom.style.', prop.readWrite[i], ' = [val, (undefined !== unit ? unit : \'\')].join(\'\'); return this };'].join(''));
+                eval(['p.get', prop.readWrite[i].charAt(0).toUpperCase(), prop.readWrite[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this.getDomObject()).', prop.readWrite[i], ' : (window.getComputedStyle(this.getDomObject()).', prop.readWrite[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readWrite[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readWrite[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
+                eval(['p.set', prop.readWrite[i].charAt(0).toUpperCase(), prop.readWrite[i].slice(1), ' = function (val, unit) { if (this._cached[\'', prop.readWrite[i], '\'] || this._cached[[\'', prop.readWrite[i], '\', \'u\'].join(\'\')]) { this._cached[\'', prop.readWrite[i], '\'] = this._cached[[\'', prop.readWrite[i], '\', \'u\'].join(\'\')] = null; } this.getDomObject().style.', prop.readWrite[i], ' = [val, (undefined !== unit ? unit : \'\')].join(\'\'); return this };'].join(''));
             }
 
             // read translation values from dom or from cache
@@ -153,7 +150,7 @@
         },
         getWebkitTransform : function getWebkitTransform (noCache) {
             if (!this._cached.webkitTransform || noCache) {
-                this._cached.webkitTransform = window.getComputedStyle(this._dom).webkitTransform;
+                this._cached.webkitTransform = window.getComputedStyle(this.getDomObject()).webkitTransform;
             }
             return this._cached.webkitTransform;
         },
@@ -164,7 +161,7 @@
             }
 
             
-            this._dom.style.webkitTransform = value;
+            this.getDomObject().style.webkitTransform = value;
 
             return this;
         },
@@ -194,28 +191,43 @@
         },
         // setters for internal dom object
         setDomObject : function setDomObject (domNode) {
+
+            if (typeof domNode == 'string') {
+                var n = document.querySelector(domNode);
+                if (null === n)
+                    throw "Invalid selector node doesn't exists";
+
+                domNode = n;
+            }
+
             this._dom = domNode;
 
             if (this._dom && !('id' in this._dom)) {
                 this._dom.id = oo.generateId(this._dom.tagName);
             }
 
+            this.classList = new ClassList(this.getDomObject());
+
             return this;
         },
         // getter for internal dom object
         getDomObject : function getDomObject () {
+            if (!this._dom) {
+                this.setDomObject(this._identifier);
+            }
+
             return this._dom;
         },
         // find a child element of the current node according to the given selector
         find : function find (selector) {
-            var n = this._dom.querySelector(selector);
+            var n = this.getDomObject().querySelector(selector);
             if (null === n)
                 return null;
             else
                 return new Dom(n);
         },
         findParentByCls : function findParentByCls (cls) {
-            var p = this._dom.parentNode;
+            var p = this.getDomObject().parentNode;
             var pattern = new RegExp(cls);
             while (!pattern.test(p.className) && p && (Node.DOCUMENT_NODE !== p.nodeType)) {
                 p = p.parentNode;
@@ -230,16 +242,16 @@
         // append a node to the current node children list
         // wrapper for the native API
         appendDomNode : function appendDomNode (domNode) {
-            this._dom.appendChild(domNode);
+            this.getDomObject().appendChild(domNode);
 
             return this;
         },
         // append a node on top to the current node children list
         // wrapper for the native API
         prependDomNode : function prependDomNode (domNode) {
-            //var ref = this._dom.firstChild;
-            //console.log(this._dom)
-            this._dom.insertBefore(domNode, this._dom.firstChild);
+            //var ref = this..getDomObject().firstChild;
+            //console.log(this..getDomObject())
+            this.getDomObject().insertBefore(domNode, this.getDomObject().firstChild);
 
             return this;
         },
@@ -268,22 +280,22 @@
             return this;
         },
         appendHtml : function appendHtml (html) {
-            this._dom.innerHTML = [this._dom.innerHTML, html].join('');
+            this.getDomObject().innerHTML = [this.getDomObject().innerHTML, html].join('');
 
             return this;
         },
         removeChild : function removeChild(node){
-            this._dom.removeChild(node);
+            this.getDomObject().removeChild(node);
         },
         clear : function clear () {
-            this._dom.innerHTML = '';
+            this.getDomObject().innerHTML = '';
 
             return this;
         },
         // stop animation by setting the duration to 0
         stopAnimation : function stopAnimation () {
             this.setWebkitTransitionDuration(0, 'ms');
-            this._dom.removeEventListener('webkitTransitionEnd');
+            this.getDomObject().removeEventListener('webkitTransitionEnd');
 
             return this;
         },
@@ -317,24 +329,24 @@
             }
 
             var that = this, endListener = function endListener (e) {
-                that._dom.removeEventListener('webkitTransitionEnd', this);
+                that.getDomObject().removeEventListener('webkitTransitionEnd', this);
                 that.setWebkitTransitionDuration(currentTransitionDuration, 'ms');
                 that.setWebkitTransitionTimingFunction(currentTimingFunction, '');
                 if (listener) {
                     listener.call(that, e);
                 }
             };
-            this._dom.addEventListener('webkitTransitionEnd', endListener, false);
+            this.getDomObject().addEventListener('webkitTransitionEnd', endListener, false);
 
             this.setTranslations(coord.x, coord.y);
 
             return this;
         },
         setId: function setId(id) {
-            this._dom.id = id;
+            this.getDomObject().id = id;
         },
         getId: function getId(id) {
-            return this._dom.id;
+            return this.getDomObject().id;
         },
         setTemplate : function setTemplate (tpl) {
             this._template = tpl;
