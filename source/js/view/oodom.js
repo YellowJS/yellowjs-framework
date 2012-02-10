@@ -202,7 +202,7 @@
 
             this._dom = domNode;
 
-            if (this._dom && !('id' in this._dom)) {
+            if (domNode && (!('id' in domNode) || domNode.id === '')) {
                 this._dom.id = oo.generateId(this._dom.tagName);
             }
 
