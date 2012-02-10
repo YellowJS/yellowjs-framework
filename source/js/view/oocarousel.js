@@ -61,6 +61,7 @@ var oo = (function (oo) {
             this._model.fetch(function(datas){
                 that._datas = datas;
                 that._addPanel(0);
+                this._activePanel = 0;
                 that._addPanel(1);
                 that._prepareView(opt);
             });
@@ -94,13 +95,12 @@ var oo = (function (oo) {
             this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
 
             item.onEnable();
+
         },
         showPanel : function showPanel(id){
             if('undefined' === typeof id){
                 throw new Error("Missing 'id' of the panel");
             }
-
-
 
             if( id !== this._activePanel && this._datas[id] && this._available){
                 //before transition add the new panel if it not in the dom
@@ -133,7 +133,6 @@ var oo = (function (oo) {
                 }
             }
 
-            this._items[id].onEnable();
             this.translateTo({x:nT}, this._transitionDuration);
             this._startTranslate = nT;
             //store new id for endTransition
