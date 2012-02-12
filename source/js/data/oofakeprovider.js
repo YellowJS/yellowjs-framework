@@ -1,7 +1,7 @@
 (function (oo) {
     
     var global = this, ns = oo.getNS('oo.data');
-    var FakeProvider = ns.FakeProvider = my.Class(oo.data.Provider, {
+    var FakeProvider = ns.FakeProvider = oo.Class(oo.data.Provider, {
         _data: [{
             'key' : 0,
             'firstname': 'claire',
