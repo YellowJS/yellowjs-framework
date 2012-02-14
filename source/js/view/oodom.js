@@ -324,7 +324,7 @@
             this.setWebkitTransitionDuration(duration, 'ms');
 
             var currentTimingFunction = this.getWebkitTransitionTimingFunction();
-            if (typeof timmingFunction === 'string') {
+            if (typeof timingFunction === 'string') {
                 this.setWebkitTransitionTimingFunction(timingFunction, '');
             }
 
