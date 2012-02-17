@@ -14,7 +14,10 @@ var oo = (function(oo){
 
     var Controller = ns.Controller = my.Class({
         _controllers : {},
-        constructor : function constructor(){}
+        constructor : function constructor(){},
+        getViewport: function getViewport() {
+            return oo.getViewport();
+        }
     });
  
     return oo;

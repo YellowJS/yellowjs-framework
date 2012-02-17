@@ -252,14 +252,15 @@ var oo = (function (oo) {
           });
         },
         _updatePager : function _updatePager() {
-          return
-            if (this._displayPager) {
-                var current = this._pager.getDomObject().querySelector('.dot.active');
-                if (current) {
-                    current.className = current.className.replace(/ *active/, '');
-                }
-                this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
-            }
+            // todo : this is a bit strange... :s
+            return;
+            // if (this._displayPager) {
+            //     var current = this._pager.getDomObject().querySelector('.dot.active');
+            //     if (current) {
+            //         current.className = current.className.replace(/ *active/, '');
+            //     }
+            //     this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
+            // }
         },
         hasMoved : function hasMoved() {
             return this._moved;

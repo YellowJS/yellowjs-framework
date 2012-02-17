@@ -31,14 +31,19 @@
         },
         render: function render() {
             this.classList.addClass('oo-panel');
-
-            Panel.Super.prototype.render.call(this);
             
             for (var id in this._uiElements) {
                 var el = this._uiElements[id];
                 if (el.needToRender())
-                    el.render();
+                    el.renderTo(this);
             }
+
+            return this.getDomObject();
+
+        },
+        destroy: function destroy () {
+            // for (var id in this._uiElements)
+            //     this._uiElements[id].destroy();
         },
         show: function show(direction) {
             this.setDisplay('block', '');

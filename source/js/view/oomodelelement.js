@@ -27,12 +27,8 @@
         prepareData: function prepareData(data) {
             return data;
         },
-        render: function render (data, tpl) {
-            if (!data)
-                data = {};
-            
-            return ModelElement.Super.prototype.render.call(this, this.prepareData(data));
-            
+        render: function render (data) {
+            return ModelElement.Super.prototype.render.call(this, this.prepareData(data || {}));
         }
 
     });

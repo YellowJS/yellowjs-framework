@@ -280,7 +280,7 @@
             return this;
         },
         appendHtml : function appendHtml (html) {
-            this.getDomObject().innerHTML = [this.getDomObject().innerHTML, html].join('');
+            this.getDomObject().innerHTML += html;
 
             return this;
         },

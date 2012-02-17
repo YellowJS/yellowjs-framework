@@ -120,8 +120,20 @@ oo = pline = (function (window) {
             return oo.router.router || ( oo.router.router = new oo.router.Router());
         },
 
+        initViewport: function getViewport(identifier) {
+            var ns = this.getNS('oo.view');
+            ns.viewport = new oo.view.Viewport(identifier);
+            return ns.viewport;
+        },
+
         getViewport: function getViewport() {
-            return oo.view.viewport;
+            var ns = this.getNS('oo.view');
+            if (ns.viewport) {
+                return ns.viewport;
+            } else {
+                return this.initViewport();
+            }
+            
         },
 
         createPanel: function createPanel(panel) {
@@ -134,7 +146,7 @@ oo = pline = (function (window) {
             var Tmp = panel.constructor = function () {
                 Tmp.Super.call(this);
             };
-            var p = my.Class(oo.view.Panel, panel);
+            var p = oo.Class(oo.view.Panel, panel);
 
             oo.getViewport().register(id, p);
 

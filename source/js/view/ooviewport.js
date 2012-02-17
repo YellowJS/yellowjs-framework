@@ -1,9 +1,9 @@
-var oo = (function (oo) {
+(function (oo) {
     
     // shorthand
-    var exports = oo.getNS('oo.view'), global = this;
+    var global = this;
 
-    var Viewport = exports.Viewport = oo.Class(oo.view.Dom, oo.core.mixins.Events, {
+    var Viewport = oo.getNS('oo.view').Viewport = oo.Class(oo.view.Dom, oo.core.mixins.Events, {
 
         STATIC : {
             ANIM_RTL : 'rtl',
@@ -34,26 +34,26 @@ var oo = (function (oo) {
         },
         /**
          * add a panel to the viewport
-         * @param view {string} a template string
          * @param identifier {string} a name that will be used as reference to the panel
-         * @autoShow {bool} will render/show the panel directly after adding it
-         * @autoRender {bool|string} will render the panel directly after adding - if the autoShow param is set to true then it is used as animDirection
-         * @animDirection {string} define an animation (use constant)
+         * @parma autoShow {bool} [OPTIONAL] will render/show the panel directly after adding it
+         * @param autoRender {bool|string} [OPTIONAL] will render the panel directly after adding - if the autoShow param is set to true then it is used as animDirection
+         * @param animDirection {string} [OPTIONAL] define an animation (use constant)
          **/
         addPanel : function addPanel(identifier, autoShow, autoRender, animDirection){
             
             var p = new (this._panelClasses[identifier])();
+            p.setId(identifier);
 
             this._panels.push(p);
             this._panelsDic.push(identifier);
 
             if (autoShow) {
                 animDirection = autoRender || animDirection;
-                p.render();
+                p.renderTo(this);
                 this.showPanel(identifier, animDirection);
             } else {
                 if (autoRender) {
-                    p.render();
+                    p.renderTo(this);
                 }
             }
         },
@@ -119,10 +119,6 @@ var oo = (function (oo) {
 
             this.getPanel(index).show(direction || Viewport.ANIM_RTL);
 
-            if (!this.panelIsEnable(index)) {
-                this._enablePanel(index);
-            }
-
             this._focusedStack.push(index);
 
         },
@@ -177,10 +173,5 @@ var oo = (function (oo) {
                 fn.call(global, this.getPanel(this._identifierToIndex(identifier)));
         }
     });
-
-    exports.viewport = new Viewport();
-    // exports.Viewport = Viewport;
-    
-    return oo;
     
 })(oo || {});

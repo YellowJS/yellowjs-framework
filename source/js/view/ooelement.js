@@ -64,9 +64,16 @@
             if(!tpl) return;
             var tplEng = Element.getTemplateEngine();
 
-            this.clear();
-            return tplEng.render(tpl, data || {});
+            var html = tplEng.render(tpl, data || {});
+
             //this.appendHtml(tplEng.render(tpl, data || {}));
+        },
+        renderTo: function render (target, data, tpl) {
+            var content = this.render(data, tpl);
+            if (typeof content === 'string')
+                target.appendHtml(content);
+            else
+                target.appendChild(content);
         },
         // do exactly the same thing as the oo.createElement, but add a prefix to the el property
         // in order to "scope" the newly created element into the current one
