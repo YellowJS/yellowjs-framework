@@ -109,7 +109,8 @@
             }
         },
         fetch: function fetch (callback) {
-            callback.success.call(global, this._data);
+            if (callback && 'success' in callback)
+                callback.success.call(global, this._data);
         }
     });
 

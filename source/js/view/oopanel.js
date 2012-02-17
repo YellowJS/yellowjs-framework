@@ -6,7 +6,7 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-(function () {
+(function (oo) {
 
     var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, {
         // references elements registered into this view
@@ -58,11 +58,7 @@
                 anim_duration = Viewport.ANIM_DURATION;
             }
 
-            if (!this.panelIsEnable(index)) {
-                this._enablePanel(index);
-            }
-
-            this.getPanel(index).translateTo({x:0}, anim_duration);
+            this.translateTo({x:0}, anim_duration);
 
             this.triggerEvent('onShow');
         },
@@ -93,4 +89,4 @@
         }
     });
 
-})();
+})(oo || {});

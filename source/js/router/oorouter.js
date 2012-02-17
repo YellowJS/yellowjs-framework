@@ -12,7 +12,7 @@ var oo = (function(oo){
     var ns = oo.getNS('oo.router');
 
 
-    var Router = ns.Router= my.Class(null, oo.core.mixins.Events,{
+    var Router = ns.Router= oo.Class(null, oo.core.mixins.Events,{
         constructor : function constructor(){
             this._routes = {};
             this._registeredControllers = {};

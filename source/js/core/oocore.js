@@ -10,22 +10,10 @@
 var pline, oo;
 oo = pline = (function (window) {
 
-    // bootstrap oo apps
-
-    // var root = this;
-
-    // var previousOo = root.oo;
-
-    // var Flavius;
-    // Flavius = root.oo = {};
-
-    // Flavius;
-
     var _globalConfig = {
         templateEngine: 'mustache'
     };
 
-//    var Core = my.Class({
     return {
         /**
          * proxy to the my.Class
@@ -180,14 +168,5 @@ oo = pline = (function (window) {
             });
         }
     };
-    // });
-
-    // oo.utils.namespace is now deprecated
-    // export an instance of Utils class on the right namespace
-    // oo = new Core();
-    // var ns = oo.getNS('oo.core');
-    // ns.utils = oo;
-
-    // return oo;
 
 })(window);

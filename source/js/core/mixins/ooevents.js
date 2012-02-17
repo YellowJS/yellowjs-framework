@@ -7,7 +7,7 @@
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  * @author Claire Sosset <claire.sosset@gmail.com> || @Claire_So
  */
-var oo = (function (oo) {
+(function (oo) {
     
     //var listeners = {};
     
@@ -82,7 +82,5 @@ var oo = (function (oo) {
     
     var exports = oo.getNS('oo.core.mixins');
     exports.Events = Events;
-    
-    return oo;
-    
+        
 })(oo || {});

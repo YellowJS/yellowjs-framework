@@ -1,6 +1,5 @@
 (function (oo){
     var global = this,
-        view = oo.getNS('oo.view'),
         viewRepository = {};
     
     var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, {
@@ -29,6 +28,13 @@
             },
             templateEngine : null
         },
+
+        // read only property
+        _needToRender: true,
+        needToRender: function needToRender() {
+            return this._needToRender;
+        },
+        
         _tpl : null,
         constructor: function constructor (options) {
             if(!options || typeof options != 'object')
@@ -49,6 +55,9 @@
             this._tpl = tpl || '';
         },
         render: function render (data, tpl) {
+            if (!data)
+                data = this._model.getData();
+
             if (!tpl || '' === tpl)
                 tpl = this._tpl;
 

@@ -6,9 +6,9 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var oo = (function (oo) {
+(function (oo) {
 
-//var hasTouch = 'ontouchstart' in window ? true : false;
+    var hasTouch = 'ontouchstart' in window ? true : false;
     var getPosition = function getPosition (e, index) {
         var touch = null;
          
@@ -55,7 +55,5 @@ var oo = (function (oo) {
      
     var exports = oo.getNS('oo.core');
     exports.Touch = Touch;
-     
-    return oo;
-    
+         
 })(oo || {});

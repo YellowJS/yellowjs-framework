@@ -23,7 +23,7 @@ describe("ootemplateenginemustache.js", function() {
       });
  
       it('list items length must be equal to 2', function(){
-         expect(items.length).toEqual(2);
+         expect(items.length).toEqual(10);
       });
  
       it('first item content must be value1', function(){
