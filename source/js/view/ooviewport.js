@@ -50,13 +50,13 @@
             if (autoShow) {
                 animDirection = autoRender || animDirection;
                 if (!this.panelIsEnable(identifier))
-                    this._enablePanel(p);
+                    this._enablePanel(identifier);
 
                 this.showPanel(identifier, animDirection);
             } else {
                 if (autoRender) {
                     if (!this.panelIsEnable(identifier))
-                        this._enablePanel(p);
+                        this._enablePanel(identifier);
                 }
             }
         },
@@ -70,13 +70,15 @@
         _indexToIdentifier : function _indexToIdentifier(index){
            return this._panelsDic[index];
         },
-        _enablePanel : function _enablePanel(panel){
+        _enablePanel : function _enablePanel(identifier){
+            var index = this._identifierToIndex(identifier);
+            var panel = this._panels[index];
             panel.renderTo(this);
 
             this._enabledPanels.push(index);
 
-            if ('onEnabled' in this._panels[index]) {
-                this._panels[index].onEnabled();
+            if ('onEnabled' in panel) {
+                panel.onEnabled();
             }
         },
         getFocusedPanel : function getFocusedPanel(getIndex){
