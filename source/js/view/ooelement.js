@@ -59,7 +59,7 @@
             if (!tpl || '' === tpl)
                 tpl = this._tpl;
 
-            if(!tpl) return;
+            if(!tpl) return '';
             var tplEng = Element.getTemplateEngine();
 
             return tplEng.render(tpl, data || {});
