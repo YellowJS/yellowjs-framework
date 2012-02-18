@@ -12,7 +12,7 @@
             ANIM_DURATION : 750
         },
         constructor : function constructor(root){
-            root = root || 'body';
+            root = root || oo.getConfig('viewportSelector');
 
             Viewport.Super.call(this, root);
 

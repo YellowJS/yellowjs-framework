@@ -11,7 +11,8 @@ var pline, oo;
 oo = pline = (function (window) {
 
     var _globalConfig = {
-        templateEngine: 'mustache'
+        templateEngine: 'mustache',
+        viewportSelector: 'body'
     };
 
     return {
