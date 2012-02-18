@@ -1,24 +1,33 @@
-/** 
+/**
  * Class let's you transform any dom node into button and manage interaction
- * 
+ *
  * @namespace oo
  * @class Button
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var oo = (function (oo) {
+(function (oo) {
  
-    var view = oo.getNS('oo.view'), Touch = oo.core.Touch; 
+    var Touch = oo.core.Touch;
     //Events = oo.Events;
      
-    var Button = my.Class(oo.view.Dom, oo.core.mixins.Events, {
+    var Button = oo.getNS('oo.view').Button = oo.Class(oo.view.Dom, oo.core.mixins.Events, {
         STATIC : {
             EVT_TOUCH : 'touch',
             EVT_RELEASE : 'release'
         },
-        constructor : function constructor(selector) {
+        constructor : function constructor(opt) {
+
+            if(!opt || typeof opt != 'object')
+                throw "call Element constructor but \"options\" missing";
+
+            // target property is deprecated - use el instead
+            if(!opt.hasOwnProperty('el'))
+                throw "call Element constructor but \"el\" property of object options is missing";
+
+            Button.Super.call(this, opt.el);
+
             this._active = false;
-            Button.Super.call(this, selector);
             this._initEvents();
         },
         _initEvents : function _initEvents() {
@@ -26,7 +35,7 @@ var oo = (function (oo) {
             this._dom.addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
         },
         _onTouch : function _onTouch(e) {
-            this.setActive(true);            
+            this.setActive(true);
             this.triggerEvent(Button.EVT_TOUCH, [this, e]);
         },
         _onRelease : function _onRelease(e) {
@@ -38,7 +47,7 @@ var oo = (function (oo) {
         },
         /**
          * set the active state of the button
-         * @param actice {bool} "true" to set as active "false" to not 
+         * @param actice {bool} "true" to set as active "false" to not
          **/
         setActive : function setActive (active) {
             this._active = !!active;
@@ -46,8 +55,6 @@ var oo = (function (oo) {
         }
     });
      
-    view.Button = Button;
     oo.view.Element.register(Button, 'button');
-    return oo;
      
 })(oo || {});
