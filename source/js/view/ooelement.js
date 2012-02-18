@@ -40,10 +40,11 @@
             if(!options || typeof options != 'object')
                 throw "call Element constructor but \"options\" missing";
 
-            if(!options.hasOwnProperty('target'))
-                throw "call Element constructor but \"target\" property of object options is missing";
+            // target property is deprecated - use el instead
+            if(!options.hasOwnProperty('target') && !options.hasOwnProperty('el'))
+                throw "call Element constructor but \"el\" property of object options is missing";
 
-            Element.Super.call(this, options.target);
+            Element.Super.call(this, options.el || options.target);
 
             if( options.hasOwnProperty('template') ){
                 this.setTemplate(options.template);
