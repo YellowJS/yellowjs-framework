@@ -65,9 +65,7 @@
             if(!tpl) return;
             var tplEng = Element.getTemplateEngine();
 
-            var html = tplEng.render(tpl, data || {});
-
-            //this.appendHtml(tplEng.render(tpl, data || {}));
+            return tplEng.render(tpl, data || {});
         },
         renderTo: function render (target, data, tpl) {
             var content = this.render(data, tpl);

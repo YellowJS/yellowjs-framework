@@ -71,15 +71,17 @@
            return this._panelsDic[index];
         },
         _enablePanel : function _enablePanel(identifier){
-            var index = this._identifierToIndex(identifier);
-            var panel = this._panels[index];
-            panel.renderTo(this);
+            var index = this._identifierToIndex(identifier),
+                panel = this._panels[index];
 
-            this._enabledPanels.push(index);
+            panel.renderTo(this);
 
             if ('onEnabled' in panel) {
                 panel.onEnabled();
             }
+            panel.initElement();
+
+            this._enabledPanels.push(index);
         },
         getFocusedPanel : function getFocusedPanel(getIndex){
             index = this._focusedStack[this._focusedStack.length - 1];

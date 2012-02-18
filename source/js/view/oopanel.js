@@ -13,7 +13,7 @@
         _uiElements: {},
         constructor: function constructor() {
 
-            Panel.Super.call(this, {target: document.createElement('div')});
+            Panel.Super.call(this, {el: document.createElement('div')});
 
             if ('init' in this)
                 this.init();
@@ -31,6 +31,9 @@
         },
         render: function render() {
             this.classList.addClass('oo-panel');
+            this.appendHtml(Panel.Super.prototype.render.call(this));
+        },
+        initElement: function initElement() {
             
             for (var id in this._uiElements) {
                 var el = this._uiElements[id];
@@ -38,8 +41,7 @@
                     el.renderTo(this);
             }
 
-            return this.getDomObject();
-
+            return this;
         },
         destroy: function destroy () {
             // for (var id in this._uiElements)
