@@ -171,6 +171,7 @@ oo = pline = (function (window) {
             if (typeof fn !== 'function')
                 throw "parameter must be a function";
 
+            var _this;
             function start () {
                 // hide address bar
                 window.scroll(0,0);
@@ -178,7 +179,7 @@ oo = pline = (function (window) {
                 // prevent page scrolling
                 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
-                fn.call(window, oo);
+                fn.call(window, _this);
             }
 
             if ("phonegap" in window)
