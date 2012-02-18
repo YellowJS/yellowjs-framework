@@ -168,6 +168,9 @@ oo = pline = (function (window) {
                 return _globalConfig;
         },
         bootstrap: function bootstrap (fn) {
+            if (typeof fn !== 'function')
+                throw "parameter must be a function";
+
             function start () {
                 // hide address bar
                 window.scroll(0,0);
@@ -175,8 +178,7 @@ oo = pline = (function (window) {
                 // prevent page scrolling
                 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
-                if (fn && 'function' == typeof fn)
-                    fn.call(window, this);
+                fn.call(window, oo);
             }
 
             if ("phonegap" in window)
