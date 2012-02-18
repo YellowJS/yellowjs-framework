@@ -32,6 +32,8 @@
         render: function render() {
             this.classList.addClass('oo-panel');
             this.appendHtml(Panel.Super.prototype.render.call(this));
+
+            return this;
         },
         initElement: function initElement() {
             
