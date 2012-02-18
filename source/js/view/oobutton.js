@@ -27,6 +27,9 @@
 
             Button.Super.call(this, opt.el);
 
+            if (opt.hasOwnProperty('onrelease') && typeof opt.onrelease === 'function')
+                this.onRelease = opt.onrelease;
+
             this._active = false;
             this._initEvents();
         },
@@ -40,8 +43,10 @@
         },
         _onRelease : function _onRelease(e) {
             this.setActive(false);
+            this.onRelease();
             this.triggerEvent(Button.EVT_RELEASE, [this, e]);
         },
+        onRelease: function onRelease () { },
         isActive : function isActive() {
             return this._active;
         },
