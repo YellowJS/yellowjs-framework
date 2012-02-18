@@ -171,7 +171,7 @@ oo = pline = (function (window) {
             if (typeof fn !== 'function')
                 throw "parameter must be a function";
 
-            var _this;
+            var _this = this;
             function start () {
                 // hide address bar
                 window.scroll(0,0);
