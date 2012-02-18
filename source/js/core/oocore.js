@@ -168,7 +168,7 @@ oo = pline = (function (window) {
                 return _globalConfig;
         },
         bootstrap: function bootstrap (fn) {
-            window.addEventListener('load', function () {
+            function start () {
                 // hide address bar
                 window.scroll(0,0);
 
@@ -176,8 +176,13 @@ oo = pline = (function (window) {
                 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
                 if (fn && 'function' == typeof fn)
-                    fn.call(this);
-            });
+                    fn.call(window, this);
+            }
+
+            if ("phonegap" in window)
+                window.addEventListener('deviceready', start);
+            else
+                window.addEventListener('load', start);
         }
     };
 
