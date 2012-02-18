@@ -49,11 +49,14 @@
 
             if (autoShow) {
                 animDirection = autoRender || animDirection;
-                p.renderTo(this);
+                if (!this.panelIsEnable(identifier))
+                    this._enablePanel(p);
+
                 this.showPanel(identifier, animDirection);
             } else {
                 if (autoRender) {
-                    p.renderTo(this);
+                    if (!this.panelIsEnable(identifier))
+                        this._enablePanel(p);
                 }
             }
         },
@@ -67,21 +70,14 @@
         _indexToIdentifier : function _indexToIdentifier(index){
            return this._panelsDic[index];
         },
-        _enablePanel : function _enablePanel(identifier){
-            var index = this._identifierToIndex(identifier);
-
-            this.appendChild(this._panels[index]);
+        _enablePanel : function _enablePanel(panel){
+            panel.renderTo(this);
 
             this._enabledPanels.push(index);
 
             if ('onEnabled' in this._panels[index]) {
                 this._panels[index].onEnabled();
             }
-
-            // useless
-            // hook to initialize view components such as vscroll or carousel
-            // @todo : change the sender, should not be sent by the panel but the visible API is nicer this way
-            // this.triggerEvent('onEnablePanel', this._panels[index], [{identifier: this._indexToIdentifier(index), panel: this._panels[index]}]);
         },
         getFocusedPanel : function getFocusedPanel(getIndex){
             index = this._focusedStack[this._focusedStack.length - 1];
