@@ -31,8 +31,8 @@
             this._initEvents();
         },
         _initEvents : function _initEvents() {
-            this._dom.addEventListener(Touch.EVENT_START, oo.createDelegate(this._onTouch, this), false);
-            this._dom.addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
+            this.getDomObject().addEventListener(Touch.EVENT_START, oo.createDelegate(this._onTouch, this), false);
+            this.getDomObject().addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
         },
         _onTouch : function _onTouch(e) {
             this.setActive(true);
