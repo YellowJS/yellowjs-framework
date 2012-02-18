@@ -56,9 +56,6 @@
             this._tpl = tpl || '';
         },
         render: function render (data, tpl) {
-            if (!data)
-                data = this._model.getData();
-
             if (!tpl || '' === tpl)
                 tpl = this._tpl;
 
