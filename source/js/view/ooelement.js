@@ -64,7 +64,7 @@
 
             return tplEng.render(tpl, data || {});
         },
-        renderTo: function render (target, data, tpl) {
+        renderTo: function renderTo (target, data, tpl) {
             var content = this.render(data, tpl);
             if (typeof content === 'string')
                 target.appendHtml(content);
