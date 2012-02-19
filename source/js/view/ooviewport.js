@@ -115,19 +115,19 @@
          * @param {direction} Right To Left or Left To Right or no anim (use constant)
          **/
         showPanel : function showPanel(panelIdentifier, direction) {
-            var index = this._identifierToIndex(panelIdentifier);
-
             this.getPanel(panelIdentifier).show(direction || Viewport.ANIM_RTL);
+
+            var index = this._identifierToIndex(panelIdentifier);
 
             this._focusedStack.push(index);
 
         },
-        hidePanel : function hidePanel(panel, direction, destroy) {
-            var index = this._identifierToIndex(panel);
-
+        hidePanel : function hidePanel(panelIdentifier, direction, destroy) {
             direction = direction || Viewport.ANIM_RTL;
 
-            this.getPanel(index).hide(direction || Viewport.ANIM_RTL);
+            this.getPanel(panelIdentifier).hide(direction || Viewport.ANIM_RTL);
+
+            var index = this._identifierToIndex(panelIdentifier);
 
             if (index == this.getFocusedPanel(true)) {
                 this._focusedStack.pop();
@@ -147,22 +147,20 @@
             if (arguments.length <= 2) {
                 dir = newPanel || Viewport.ANIM_RTL;
                 newP = oldPanel;
-                oldP = this.getFocusedPanel(true);
+                oldP = this._indexToIdentifier(this.getFocusedPanel(true));
             } else {
                 oldP = oldPanel;
                 newP = newPanel;
                 dir = direction;
             }
 
-            if (!this.hasPanel(newP)) {
-                this.addPanel(newP, true);
-            } else {
-                this.showPanel(newP, dir);
-            }
+            if (!this.hasPanel(newP))
+                this.addPanel(newP, false, true);
+                
+            this.showPanel(newP, dir);
 
-            if (false !== oldP) {
+            if (false !== oldP)
                 this.hidePanel(oldP, dir);
-            }
         },
 
         register: function register(id, p) {
