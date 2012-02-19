@@ -1,9 +1,9 @@
-var oo = (function (oo) {
+(function (oo) {
 
     // shorthand
     var Dom = oo.view.Dom, Touch = oo.core.Touch;
     
-    var Scroll =  my.Class({
+    var Scroll = oo.getNS('oo.view').Scroll = oo.Class({
         STATIC : {
             VERTICAL : 'v',
             HORIZONTAL : 'h',
@@ -266,10 +266,5 @@ var oo = (function (oo) {
             this._hscrollbar.destroy();
         }
     });
-              
-    var exports = oo.getNS('oo.view');
-    exports.Scroll = Scroll;
-    
-    return oo;
 
 })(oo || {});
