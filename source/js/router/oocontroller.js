@@ -10,11 +10,11 @@
 
     var Controller = oo.getNS('oo.router').Controller = oo.Class({
         _controllers : {},
-        constructor : function constructor(){},
-        
         // protected
-        _viewport: oo.getViewport(),
-        
+        _viewport: null,
+        constructor : function constructor(){
+            this._viewport = oo.getViewport();
+        },
         // deprecated - use the class member instead
         getViewport: function getViewport() {
             return oo.getViewport();
