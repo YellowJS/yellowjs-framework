@@ -117,7 +117,7 @@
         showPanel : function showPanel(panelIdentifier, direction) {
             var index = this._identifierToIndex(panelIdentifier);
 
-            this.getPanel(index).show(direction || Viewport.ANIM_RTL);
+            this.getPanel(panelIdentifier).show(direction || Viewport.ANIM_RTL);
 
             this._focusedStack.push(index);
 
