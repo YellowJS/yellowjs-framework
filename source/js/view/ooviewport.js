@@ -61,9 +61,9 @@
             }
         },
         _identifierToIndex : function _identifierToIndex(identifier){
-            var index = identifier;
-            if (typeof index == 'string') {
-                index = this._panelsDic.indexOf(index);
+            var index;
+            if (typeof identifier == 'string') {
+                index = this._panelsDic.indexOf(identifier);
             }
             return index;
         },
@@ -114,8 +114,8 @@
          * @param {string|int} the panel string identifier or index
          * @param {direction} Right To Left or Left To Right or no anim (use constant)
          **/
-        showPanel : function showPanel(panel, direction) {
-            var index = this._identifierToIndex(panel);
+        showPanel : function showPanel(panelIdentifier, direction) {
+            var index = this._identifierToIndex(panelIdentifier);
 
             this.getPanel(index).show(direction || Viewport.ANIM_RTL);
 
@@ -154,7 +154,11 @@
                 dir = direction;
             }
 
-            this.showPanel(newP, dir);
+            if (!this.hasPanel(newP)) {
+                this.addPanel(newP, true);
+            } else {
+                this.showPanel(newP, dir);
+            }
 
             if (false !== oldP) {
                 this.hidePanel(oldP, dir);
