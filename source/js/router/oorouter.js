@@ -7,12 +7,9 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var oo = (function(oo){
+(function(oo){
 
-    var ns = oo.getNS('oo.router');
-
-
-    var Router = ns.Router= oo.Class(null, oo.core.mixins.Events,{
+    var Router = oo.getNS('oo.router').Router = oo.Class({
         constructor : function constructor(){
             this._routes = {};
             this._registeredControllers = {};
@@ -202,7 +199,5 @@ var oo = (function(oo){
         }
         
     });
-
-    return oo;
 
 })(oo || {});
