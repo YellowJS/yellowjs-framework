@@ -121,7 +121,7 @@ oo = pline = (function (window) {
             return oo.router.router || ( oo.router.router = new oo.router.Router());
         },
 
-        initViewport: function getViewport(identifier) {
+        initViewport: function initViewport(identifier) {
             var ns = this.getNS('oo.view');
             ns.viewport = new oo.view.Viewport(identifier);
             return ns.viewport;
