@@ -159,7 +159,7 @@
                 
             this.showPanel(newP, dir);
 
-            if (false !== oldP)
+            if (oldP)
                 this.hidePanel(oldP, dir);
         },
 
