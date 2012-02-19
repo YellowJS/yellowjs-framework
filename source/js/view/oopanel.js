@@ -39,7 +39,7 @@
             
             for (var id in this._uiElements) {
                 var el = this._uiElements[id];
-                if (el.needToRender())
+                if ('needToRender' in el && el.needToRender())
                     el.renderTo(this);
             }
 
