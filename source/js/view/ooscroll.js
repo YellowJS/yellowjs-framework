@@ -1,3 +1,12 @@
+/**
+ * emulate the overflow:auto
+ *
+ * @namespace oo.view
+ * @class Scroll
+ * @requires oo.view.Dom, oo.core.Touch
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 (function (oo) {
 
     // shorthand
