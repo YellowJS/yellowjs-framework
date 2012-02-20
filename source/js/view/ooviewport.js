@@ -92,7 +92,7 @@
 
             this._enabledPanels.push(index);
         },
-        getFocusedPanel : function getFocusedPanel(){
+        getFocusedPanel : function getFocusedPanel(getIndex){
             index = this._focusedStack[this._focusedStack.length - 1];
             if (getIndex) {
                 return undefined !== index ? index : false;
