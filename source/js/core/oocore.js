@@ -184,8 +184,8 @@ oo = pline = (function (window) {
                 fn.call(window, _this);
             }
 
-            if ("PhoneGap" in window)
-                window.addEventListener('deviceready', start);
+            if (PhoneGap.available)
+                document.addEventListener('deviceready', start);
             else
                 window.addEventListener('load', start);
         }
