@@ -183,7 +183,7 @@ oo = pline = (function (window) {
                 fn.call(window, _this);
             }
 
-            if ("phonegap" in window)
+            if ("PhoneGap" in window)
                 window.addEventListener('deviceready', start);
             else
                 window.addEventListener('load', start);
