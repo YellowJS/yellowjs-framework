@@ -50,9 +50,12 @@
             //     this._uiElements[id].destroy();
         },
         show: function show(direction) {
+            this.animShow();
+
+            this.triggerEvent('onShow');
+        },
+        animShow: function animShow (direction) {
             this.setDisplay('block', '');
-            
-            //var index = this._identifierToIndex(panel);
 
             var Viewport = oo.view.Viewport, vp = oo.getViewport();
 
@@ -68,12 +71,14 @@
             }
 
             this.translateTo({x:0}, anim_duration);
-
-            this.triggerEvent('onShow');
         },
         hide: function hide(direction) {
-            //var index = this._identifierToIndex(panel);
 
+            this.animHide(direction);
+
+            this.triggerEvent('onHide');
+        },
+        animHide: function animHide (direction) {
             var Viewport = oo.view.Viewport, vp = oo.getViewport();
 
             direction = direction || Viewport.ANIM_RTL;
@@ -92,9 +97,6 @@
                 that.setDisplay('none');
                 that.stopAnimation();
             });
-
-            this.triggerEvent('onHide');
-
         }
     });
 
