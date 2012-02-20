@@ -1,9 +1,18 @@
+/**
+ * Manage root screen in application
+ *
+ * @namespace oo.view
+ * @class Viewport
+ * @requires oo.view.Dom
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 (function (oo) {
     
     // shorthand
     var global = this;
 
-    var Viewport = oo.getNS('oo.view').Viewport = oo.Class(oo.view.Dom, oo.core.mixins.Events, {
+    var Viewport = oo.getNS('oo.view').Viewport = oo.Class(oo.view.Dom, {
 
         STATIC : {
             ANIM_RTL : 'rtl',

@@ -12,7 +12,8 @@ oo = pline = (function (window) {
 
     var _globalConfig = {
         templateEngine: 'mustache',
-        viewportSelector: 'body'
+        viewportSelector: 'body',
+        pushState : false
     };
 
     return {
@@ -123,7 +124,7 @@ oo = pline = (function (window) {
 
         initViewport: function initViewport(identifier) {
             var ns = this.getNS('oo.view');
-            ns.viewport = new oo.view.Viewport(identifier);
+            ns.viewport = new ns.Viewport(identifier);
             return ns.viewport;
         },
 

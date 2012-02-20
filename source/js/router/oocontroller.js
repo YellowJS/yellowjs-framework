@@ -3,6 +3,7 @@
  *
  * @namespace oo.router
  * @class Controller
+ * @requires oo.view.Viewport
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */

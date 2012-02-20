@@ -18,6 +18,9 @@
             var that = this;
 
         },
+        _usePushState : function _usePushState(){
+          return oo.getConfig('pushState');
+        },
         addRoutes : function addRoutes(routes){
             if(!routes || (Object.prototype.toString.call( routes ) !== '[object Object]')){
                 throw new Error('Routes must exist and must be an object literal');
@@ -74,11 +77,12 @@
         init : function init(){
             var that = this, wl = window.location, f = false;
 
+
             var callback = function callback(route){
               that.dispatch(route);
             };
 
-            if( window.history && window.history.pushState ){
+            if( this._usePushState() && window.history && window.history.pushState){
               this.hasHistory = true;
               window.addEventListener('popstate',function(event){
                  f = true;
@@ -100,7 +104,7 @@
             }
         },
         load : function load(route){
-            if(!this.hasHistory){
+            if( !this._usePushState() || !this.hasHistory){
               window.location.hash = route;
             } else {
               history.pushState({},"",route);

@@ -1,3 +1,11 @@
+/**
+ * Dom helper
+ *
+ * @namespace oo.view
+ * @class Dom
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 (function (oo) {
     // private class
     var ClassList = oo.Class({
@@ -73,7 +81,7 @@
                     'webkitTransitionProperty', 'webkitTransitionTimingFunction', 'webkitTransitionDuration']
     };
 
-    var Dom = oo.getNS('oo.view').Dom = oo.Class(oo.emptyFn, oo.core.mixins.Events,{
+    var Dom = oo.getNS('oo.view').Dom = oo.Class(oo.emptyFn, {
         STATIC: {
             CSSMATRIXPATTERN : /matrix\(1, 0, 0, 1, (-?[0-9.]+), (-?[0-9.]+)\)/,
             

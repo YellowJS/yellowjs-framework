@@ -3,8 +3,8 @@
  * @selector : the dom selector of the container
  * @pager : Boolean
  * @items : Array of Panel object
+ * 
  */
-
 var oo = (function (oo) {
 
     // shorthand
