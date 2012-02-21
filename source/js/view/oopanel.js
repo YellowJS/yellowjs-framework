@@ -70,7 +70,7 @@
                 anim_duration = Viewport.ANIM_DURATION;
             }
 
-            this.translateTo({x:0}, anim_duration);
+            this.translateTo({x:0}, anim_duration, oo.createDelegate(this.stopAnimation, this));
         },
         hide: function hide(direction) {
 
