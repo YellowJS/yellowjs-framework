@@ -55,7 +55,6 @@
             this.triggerEvent('onShow');
         },
         animShow: function animShow (direction) {
-            this.setDisplay('block', '');
 
             var Viewport = oo.view.Viewport, vp = oo.getViewport();
 
@@ -66,11 +65,13 @@
                 // prepare transition
                 var translateDist = vp.getWidth() * (direction == Viewport.ANIM_RTL ? 1 : -1);
                 this.setTranslateX(translateDist);
-                // this.getPanel(index).setDisplay('', '');
                 anim_duration = Viewport.ANIM_DURATION;
             }
 
-            this.translateTo({x:0}, anim_duration, oo.createDelegate(this.stopAnimation, this));
+            this.setDisplay('block', '');
+
+            var _this = this;
+            this.translateTo({x:0}, anim_duration);
         },
         hide: function hide(direction) {
 
@@ -90,12 +91,9 @@
 
             // transition
             var translateDist = vp.getWidth() * (direction == Viewport.ANIM_RTL ? -1 : 1);
-            // this.getPanel(index).setZIndex(3, '');
             var that = this;
             this.translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
-                // that.getPanel(index).setDisplay('none');
                 that.setDisplay('none');
-                that.stopAnimation();
             });
         }
     });

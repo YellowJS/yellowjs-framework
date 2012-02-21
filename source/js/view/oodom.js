@@ -325,8 +325,6 @@
                 coord.y = 'undefined' !== typeof coord.y ? coord.y : this.getTranslateY();
             }
 
-
-
             // getWebkitTransitionDuration() returns a value in seconds
             var currentTransitionDuration = (this.getWebkitTransitionDuration() * 1000);
             duration = duration || 0;
@@ -338,7 +336,7 @@
             }
 
             var that = this, endListener = function endListener (e) {
-                that.getDomObject().removeEventListener('webkitTransitionEnd', this);
+                that.getDomObject().removeEventListener('webkitTransitionEnd', endListener);
                 that.setWebkitTransitionDuration(currentTransitionDuration, 'ms');
                 that.setWebkitTransitionTimingFunction(currentTimingFunction, '');
                 if (listener) {
