@@ -97,7 +97,7 @@
             if (getIndex) {
                 return undefined !== index ? index : false;
             } else {
-                return this.getPanel(index);
+                return this.getPanel(this._indexToIdentifier(index));
             }
         },
         /**
