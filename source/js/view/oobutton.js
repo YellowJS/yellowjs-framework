@@ -35,16 +35,22 @@
         },
         _initEvents : function _initEvents() {
             this.getDomObject().addEventListener(Touch.EVENT_START, oo.createDelegate(this._onTouch, this), false);
+            this.getDomObject().addEventListener(Touch.EVENT_MOVE, oo.createDelegate(this._onMove, this), false);
             this.getDomObject().addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
         },
         _onTouch : function _onTouch(e) {
             this.setActive(true);
             this.triggerEvent(Button.EVT_TOUCH, [this, e]);
         },
-        _onRelease : function _onRelease(e) {
+        _onMove : function _onMove (e) {
             this.setActive(false);
-            this.onRelease();
-            this.triggerEvent(Button.EVT_RELEASE, [this, e]);
+        },
+        _onRelease : function _onRelease(e) {
+            if (this.isActive()) {
+                this.setActive(false);
+                this.onRelease();
+                this.triggerEvent(Button.EVT_RELEASE, [this, e]);
+            }
         },
         onRelease: function onRelease () { },
         isActive : function isActive() {
