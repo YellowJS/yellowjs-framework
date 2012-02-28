@@ -462,7 +462,6 @@ var oo = (function (oo) {
         },
         onEndTransition : function onEndTransition(){
             //mmmmmm
-            console.log(this._activePanel == this._newPanel);
             if(this._activePanel == this._newPanel) {
                 this._available = true;
                 return;
