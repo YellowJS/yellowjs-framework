@@ -150,6 +150,7 @@ var oo = (function (oo) {
             //store new id for endTransition
             this._newPanel = id;
             this.triggerEvent(Carousel.EVENT_GOTO, [this._newPanel]);
+            this._updatePager(this._newPanel);
 
             if (this._newPanel === this._activePanel) {
               this._available = true;
@@ -325,7 +326,7 @@ var oo = (function (oo) {
                 }
             }
 
-            this._updatePager();
+            this._updatePager(this._activePanel);
         },
         _buildPagerItem : function _buildPagerItem(){
           this._pager = Dom.createElement('div');
@@ -364,15 +365,32 @@ var oo = (function (oo) {
                 that.goToPrev.call(that);
             });
         },
-        _updatePager : function _updatePager() {
-          return;
+        _updatePager : function _updatePager(id) {
+          
             if (this._displayPager) {
-                var current = this._pager.getDomObject().querySelector('.dot.active');
-                if (current) {
-                    current.className = current.className.replace(/ *active/, '');
+                if( 'boolean' === typeof this._displayPager) {
+                  var current = this._pager.getDomObject().querySelector('.dot.active');
+                  if (current) {
+                      current.className = current.className.replace(/ *active/, '');
+                  }
+                  this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
+                } else {
+                    
+                    /*if (this._pager instanceof oo.view.List){
+                    
+                    }*/
+
+                    if (this._pager instanceof oo.view.Slider){
+                        this._pager.goTo(id);
+                    }
+                  
+                    /*if(this._displayPager instanceof oo.view.PagerPrevNext){
+                        this._buildPagerPrevNext();
+                    }*/
                 }
-                this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
             }
+
+
         },
         hasMoved : function hasMoved() {
             return this._moved;
@@ -436,7 +454,7 @@ var oo = (function (oo) {
                     }*/
 
                     //that._activePanel = Math.abs(tVal / that._panelWidth);
-                    that._updatePager();
+                    
 
                     //that.translateTo({x:tVal}, that._transitionDuration);
                     //that._startTranslate = tVal;
