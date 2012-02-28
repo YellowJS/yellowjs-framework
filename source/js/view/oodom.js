@@ -262,7 +262,7 @@
         findParentByCls : function findParentByCls (cls) {
             var p = this.getDomObject().parentNode;
             var pattern = new RegExp(cls);
-            while (!pattern.test(p.getAttribute('class')) && p && (Node.DOCUMENT_NODE !== p.nodeType)) {
+            while (p && (Node.DOCUMENT_NODE !== p.nodeType) && !pattern.test(p.getAttribute('class'))) {
                 p = p.parentNode;
             }
 
