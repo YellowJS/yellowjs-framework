@@ -37,7 +37,9 @@
                 maxX = minX + sWidth, maxY = minY + sHeight, tx = (opt.translate.x) ? true : false, ty = (opt.translate.y) ? true : false,
                 newx = null;
 
+
                 var current;
+
 
                 if(this._datas){
                     this._step = (sWidth/(that._total-1))/2;
@@ -52,6 +54,8 @@
                     that._cursor.setTranslateX( newx,'px');
                     if(that._step && that._overlay){
                         that._overlay.setDisplay('block');
+
+
                         current = ((Math.ceil(newx/that._step)-1) % 2 !== 0)  ? Math.ceil(newx/(that._step*2)) : Math.ceil(newx/(that._step*2)-1);
                         that._updateOverlay(current);
                     }
@@ -114,7 +118,7 @@
         },
         goTo : function goTo(index){
             if(this._cursor){
-                this._cursor.setTranslateX(index*(this._step*2), 'px');
+                this._cursor.setTranslateX((index*(this._step*2))+this._cursor.getLeft()/2, 'px');
                 this._cursor.setWebkitTransitionDuration(200, 'ms');
             }
         },
@@ -123,7 +127,7 @@
             var callback = function callback(){
                 //createCursor and attach events
                 if(opt.hasOwnProperty('cursor')){
-                    that._cursor = oo.createElement('node',{target:opt.cursor, template : '<p>dff</p>'});
+                    that._cursor = oo.createElement('node',{target:opt.cursor});
                     that._cursor.getDomObject().style.position = "absolute";
                     //dev to good positionning the cursor
                     that.getDomObject().style.position="relative";
