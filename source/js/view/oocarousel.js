@@ -28,6 +28,7 @@ var oo = (function (oo) {
         _activePanel: null,
         _transitionType : "Slide",
         _swipe : false,
+        _pagerOpt : false,
         constructor : function constructor(opt) {
             if(!opt){
                 throw new Error('Missing options');
@@ -41,20 +42,25 @@ var oo = (function (oo) {
             };
 
             Carousel.Super.call(this, conf);
-            
             this._transitionDuration = opt.duration || 200;
             this._items = [];
 
+            //todo default option with override
             if(opt && opt.hasOwnProperty('transitionType')){
                 this._transitionType = opt.transitionType.charAt(0).toUpperCase() + opt.transitionType.slice(1);
+                delete opt.transitionType;
             }
 
             if(opt && opt.hasOwnProperty('swipe')){
                 this._swipe = true;
+                delete opt.swipe;
             }
 
+            if(opt && opt.hasOwnProperty('pager')){
+                this._pagerOpt = opt.pager;
+                delete opt.pager;
+            }
             if (opt && opt.hasOwnProperty('model')){
-
                 if(!opt.hasOwnProperty('elementCls')){
                     throw new Error('Options passed but missing elementCls');
                 }
@@ -64,25 +70,39 @@ var oo = (function (oo) {
                 }
                 
                 this._elementCls = opt.elementCls;
-                this._prepareModel(opt);
+                delete opt.elementCls;
+                this._prepareModel(opt.model);
             } else {
               this._prepareView();
             }
             
         },
-        _prepareModel : function _prepareModel(opt){
+        _prepareModel : function _prepareModel(model){
           var that = this;
-            this.setModel(opt.model);
+            this.setModel(model);
             //this.after
             this._model.fetch(function(datas){
                 that._datas = datas;
-                that._addPanel(that._activePanel = 0);
+                that._addPanel(0);
                 that._addPanel(1);
-                that._prepareView(opt);
+                that._prepareView();
             });
         },
-        _prepareView : function _prepareView(opt){
-            this._nbPanel = this._datas.length -1 || document.querySelectorAll([opt.el, ' > *'].join('')).length;
+        updateModel : function updateModel(model){
+            this.clear();
+            this._items = [];
+            this._available = true;
+            this._datas = null;
+            this._available = true;
+            this._newPanel = null;
+            this._upPrev = false;
+            this._upNext = false;
+            this._fromLimit = true;
+            this._activePanel = null;
+            this._prepareModel(model);
+        },
+        _prepareView : function _prepareView(){
+            this._nbPanel = this._datas.length -1 || document.querySelectorAll([this._identifier, ' > *'].join('')).length;
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             var c = this.getDomObject().children, i = 0, len = c.length;
 
@@ -90,10 +110,10 @@ var oo = (function (oo) {
               c[i].style.width = this._panelWidth + 'px';
             }
 
+            this._activePanel = 0;
             this['_prepareView'+this._transitionType]();
 
-            this._activePanel = 0;
-            this._displayPager = (opt && opt.pager ? opt.pager : false);
+            this._displayPager = this._pagerOpt;
 
             this._pager = null;
             this._buildPager();
