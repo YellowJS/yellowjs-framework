@@ -19,8 +19,16 @@ describe("ooLocalProvider.js", function() {
                 clb = jasmine.createSpy();
 
                 totoModel.nuke(function () {
-                    totoModel.batch([{tata: 'toto', tutu: 'tete'}, 
-                                     {tata1: 'toto1', tutu1: 'tete1'}], function() {});
+                    totoModel.batch([{
+                        key: 'key',
+                        tata: 'toto',
+                        tutu: 'tete'
+                    },
+                    {
+                        key: 'key2',
+                        tata: 'toto1',
+                        tutu: 'tete1'
+                    }], function() {});
                 });
 
             });
@@ -44,6 +52,20 @@ describe("ooLocalProvider.js", function() {
                     var d = {key:'key3', value:'value3'};
 
                     p.save(d, clb);
+
+                    expect(clb).wasCalled();
+                });
+
+            });
+
+            describe ("get", function () {
+
+                it('return the record from the store', function () {
+
+                    p.get('key', function (row) {
+                        clb();
+                        expect(row.tata).toEqual('toto');
+                    });
 
                     expect(clb).wasCalled();
                 });

@@ -7,10 +7,10 @@
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
 var oo = (function (oo) {
-
+ 
     var view = oo.getNS('oo.view'), Touch = oo.core.Touch; 
     //Events = oo.Events;
-    
+     
     var Button = my.Class(oo.view.Dom, oo.core.mixins.Events, {
         STATIC : {
             EVT_TOUCH : 'touch',
@@ -22,8 +22,8 @@ var oo = (function (oo) {
             this._initEvents();
         },
         _initEvents : function _initEvents() {
-            this._dom.addEventListener(Touch.EVENT_START, oo.createDelegate(this._onTouch, this), false);
-            this._dom.addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
+            this.getDomObject().addEventListener(Touch.EVENT_START, oo.createDelegate(this._onTouch, this), false);
+            this.getDomObject().addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
         },
         _onTouch : function _onTouch(e) {
             this.setActive(true);            
@@ -45,8 +45,9 @@ var oo = (function (oo) {
             this.classList[(this._active ? 'add' : 'remove') + 'Class']('active');
         }
     });
-    
+     
     view.Button = Button;
+    oo.view.Element.register(Button, 'button');
     return oo;
-    
+     
 })(oo || {});

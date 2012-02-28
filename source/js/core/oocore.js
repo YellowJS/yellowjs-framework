@@ -7,7 +7,8 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var oo = (function () {
+var pline, oo;
+oo = pline = (function (window) {
 
     // bootstrap oo apps
 
@@ -21,7 +22,8 @@ var oo = (function () {
     // Flavius;
 
     var _globalConfig = {
-        templateEngine: 'mustache'
+        templateEngine: 'mustache',
+        pushState : false
     };
 
 //    var Core = my.Class({
@@ -165,6 +167,21 @@ var oo = (function () {
                 return _globalConfig[key];
             else
                 return _globalConfig;
+        },
+        bootstrap: function bootstrap (fn) {
+            window.addEventListener('load', function () {
+                // hide address bar
+                window.scroll(0,0);
+
+                // prevent page scrolling
+                document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+
+                if (fn && 'function' == typeof fn)
+                    fn.call(this);
+            });
+        },
+        _convertNodeListToArray : function _convertNodeListToArray(nL){
+            return Array.prototype.slice.call(nL, 0);
         }
     };
     // });
@@ -177,4 +194,4 @@ var oo = (function () {
 
     // return oo;
 
-})();
+})(window);

@@ -108,4 +108,32 @@ describe("oofakeprovider.js", function() {
 
     });
 
+    describe('setData', function(){
+        it('should throw error missing data', function(){
+            var p2 = new oo.data.FakeProvider({
+                'name': 'test'
+            });
+            expect(function(){
+                p2.setData();
+            }).toThrow('Data missing');
+        });
+        
+        it('title of the first data should be equal to title 1', function(){
+            var p2 = new oo.data.FakeProvider({
+                'name': 'test',
+                data : {title : "title 1"}
+            });
+
+            expect(p2._data[0].title).toEqual('title 1');
+        });
+
+        it('title of the second data should be equal to title 2', function(){
+            var p2 = new oo.data.FakeProvider({
+                'name': 'test',
+                data : [{title : "title 1"}, {title: "title 2"}]
+            });
+
+            expect(p2._data[1].title).toEqual('title 2');
+        });
+    });
 });

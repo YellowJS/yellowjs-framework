@@ -8,13 +8,13 @@
  */
 var oo = (function (oo) {
 
-    var hasTouch = 'ontouchstart' in window ? true : false;
+//var hasTouch = 'ontouchstart' in window ? true : false;
     var getPosition = function getPosition (e, index) {
         var touch = null;
-        
-        if (hasTouch) {
+         
+        if (Touch.HAS_TOUCH) {
             index = index || 0;
-        
+         
             touch = e.touches[index];
             if (undefined === touch) {
                 touch = e.changedTouches[index];
@@ -22,11 +22,11 @@ var oo = (function (oo) {
         } else {
             touch = e;
         }
-        
+         
         return [parseInt(touch.pageX, 10), parseInt(touch.pageY, 10)];
-        
+         
     };
-    
+     
     var Touch = my.Class({
         STATIC : {
             getPosition : getPosition,
@@ -38,11 +38,12 @@ var oo = (function (oo) {
             },
             getTarget : function getTarget(e, index) {
                 return e.touches[index || 0].target;
-            }
+            },
+            HAS_TOUCH : 'ontouchstart' in window ? true : false
         }
     });
-    
-    if (!hasTouch) {
+     
+    if (!Touch.HAS_TOUCH) {
         Touch.EVENT_START = 'mousedown';
         Touch.EVENT_MOVE  = 'mousemove';
         Touch.EVENT_END   = 'mouseup';
@@ -51,10 +52,10 @@ var oo = (function (oo) {
         Touch.EVENT_MOVE  = 'touchmove';
         Touch.EVENT_END   = 'touchend';
     }
-    
+     
     var exports = oo.getNS('oo.core');
     exports.Touch = Touch;
-    
+     
     return oo;
-
+    
 })(oo || {});

@@ -5,7 +5,7 @@ var oo = (function (oo) {
 
     var providerRepository = {};
 
-    data.Provider = my.Class({
+    data.Provider = oo.Class({
         STATIC: {
             register: function register (cls, codename) {
                 if (providerRepository[codename])
@@ -35,6 +35,12 @@ var oo = (function (oo) {
             throw 'Can\'t be called directly from Provider class';
         },
         fetch: function (callback) {
+            throw 'Can\'t be called directly from Provider class';
+        },
+        get: function (callback) {
+            throw 'Can\'t be called directly from Provider class';
+        },
+        clearAll: function (callback) {
             throw 'Can\'t be called directly from Provider class';
         }
     });

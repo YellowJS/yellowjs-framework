@@ -1,9 +1,9 @@
-var oo = (function (oo){
+(function (oo){
     var global = this,
         view = oo.getNS('oo.view'),
         viewRepository = {};
     
-    var Element = view.Element = my.Class(oo.view.Dom, {
+    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, {
         STATIC: {
             register: function register (cls, codename) {
                 if (viewRepository[codename])
@@ -30,7 +30,6 @@ var oo = (function (oo){
             templateEngine : null
         },
         _tpl : null,
-        _model : null,
         constructor: function constructor (options) {
             if(!options || typeof options != 'object')
                 throw "call Element constructor but \"options\" missing";
@@ -40,52 +39,40 @@ var oo = (function (oo){
 
             Element.Super.call(this, options.target);
 
-            if( options.hasOwnProperty('model') ){
-                this.setModel(options.model);
-                delete options.model;
-            }
-
             if( options.hasOwnProperty('template') ){
                 this.setTemplate(options.template);
                 delete options.template;
             }
 
-            if (this._model){
-                this._model.addListener(oo.data.Model.AFTER_FETCH, oo.createDelegate(this.afterFetch, this));
-            }
-
-        },
-        afterFetch : function afterFetch(data){
-            this.render(data);
-        },
-        setModel : function setModel(model){
-            if (model instanceof oo.data.Model)
-                this._model = model;
-            else
-                this._model = oo.createModel(model);
         },
         setTemplate : function setTemplate(tpl){
             this._tpl = tpl || '';
         },
-        prepareData: function prepareData(data) {
-            return data;
-        },
         render: function render (data, tpl) {
-            if (!data)
-                data = {};
 
             if (!tpl || '' === tpl)
                 tpl = this._tpl;
 
             if(!tpl) return;
             var tplEng = Element.getTemplateEngine();
-            
-            this.clear();
-            this.appendHtml(tplEng.render(tpl, this.prepareData(data)));
-        }
 
+            this.clear();
+            return tplEng.render(tpl, data || {});
+            //this.appendHtml(tplEng.render(tpl, data || {}));
+        },
+        // do exactly the same thing as the oo.createElement, but add a prefix to the el property
+        // in order to "scope" the newly created element into the current one
+        createElement: function createElement (type, opt) {
+            if (opt.el)
+                opt.el = '#' + this.getId() + ' ' + opt.el;
+            return oo.createElement(type, opt);
+        },
+        setScrollable: function setScrollable (orientation) {
+            //if (null === this.getDomObject.querySelector('.content'))
+            var scroll = new oo.view.Scroll(this.getDomObject(), orientation, orientation);
+        }
     });
 
-    return oo;
+    oo.view.Element.register(Element, 'node');
 
-})(oo || null);
+})(oo);

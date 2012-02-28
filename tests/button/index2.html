@@ -1,0 +1,105 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+
+  <title>Test Button Class</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <style type="text/css">
+          .active { color:red;}
+          
+          #main {   width:500px; height:500px; margin:0 auto; background:#e3e575;}
+          .child {  width:200px; height:200px; margin:30px auto; background:#bbcbf9;}
+          #result {  position:fixed; right:0; top:0; border:1px solid #ccc; padding:20px; width:150px;}
+  </style>
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+</head>
+
+<body>
+  <header>
+    <h1>With mixin Event</h1>
+  </header>
+  <div role="main">
+    
+    <div id="main">
+         <span id="button">Button</span>
+         <div id="child" class="child">
+            childNode
+         </div>
+    </div>
+    <ul id="result">
+
+    </ul>
+    
+    
+  </div>
+  <footer>
+
+  </footer>
+<script src="../../source/js/vendor/my.class.js"></script>
+<script src="../../source/js/core/ooutils.js"></script> 
+<script src="../../source/js/core/ooevents.js"></script>
+<script src="../../source/js/view/ootouch.js"></script>
+<script src="../../source/js/core/oogesture.js"></script>
+<script src="../../source/js/view/oodom.js"></script>
+<script src="../../source/js/view/oobutton.js"></script>
+
+<script>
+
+    var result;
+
+    function init(){ 
+        var button = new oo.View.Button('#button');
+        result = document.querySelector('#result');
+        document.querySelector('#button').addEventListener('tap', function(e){
+            e.stopPropagation();
+            updateList('tap button');
+        },false);
+
+        document.querySelector('#button').addEventListener('doubleTap', function(e){
+            e.stopPropagation();
+            updateList('doubleTap button');
+        },false);
+        
+        document.querySelector('#main').addEventListener('swipeLeft', function(e){
+            updateList('swipe Left main')
+        },false); 
+        
+        document.querySelector('#main').addEventListener('swipeRight', function(e){
+            updateList('swipeRight main')
+        },false);
+        
+        document.querySelector('#child').addEventListener('tap', function(e){
+          e.stopPropagation();
+           updateList('tap child')
+        },false);
+
+        document.querySelector('#child').addEventListener('doubleTap', function(e){
+           updateList('doubleTap child')
+        },false);
+
+        document.querySelector('#main').addEventListener('tap', function(e){
+           updateList('tap main')
+        },false);
+    }
+
+    function updateList(eventName){
+      var item = document.createElement('li');
+      item.appendChild(document.createTextNode(eventName));
+      result.appendChild(item);
+    }
+
+
+
+    window.addEventListener('load', init, false);
+</script> 
+</body>
+</html>

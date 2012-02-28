@@ -2,19 +2,24 @@
     
     var Provider = oo.data.Provider;
 
-    var Model = my.Class(null, oo.core.mixins.Events,{
+    var Model = oo.Class(null, oo.core.mixins.Events,{
         STATIC : {
             AFTER_SAVE : 'AFTER_SAVE',
             AFTER_FETCH : 'AFTER_FETCH'
         },
-        constructor: function constructor(options){
+        _data: null,
+        _indexes: null,
+        constructor : function constructor(options){
             if(!options || (!options.hasOwnProperty('name') || !options.hasOwnProperty('provider')) )
                 throw "Either property \"name\" or \"provider\" is missing in the options given to the Model constructor";
             this._name = options.name;
 
+            if (options.hasOwnProperty('indexes'))
+                this.setIndexes(options.indexes);
+
             this.setProvider(options.provider);
         },
-        setProvider: function setProvider (providerConf) {
+        setProvider : function setProvider (providerConf) {
             if (providerConf instanceof Provider) {
                 this._provider = providerConf;
             } else if (typeof providerConf == 'object') {
@@ -23,7 +28,12 @@
                 this._provider = new Cls(providerConf);
             }
         },
-        fetch : function fetch(callback){
+        setIndexes : function setIndexes(indexes) {
+            for(var i = 0, len = indexes.length; i < len; i++) {
+                this._indexes = indexes[i];
+            }
+        },
+        fetch : function fetch(callback) {
 
             var defaultConf = {
                 success: oo.emptyFn,
@@ -61,6 +71,15 @@
 
             this._provider.save(datas, callback);
             this.triggerEvent(Model.AFTER_SAVE);
+        },
+        getModelName : function getModelName(){
+            return this._name;
+        },
+        clearAll : function clearAll(){
+            this._provider.clearAll();
+        },
+        setData : function setData(data){
+            this._provider.setData(data);
         }
     });
 

@@ -32,6 +32,10 @@
                     "path" : "../source/js/core/"
                 },
                 {
+                    "text" : "oogesture.js",
+                    "path" : "../source/js/core/"
+                },
+                {
                     "text" : "oocontroller.js",
                     "path" : "../source/js/router/"
                 },
@@ -68,11 +72,19 @@
                     "path" : "../source/js/view/templateengine/"
                 },
                 {
+                    "text" : "ootemplatehandlebars.js",
+                    "path" : "../source/js/view/templateengine/"
+                },
+                {
                     "text" : "oodom.js",
                     "path" : "../source/js/view/"
                 },
                 {
                     "text" : "ooelement.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oomodelelement.js",
                     "path" : "../source/js/view/"
                 },
                 {
@@ -85,6 +97,34 @@
                 },
                 {
                     "text" : "oolist.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oobutton.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oocarousel.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooslider.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooslidercursor.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooscroll.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oopopin.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oopagerprevnext.js",
                     "path" : "../source/js/view/"
                 }
             ]

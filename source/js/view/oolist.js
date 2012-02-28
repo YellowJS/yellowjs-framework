@@ -1,11 +1,11 @@
-var oo = (function (oo) {
+(function (oo) {
 
     // shorthand
     var Dom = oo.view.Dom,
         Touch = oo.core.Touch,
         ns = oo.getNS('oo.view');
     
-    var List = ns.List = my.Class(oo.view.Element, oo.core.mixins.Events, {
+    var List = ns.List = oo.Class(oo.view.ModelElement, {
         STATIC: {
             EVT_RENDER: 'render',
             EVT_ITEM_PRESSED: 'item-pressed',
@@ -31,7 +31,7 @@ var oo = (function (oo) {
                 var t = new Dom(target);
                 var itemId;
                 if (t.classList.hasClass('oo-list-item')) {
-                    itemId = t.getDomObject().className.match(/item-(.*)/)[1] || t.getId();
+                    itemId = t.getDomObject().getAttribute('data-id') || t.getId();
                 } else {
                     var altTarget = t.findParentByCls('oo-list-item');
                     if (altTarget) {
@@ -50,6 +50,7 @@ var oo = (function (oo) {
             var that = this;
             var check;
             this.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
+
                 this._touchedItem = e.target;
                 check = checkTarget(e.target);
                 if (false !== check) {
@@ -84,11 +85,12 @@ var oo = (function (oo) {
             }
 
             this._structTpl = tpl;
+        },
+        render : function render(data,tpl){
+            this.appendHtml(List.Super.prototype.render.call(this, data,tpl));
         }
     });
     
     oo.view.Element.register(List, 'list');
-
-    return oo;
     
 })(oo || {});
