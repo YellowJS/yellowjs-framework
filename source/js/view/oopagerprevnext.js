@@ -14,7 +14,8 @@ var oo = (function (oo) {
         buttonNext : null,
         STATIC : {
             goToNext:'goToNext',
-            goToPrev:'goToPrev'
+            goToPrev:'goToPrev',
+            CLS_DISABLE:'button-disable'
         },
         constructor:  function constructor(opt){
             if(!opt){

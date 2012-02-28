@@ -223,12 +223,12 @@ var oo = (function (oo) {
                 },1);
                 
                 //store new id for endTransition
-                this._newPanel = id;
             } else {
                 //no transition
                 this._available = true;
             }
             
+            this._newPanel = id;
         },
         _updateNext : function _updateNext(nextId){
             //remove last
@@ -287,7 +287,7 @@ var oo = (function (oo) {
                 }
             }
 
-            this._updatePager(this._activePanel);
+            //this._updatePager(this._activePanel);
         },
         _buildPagerItem : function _buildPagerItem(){
           this._pager = Dom.createElement('div');
@@ -345,9 +345,19 @@ var oo = (function (oo) {
                         this._pager.goTo(id);
                     }
                   
-                    /*if(this._displayPager instanceof oo.view.PagerPrevNext){
-                        this._buildPagerPrevNext();
-                    }*/
+                    if(this._pager instanceof oo.view.PagerPrevNext){
+                        if(0 === id){
+                            this._pager.buttonPrev.classList.addClass(oo.view.PagerPrevNext.CLS_DISABLE);
+                        } else {
+                            this._pager.buttonPrev.classList.removeClass(oo.view.PagerPrevNext.CLS_DISABLE);
+                        }
+
+                        if(this._nbPanel === id){
+                            this._pager.buttonNext.classList.addClass(oo.view.PagerPrevNext.CLS_DISABLE);
+                        } else {
+                            this._pager.buttonNext.classList.removeClass(oo.view.PagerPrevNext.CLS_DISABLE);
+                        }
+                    }
                 }
             }
 
