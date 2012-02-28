@@ -27,9 +27,7 @@
                 throw new Error('Missing translate property');
             }
 
-
             this._prepareView(opt);
-            
             
         },
         _initEvents : function _initEvents(opt){
@@ -133,9 +131,6 @@
                 }
             };
 
-            if(opt.items){
-                that._createItems(opt);
-            }
             
             if(opt.overlay){
                 this._overlay = oo.createElement('node', {target:opt.overlay, template:'{{key}}'});
@@ -143,6 +138,11 @@
             }
 
             if(this._model){
+                
+                if(opt.items){
+                    that._createItems(opt);
+                }
+
                 this._model.fetch(function(datas){
                    that._datas = datas;
                    that._total = that._datas.length;
@@ -153,6 +153,7 @@
                    callback();
                    
                 });
+
             } else {
                 callback();
             }
