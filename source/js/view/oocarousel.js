@@ -49,7 +49,6 @@ var oo = (function (oo) {
                 this._transitionType = opt.transitionType.charAt(0).toUpperCase() + opt.transitionType.slice(1);
             }
 
-
             if(opt && opt.hasOwnProperty('swipe')){
                 this._swipe = true;
             }
@@ -117,7 +116,6 @@ var oo = (function (oo) {
             }
 
             this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
-        
             item.onEnable();
 
         },
@@ -146,9 +144,8 @@ var oo = (function (oo) {
             
             
             var s = (id < this._activePanel ? +1 : -1 );
-            id = this["_setTransition"+this._transitionType](id, s);
-            //store new id for endTransition
-            this._newPanel = id;
+            this["_setTransition"+this._transitionType](id, s);
+            
             this.triggerEvent(Carousel.EVENT_GOTO, [this._newPanel]);
             this._updatePager(this._newPanel);
 
@@ -156,50 +153,6 @@ var oo = (function (oo) {
               this._available = true;
             }
 
-
-            /*if(id === this._activePanel) return;
-
-            if(!this._datas[id] || id === this._activePanel || !this._available) return;
-
-            
-
-
-            this._available = false;
-
-
-            //before transition
-            if(id > this._activePanel+1){
-                this._updateNext(id);
-                this._upPrev = true;
-            }
-            
-            if(id < this._activePanel-1){
-                this._updatePrev(id);
-                this._upNext = true;
-            }
-
-
-            //setTransition
-            
-            var s = (id < this._activePanel ? +1 : -1 ), nT;
-
-
-            if(id >= 0 && id <= this._nbPanel){
-                nT =  this._startTranslate + s * this._panelWidth;
-            } else {
-                if(id < 0){
-                    nT = 0;
-                    id=0;
-                } else {
-                    nT =  this._startTranslate;
-                    id = this._nbPanel;
-                }
-            }
-
-            this.translateTo({x:nT}, this._transitionDuration);
-            this._startTranslate = nT;
-            //store new id for endTransition
-            this._newPanel = id;*/
         },
         _setTransitionSlide: function _setTransitionSlide(id, s){
             var nT;
@@ -222,58 +175,44 @@ var oo = (function (oo) {
             this.translateTo({x:nT}, this._transitionDuration);
             this._startTranslate = nT;
 
-            return id;
+            //store new id for endTransition
+            this._newPanel = id;
         },
         _setTransitionCustom: function _setTransitionCustom(id, s){
             var that = this;
-            if(id >= 0 && id <= this._nbPanel && id !== this._activePanel){
-                //nT =  this._startTranslate + s * this._panelWidth;
-                //setOpacity to 0 on item id put high lievel zindex and change opacity to 1
-                /*this._items[id].getDomObject().style.opacity = 0;
-                this._items[id].setZIndex(4);
-                
-                this._items[id].animate(
-                    { "opacity": {
-                        value : .5,
-                        duration : "5s",
-                        timing : "ease"
-                        }
-                    });
-                
-                return*/
-                /*console.log("pass");
-                console.log(id);
-                console.log(this._items);*/
-                //add webkitTransitionEnd
-                console.log("add listener");
-                console.log(this._items[id].getDomObject().className);
-                this._items[id].getDomObject().addEventListener('webkitTransitionEnd',function(){
-                    console.log('end event added cjec');
-                    that.onEndTransition.apply(that);
-                });
-
-                if(!this._items[id].classList.hasClass(Carousel.CLS_SHOWING)) {
-                    console.log('il ne l a pas');
-                    this._items[id].classList.addClass(Carousel.CLS_SHOWING);
-                }
-                
+            //limite
+            if(id < 0){
+                id = 0;
             } else {
-                if( id !== this._activePanel)
-                {
-                   if(id < 0){
-                        id = 0;
-                    } else {
-                        id = this._nbPanel;
-                    }
+                if(id > this._nbPanel){
+                    id = this._nbPanel;
                 }
             }
+            
+            if(id !== this._activePanel && !this._items[id].classList.hasClass(Carousel.CLS_SHOWING)) {
+                if(!this._items[id].isInit){
+                    this._items[id].getDomObject().addEventListener('webkitTransitionEnd',function(){
+                        that.onEndTransition.apply(that);
+                    },false);
 
-            return id;
+                    this._items[id].isInit = true;
+                }
+
+                setTimeout(function(){
+                    that._items[id].classList.addClass(Carousel.CLS_SHOWING);
+                },1);
+                
+                //store new id for endTransition
+                this._newPanel = id;
+            } else {
+                //no transition
+                this._available = true;
+            }
+            
         },
         _updateNext : function _updateNext(nextId){
             //remove last
             this.removeChild(this.getDomObject().lastChild);
-
             //appendChild
             this._addPanel(nextId);
         },
@@ -290,7 +229,7 @@ var oo = (function (oo) {
             return items[id];
         },
         _prepareItem : function _prepareItem(id){
-            var item , elementCls = this._datas[id].elementCls;
+            var item , elementCls = this._datas[id].elementCls, that = this;
 
             if( 'undefined' === this._elementCls[elementCls] || 'function' !== typeof this._elementCls[elementCls]){
                 throw new Error('element Cls must exist and be a function');
@@ -298,10 +237,12 @@ var oo = (function (oo) {
 
             item = new this._elementCls[elementCls]();
 
+
             
             item.data = this._datas[id];
 
-            item.appendHtml(item.render(this._datas[id]));
+            item.appendHtml(item.render(item.data));
+            
 
             return item;
         },
@@ -510,17 +451,18 @@ var oo = (function (oo) {
         _transitionEndCustom : function _transitionEndCustom(){
         },
         goToNext : function goToNext(){
-            //if(this._available){
+            if(this._available){
                 this.showPanel(this._activePanel + 1);
-            //}
+            }
         },
         goToPrev : function goToPrev(){
-            //if(this._available){
+            if(this._available){
                 this.showPanel(this._activePanel - 1);
-            //}
+            }
         },
         onEndTransition : function onEndTransition(){
             //mmmmmm
+            console.log(this._activePanel == this._newPanel);
             if(this._activePanel == this._newPanel) {
                 this._available = true;
                 return;
