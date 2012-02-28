@@ -75,6 +75,13 @@
         getModelName : function getModelName(){
             return this._name;
         },
+        setModelName : function setModelName(name){
+            if(!name || "string" !== typeof name){
+                throw new Error('Missing name or name is not a string');
+            }
+
+            this._name = name;
+        },
         clearAll : function clearAll(){
             this._provider.clearAll();
         },
