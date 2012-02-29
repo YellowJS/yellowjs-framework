@@ -37,12 +37,12 @@
 
             var conf = oo.override(defaultConf, config);
 
-            var req = this._buildReq(this._url, method, data, function (rep) {
+            var req = oo.ajax(this._url, method, data, oo.createDelegate(function (rep) {
 
                 this._cacheProvider.save(data, function () {
                     conf.success.call(global, rep);
                 });
-            }, conf.error);
+            }, this), conf.error);
             req.send();
         },
         fetch: function fetch (config) {
@@ -61,7 +61,7 @@
 
             var conf = oo.override(defaultConf, config);
 
-            var req = this._buildReq(this._url, method, conf.params, function (data) {
+            var req = oo.ajax(this._url, method, conf.params, oo.createDelegate(function (data) {
                 var _this = this;
                 this._cacheProvider.clearAll();
                 this._cacheProvider.save(data, function () {
@@ -69,7 +69,7 @@
                     conf.success.call(global, data);
                 });
 
-            }, conf.error);
+            }, this), conf.error);
             req.send();
                         
             // this._store.all(function (data) {
@@ -87,60 +87,60 @@
         },
         clearAll: function clearAll () {
             this._clearCache = true;
-        },
-        _buildReq: function _buildReq (url, method, params, successCallback, errorCallback) {
-            var req = this._getRequest(), _this = this;
+        }//,
+        // _buildReq: function _buildReq (url, method, params, successCallback, errorCallback) {
+        //     var req = this._getRequest(), _this = this;
 
-            req.addEventListener('readystatechange', function (e) {
-                if (e.target.readyState==4) {
-                    if (e.target.status == 200) {
+        //     req.addEventListener('readystatechange', function (e) {
+        //         if (e.target.readyState==4) {
+        //             if (e.target.status == 200) {
                         
-                        // @todo : check against response content-type header to determine if is JSON formatted response
-                        var str = JSON.parse(e.target.responseText);
+        //                 // @todo : check against response content-type header to determine if is JSON formatted response
+        //                 var str = JSON.parse(e.target.responseText);
                         
-                        successCallback.call(_this, str);
-                    }
-                    else
-                        errorCallback.call(_this);
-                }
-            });
+        //                 successCallback.call(_this, str);
+        //             }
+        //             else
+        //                 errorCallback.call(_this);
+        //         }
+        //     });
 
-            var paramString = this._processParams(params), targetUrl = "" + url;
-            if (method == 'GET') {
-                targetUrl = url + '?' + paramString;
-            }
+        //     var paramString = this._processParams(params), targetUrl = "" + url;
+        //     if (method == 'GET') {
+        //         targetUrl = url + '?' + paramString;
+        //     }
 
-            req.open(method, targetUrl);
-            if ('POST' == method)
-                this._setPostHeaders(req);
+        //     req.open(method, targetUrl);
+        //     if ('POST' == method)
+        //         this._setPostHeaders(req);
 
-            return {
-                send: function send(params) {
-                    if ('POST' === method) {
-                        req.send(paramString);
-                    }
-                    else
-                        req.send();
-                }
-            };
+        //     return {
+        //         send: function send(params) {
+        //             if ('POST' === method) {
+        //                 req.send(paramString);
+        //             }
+        //             else
+        //                 req.send();
+        //         }
+        //     };
 
-        },
-        _processParams: function _processParams (paramObj) {
-            var paramArrayString = [];
-            for (var prop in paramObj) {
-                paramArrayString.push(prop + '=' + encodeURI(paramObj[prop]));
-            }
-            return paramArrayString.join('&');
-        },
-        _getRequest: function _getRequest () {
-            return new XMLHttpRequest();
-        },
-        _setPostHeaders: function _setPostHeaders (req) {
-            req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            // Unsafe header
-            // req.setRequestHeader('Connection', 'close');
-        }
+        // },
+        // _processParams: function _processParams (paramObj) {
+        //     var paramArrayString = [];
+        //     for (var prop in paramObj) {
+        //         paramArrayString.push(prop + '=' + encodeURI(paramObj[prop]));
+        //     }
+        //     return paramArrayString.join('&');
+        // },
+        // _getRequest: function _getRequest () {
+        //     return new XMLHttpRequest();
+        // },
+        // _setPostHeaders: function _setPostHeaders (req) {
+        //     req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        //     req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        //     // Unsafe header
+        //     // req.setRequestHeader('Connection', 'close');
+        // }
     });
 
     oo.data.Provider.register(AjaxProvider, 'ajax');
