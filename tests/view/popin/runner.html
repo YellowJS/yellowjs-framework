@@ -2,9 +2,32 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <title>oo.view.Dom | Flavius | Jasmine Spec Runner</title>
+  <title>oo.view.Button | Flavius | Jasmine Spec Runner</title>
 
   <link href="../../lib/jasmine-core/jasmine.css" rel="stylesheet"/>
+
+  <style type="text/css">
+
+    #popin {
+      width:250px; height:250px; background:orange; margin: 0 auto;
+      -webkit-transition:all .5s ease;
+      -moz-transition:all .5s ease;
+      -o-transition:all .5s ease;
+      -ms-transition:all .5s ease;
+      transition:all .5s ease;
+    }
+
+    #popin.popin-closed {
+      opacity: 0;
+    }
+
+    #popin.popin-opened {
+      opacity: 1;
+    }
+  </style>
+
+
+
   <script type="text/javascript" src="../../lib/jasmine-core/jasmine.js"></script>
   <script type="text/javascript" src="../../lib/jasmine-core/jasmine-html.js"></script>  
   <script type="text/javascript">
@@ -15,9 +38,12 @@
 
   <!-- include source files here... -->
   <script type="text/javascript" src="../../../source/js/vendor/my.class.js"></script>
-  <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>  
-  <script type="text/javascript" src="../../../source/js/core/mixins/ooevents.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/mixins/ooevents.js"></script>  
   <script type="text/javascript" src="../../../source/js/view/oodom.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/ootouch.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/ooelement.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/oopopin.js"></script>
 
    
   
@@ -53,8 +79,11 @@
   </head>
 
   <body>
-      <div id="domtest"></div>
-      <div id="testcls"></div>
+      <div id="popin"></div>
+
+      <button id="open">Open</button>
+      <button id="close">Close</button>
+
       <!-- include spec files here... -->
        <script type="text/javascript" src="spec.js"></script>
   </body>

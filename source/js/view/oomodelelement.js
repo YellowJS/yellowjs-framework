@@ -30,9 +30,10 @@
         render: function render (data, tpl) {
             if (!data)
                 data = {};
-            
             return ModelElement.Super.prototype.render.call(this, this.prepareData(data));
-            
+        },
+        getModel : function getModel(){
+            return this._model;
         }
 
     });

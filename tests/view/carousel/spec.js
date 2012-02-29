@@ -92,11 +92,11 @@ describe("oocarousel.js", function() {
             constructor : function () {
                 elementCls.elementA.Super.call(this, {
                     target:document.createElement('div'),
-                    template:'<div class="content"><h1>{{title}}</h1><img src="{{picture}}" style=" height:2000px; display:block;" />'
+                    template:'<div class="content"><h1>{{title}}</h1><img src="{{picture}}" style=" height:200px; display:block;" />'
                 });
             },
             onEnable : function onEnable() {
-                this.setScrollable(oo.view.Scroll.VERTICAL);
+                //this.setScrollable(oo.view.Scroll.VERTICAL);
             }
         });
 
@@ -113,10 +113,19 @@ describe("oocarousel.js", function() {
             'target' : '#list'
         });
 
+        var slider = oo.createElement('sliderCursor',{
+            target:"#slider",
+            model : model,
+            cursor:"#slider > .cursor",
+            items : {el: "#slider > .items", template : '<i></i>'},
+            translate:{x:true,y:false},
+            overlay : '#overlay'
+        });
+
 
         var optCarousel = {
             el : "#carousel",
-            pager : list,
+            pager : slider,
             model : model,
             elementCls : elementCls
         };
@@ -135,8 +144,39 @@ describe("oocarousel.js", function() {
             carousel.showPanel(4);
         },false);*/
        
-       
+    });
+
+    describe('carousel fade', function(){
+        var elementCls = {};
         
+        elementCls.elementA = oo.Class(oo.view.Element, {
+            constructor : function () {
+                elementCls.elementA.Super.call(this, {
+                    target:document.createElement('div'),
+                    template:'<div class="content"><h1>{{title}}</h1><img src="{{picture}}" style=" height:200px; display:block;" />'
+                });
+            },
+            onEnable : function onEnable() {
+                //this.setScrollable(oo.view.Scroll.VERTICAL);
+            }
+        });
+                
+        var list  = oo.createElement('list', {
+            'template' : 'test',
+            'target' : '#list'
+        });
+
+        var opt2Carousel = {
+            el : "#carousel-fade",
+            pager : false,
+            model : model,
+            elementCls : elementCls,
+            transitionType : "custom",
+            swipe : true
+        };
+
+        
+        window.carouselCustom = oo.createElement('carousel', opt2Carousel);
     });
 
 });

@@ -1,5 +1,7 @@
 describe("oorouter.js", function() {
+
     var router = oo.getRouter();
+    
     describe('addRoutes', function(){
         it('routes parameter must exist', function(){
             expect(function(){
@@ -161,29 +163,41 @@ describe("oorouter.js", function() {
             expect(router._controllers.Ctl2Controller).toEqual(controller2);
         });
     });
-
+    
     describe('dispatch',function(){
         var callback = jasmine.createSpy();
         var callback2 = jasmine.createSpy();
         
-        var newRouter = new oo.router.Router();
-        var controller1 = oo.createController({c11Action: callback});
-        var controller2 = oo.createController({c22Action:callback2});
+
+        /*oo.define({
+            'pushState' : true
+        });*/
+
+
+        var newRouter = oo.getRouter();
+        
+
+
+        var controller1 = oo.createController({c11Action: function(){console.log('c1');}});
+        var controller2 = oo.createController({c22Action:function(){console.log('c2');}});
+        var controller3 = oo.createController({c33Action:function(){ console.log('c3'); newRouter.load('/ctl22/c22');}});
         var c = oo.createController({indexAction:function indexAction(){ }});
 
         newRouter.addController('IndexController',c);
 
         var params = {
           'Ctl11Controller' : controller1,
-          'Ctl22Controller' : controller2
+          'Ctl22Controller' : controller2,
+          'Ctl33Controller' : controller3
         };
 
         newRouter.addControllers(params);
         newRouter.init();
-        newRouter.dispatch('/ctl11/c11');
-        newRouter.dispatch('/ctl22/c22');
+        //newRouter.load('/ctl11/c11');
+        //newRouter.load('/ctl22/c22');
+        oo.getRouter().load('/ctl33/c33');
         
-        expect(callback).toHaveBeenCalled();
-        expect(callback2).toHaveBeenCalled();
+        //expect(callback).toHaveBeenCalled();
+        //expect(callback2).toHaveBeenCalled();
     });
 });

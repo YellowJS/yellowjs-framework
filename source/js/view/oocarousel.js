@@ -10,17 +10,25 @@ var oo = (function (oo) {
     // shorthand
     var Dom = oo.view.Dom, Touch = oo.core.Touch, ns = oo.getNS('oo.view');
     
-    
-    var Carousel = ns.Carousel = my.Class(oo.view.ModelElement, {
+    var Carousel = ns.Carousel = my.Class(oo.view.ModelElement, oo.core.mixins.Events, {
+        STATIC : {
+            EVENT_ON : "EVENT_ON",
+            EVENT_GOTO : "EVENT_GOTO",
+            CLS_SHOWING : "is-showing",
+            CLS_ACTIVE : "item-active"
+        },
         _datas : null,
         _elementCls : null,
-        _items : [],
+        _items : null,
         _available : true,
         _newPanel : null,
         _upPrev : false,
         _upNext : false,
         _fromLimit:true,
         _activePanel: null,
+        _transitionType : "Slide",
+        _swipe : false,
+        _pagerOpt : false,
         constructor : function constructor(opt) {
             if(!opt){
                 throw new Error('Missing options');
@@ -33,14 +41,28 @@ var oo = (function (oo) {
                 target: opt.el || (document.createElement('div'))
             };
 
-
             Carousel.Super.call(this, conf);
-            
             this._transitionDuration = opt.duration || 200;
+            this._items = [];
 
-            if (opt){
-                if(!opt.hasOwnProperty('model') || !opt.hasOwnProperty('elementCls')){
-                    throw new Error('Options passed but missing model or elementCls');
+            //todo default option with override
+            if(opt && opt.hasOwnProperty('transitionType')){
+                this._transitionType = opt.transitionType.charAt(0).toUpperCase() + opt.transitionType.slice(1);
+                delete opt.transitionType;
+            }
+
+            if(opt && opt.hasOwnProperty('swipe')){
+                this._swipe = true;
+                delete opt.swipe;
+            }
+
+            if(opt && opt.hasOwnProperty('pager')){
+                this._pagerOpt = opt.pager;
+                delete opt.pager;
+            }
+            if (opt && opt.hasOwnProperty('model')){
+                if(!opt.hasOwnProperty('elementCls')){
+                    throw new Error('Options passed but missing elementCls');
                 }
 
                 if('[object Object]' !== Object.prototype.toString.call(opt.elementCls)){
@@ -48,26 +70,39 @@ var oo = (function (oo) {
                 }
                 
                 this._elementCls = opt.elementCls;
-                this._prepareModel(opt);
+                delete opt.elementCls;
+                this._prepareModel(opt.model);
             } else {
               this._prepareView();
             }
             
         },
-        _prepareModel : function _prepareModel(opt){
+        _prepareModel : function _prepareModel(model){
           var that = this;
-            this.setModel(opt.model);
+            this.setModel(model);
             //this.after
             this._model.fetch(function(datas){
                 that._datas = datas;
                 that._addPanel(0);
-                this._activePanel = 0;
                 that._addPanel(1);
-                that._prepareView(opt);
+                that._prepareView();
             });
         },
-        _prepareView : function _prepareView(opt){
-            this._nbPanel = this._datas.length -1 || document.querySelectorAll([opt.el, ' > *'].join('')).length;
+        updateModel : function updateModel(model){
+            this.clear();
+            this._items = [];
+            this._available = true;
+            this._datas = null;
+            this._available = true;
+            this._newPanel = null;
+            this._upPrev = false;
+            this._upNext = false;
+            this._fromLimit = true;
+            this._activePanel = null;
+            this._prepareModel(model);
+        },
+        _prepareView : function _prepareView(){
+            this._nbPanel = this._datas.length -1 || document.querySelectorAll([this._identifier, ' > *'].join('')).length;
             this._panelWidth = (new Dom(this.getDomObject().firstElementChild)).getWidth();
             var c = this.getDomObject().children, i = 0, len = c.length;
 
@@ -75,10 +110,10 @@ var oo = (function (oo) {
               c[i].style.width = this._panelWidth + 'px';
             }
 
-            this.setWidth( (this._model) ? this._panelWidth*3 : this._panelWidth*this._nbPanel ,'px' );
-
             this._activePanel = 0;
-            this._displayPager = (opt && opt.pager ? opt.pager : false);
+            this['_prepareView'+this._transitionType]();
+
+            this._displayPager = this._pagerOpt;
 
             this._pager = null;
             this._buildPager();
@@ -87,15 +122,25 @@ var oo = (function (oo) {
 
             this.render();
         },
+        _prepareViewSlide : function _prepareViewSlide(){
+            this.setWidth( (this._model) ? this._panelWidth*3 : this._panelWidth*this._nbPanel ,'px' );
+        },
+        _prepareViewCustom : function _prepareViewCustom(){
+            //put current elem on top
+            this._items[this._activePanel].classList.addClass(Carousel.CLS_ACTIVE);
+        },
         _addPanel : function _addPanel(id, before){
             var item = this._getItem(id);
             if(this._panelWidth){
               item.setWidth(this._panelWidth,'px');
             }
-            this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
 
+            this[(before ? 'prependChild': 'appendChild')](item.getDomObject());
             item.onEnable();
 
+        },
+        isAvailable : function isAvailable(){
+          return this._available;
         },
         showPanel : function showPanel(id){
             if('undefined' === typeof id){
@@ -114,9 +159,23 @@ var oo = (function (oo) {
                     this._upNext = true;
                 }
             }
+            
             this._available = false;
-            var s = (id < this._activePanel ? +1 : -1 ), nT;
+            
+            
+            var s = (id < this._activePanel ? +1 : -1 );
+            this["_setTransition"+this._transitionType](id, s);
+            
+            this.triggerEvent(Carousel.EVENT_GOTO, [this._newPanel]);
+            this._updatePager(this._newPanel);
 
+            if (this._newPanel === this._activePanel) {
+              this._available = true;
+            }
+
+        },
+        _setTransitionSlide: function _setTransitionSlide(id, s){
+            var nT;
             if(id >= 0 && id <= this._nbPanel && id !== this._activePanel){
                 nT =  this._startTranslate + s * this._panelWidth;
             } else {
@@ -135,60 +194,45 @@ var oo = (function (oo) {
 
             this.translateTo({x:nT}, this._transitionDuration);
             this._startTranslate = nT;
+
             //store new id for endTransition
             this._newPanel = id;
-
-            /*if(id === this._activePanel) return;
-
-            if(!this._datas[id] || id === this._activePanel || !this._available) return;
-
-            
-
-
-            this._available = false;
-
-
-            //before transition
-            if(id > this._activePanel+1){
-                this._updateNext(id);
-                this._upPrev = true;
-            }
-            
-            if(id < this._activePanel-1){
-                this._updatePrev(id);
-                this._upNext = true;
-            }
-
-
-            //setTransition
-            
-            var s = (id < this._activePanel ? +1 : -1 ), nT;
-
-
-            if(id >= 0 && id <= this._nbPanel){
-                nT =  this._startTranslate + s * this._panelWidth;
+        },
+        _setTransitionCustom: function _setTransitionCustom(id, s){
+            var that = this;
+            //limite
+            if(id < 0){
+                id = 0;
             } else {
-                if(id < 0){
-                    nT = 0;
-                    id=0;
-                } else {
-                    nT =  this._startTranslate;
+                if(id > this._nbPanel){
                     id = this._nbPanel;
                 }
             }
-
-            this.translateTo({x:nT}, this._transitionDuration);
-            this._startTranslate = nT;
-            //store new id for endTransition
-            this._newPanel = id;*/
-        },
-        _moveToStartPlace : function _replace(){
             
+            if(id !== this._activePanel && !this._items[id].classList.hasClass(Carousel.CLS_SHOWING)) {
+                if(!this._items[id].isInit){
+                    this._items[id].getDomObject().addEventListener('webkitTransitionEnd',function(){
+                        that.onEndTransition.apply(that);
+                    },false);
+
+                    this._items[id].isInit = true;
+                }
+
+                setTimeout(function(){
+                    that._items[id].classList.addClass(Carousel.CLS_SHOWING);
+                },1);
+                
+                //store new id for endTransition
+            } else {
+                //no transition
+                this._available = true;
+            }
+            
+            this._newPanel = id;
         },
         _updateNext : function _updateNext(nextId){
             //remove last
             this.removeChild(this.getDomObject().lastChild);
-
             //appendChild
             this._addPanel(nextId);
         },
@@ -205,29 +249,45 @@ var oo = (function (oo) {
             return items[id];
         },
         _prepareItem : function _prepareItem(id){
-            var item , elementCls = this._datas[id].elementCls;
+            var item , elementCls = this._datas[id].elementCls, that = this;
 
             if( 'undefined' === this._elementCls[elementCls] || 'function' !== typeof this._elementCls[elementCls]){
                 throw new Error('element Cls must exist and be a function');
             }
 
             item = new this._elementCls[elementCls]();
-            item.appendHtml(item.render(this._datas[id]));
+
+
+            
+            item.data = this._datas[id];
+
+            item.appendHtml(item.render(item.data));
+            
 
             return item;
         },
         /*pager*/
         _buildPager : function _buildPager() {
             if (this._displayPager) {
-
                 if( 'boolean' === typeof this._displayPager) {
                   this._buildPagerItem();
                 } else {
-                  this._buildPagerList();
+                    this._pager = this._displayPager;
+                    if (this._displayPager instanceof oo.view.List){
+                        this._buildPagerList();
+                    }
+
+                    if (this._displayPager instanceof oo.view.Slider){
+                        this._buildPagerSlider();
+                    }
+                  
+                    if(this._displayPager instanceof oo.view.PagerPrevNext){
+                        this._buildPagerPrevNext();
+                    }
                 }
             }
 
-            this._updatePager();
+            //this._updatePager(this._activePanel);
         },
         _buildPagerItem : function _buildPagerItem(){
           this._pager = Dom.createElement('div');
@@ -244,22 +304,64 @@ var oo = (function (oo) {
         },
         _buildPagerList : function _buildPagerList(){
           var that = this;
-          this._pager = this._displayPager;
           this._pager.addListener(oo.view.List.EVT_ITEM_RELEASED, function(dom, id){
             if(parseInt(id,10) === that._activePanel || !that._available) return;
 
             that.showPanel(parseInt(id,10));
           });
         },
-        _updatePager : function _updatePager() {
-          return
+        _buildPagerSlider : function _buildPagerSlider(){
+            var that = this;
+            this._pager.addListener(oo.view.SliderCursor.EVT_ONGOTO, function(key){
+               that.showPanel(key);
+            });
+        },
+        _buildPagerPrevNext : function _buildPagerPrevNext(){
+            var that = this;
+            this._pager.addListener(oo.view.PagerPrevNext.goToNext, function(){
+                that.goToNext.call(that);
+            });
+
+            this._pager.addListener(oo.view.PagerPrevNext.goToPrev, function(){
+                that.goToPrev.call(that);
+            });
+        },
+        _updatePager : function _updatePager(id) {
+          
             if (this._displayPager) {
-                var current = this._pager.getDomObject().querySelector('.dot.active');
-                if (current) {
-                    current.className = current.className.replace(/ *active/, '');
+                if( 'boolean' === typeof this._displayPager) {
+                  var current = this._pager.getDomObject().querySelector('.dot.active');
+                  if (current) {
+                      current.className = current.className.replace(/ *active/, '');
+                  }
+                  this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
+                } else {
+                    
+                    /*if (this._pager instanceof oo.view.List){
+                    
+                    }*/
+
+                    if (this._pager instanceof oo.view.Slider){
+                        this._pager.goTo(id);
+                    }
+                  
+                    if(this._pager instanceof oo.view.PagerPrevNext){
+                        if(0 === id){
+                            this._pager.buttonPrev.classList.addClass(oo.view.PagerPrevNext.CLS_DISABLE);
+                        } else {
+                            this._pager.buttonPrev.classList.removeClass(oo.view.PagerPrevNext.CLS_DISABLE);
+                        }
+
+                        if(this._nbPanel === id){
+                            this._pager.buttonNext.classList.addClass(oo.view.PagerPrevNext.CLS_DISABLE);
+                        } else {
+                            this._pager.buttonNext.classList.removeClass(oo.view.PagerPrevNext.CLS_DISABLE);
+                        }
+                    }
                 }
-                this._pager.getDomObject().querySelector(['.dot:nth-child(', (this._activePanel + 1), ')'].join('')).className += ' active';
             }
+
+
         },
         hasMoved : function hasMoved() {
             return this._moved;
@@ -272,16 +374,17 @@ var oo = (function (oo) {
             listNode.addEventListener(Touch.EVENT_START, function (e) {
                 if(that._available){
                     that._startX = Touch.getPositionX(e);
-                    that._startTranslate = that.getTranslateX();
+                    that['_transitionStart'+that._transitionType]();
                     touchMoveTempo = 0;
                 }
             }, false);
 
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
+                if(e.type == "mousemove") return;
                 if(that._available){
                     var diff = Touch.getPositionX(e) - that._startX;
-
-                    that.translateTo({x:(that._startTranslate + diff)}, 0);
+                    that['_transitionMove'+that._transitionType](diff);
+                    
                     that._moved = true;
                 }
             }, false);
@@ -289,19 +392,10 @@ var oo = (function (oo) {
             listNode.addEventListener(Touch.EVENT_END, function () {
                 if(that._available){
                     that._moved = false;
-
                     var cVal = that.getTranslateX(),
                         diff = cVal - that._startTranslate;
-
-                    if(Math.abs(diff) > 50){
-                        if( cVal - that._startTranslate < 0 ){
-                            that.onSwipeRight();
-                        } else {
-                            that.onSwipeLeft();
-                        }
-                    } else {
-                        that.translateTo({x:(that._startTranslate)}, that._transitionDuration);
-                    }
+                        that['_transitionEnd'+that._transitionType](cVal, diff);
+                    
                     
                     
                     /*if (cVal < 0) {
@@ -331,8 +425,7 @@ var oo = (function (oo) {
                     }*/
 
                     //that._activePanel = Math.abs(tVal / that._panelWidth);
-
-                    that._updatePager();
+                    
 
                     //that.translateTo({x:tVal}, that._transitionDuration);
                     //that._startTranslate = tVal;
@@ -344,24 +437,58 @@ var oo = (function (oo) {
             },false);
 
             //swipe
-            /*listNode.addEventListener('swipeRight',function(e){
-                that.onSwipeRight.call(that);
-            },false);
+            if(this._swipe){
+                listNode.addEventListener('swipeRight',function(e){
+                    that.goToNext();
+                },false);
 
-            listNode.addEventListener('swipeLeft',function(e){
-                that.onSwipeLeft.call(that);
-            },false);*/
-
-            listNode.addEventListener('webkitTransitionEnd',function(e){
+                listNode.addEventListener('swipeLeft',function(e){
+                    that.goToPrev();
+                },false);
+            }
+            
+            if(this._transitionType !== "Custom"){
+                listNode.addEventListener('webkitTransitionEnd',function(e){
+                    that.onEndTransition.apply(that);
+                },false);
+            }
+            /*listNode.addEventListener('webkitTransitionEnd',function(e){
                 that.onEndTransition.apply(that);
-                
-            },false);
+            },false);*/
         },
-        onSwipeRight : function onSwipeRight(){
-            this.showPanel(this._activePanel + 1);
+        _transitionStartSlide : function _transitionStartSlide(){
+            this._startTranslate = this.getTranslateX();
         },
-        onSwipeLeft : function onSwipeLeft(){
-            this.showPanel(this._activePanel - 1);
+        _transitionMoveSlide : function _transitionMoveSlide(diff){
+            this.translateTo({x:(this._startTranslate + diff)}, 0);
+        },
+
+        _transitionEndSlide : function _transitionEndSlide(cVal,diff){
+            if(Math.abs(diff) > 50){
+                if( cVal - this._startTranslate < 0 ){
+                    this.goToNext();
+                } else {
+                    this.goToPrev();
+                }
+            } else {
+                this.translateTo({x:(this._startTranslate)}, this._transitionDuration);
+            }
+        },
+        _transitionStartCustom : function _transitionStartCustom(){
+        },
+        _transitionMoveCustom : function _transitionMoveCustom(){
+        },
+        _transitionEndCustom : function _transitionEndCustom(){
+        },
+        goToNext : function goToNext(){
+            if(this._available){
+                this.showPanel(this._activePanel + 1);
+            }
+        },
+        goToPrev : function goToPrev(){
+            if(this._available){
+                this.showPanel(this._activePanel - 1);
+            }
         },
         onEndTransition : function onEndTransition(){
             //mmmmmm
@@ -370,13 +497,18 @@ var oo = (function (oo) {
                 return;
             }
 
+            this['_endTransition' + this._transitionType](this._newPanel);
+
             if(this._newPanel > this._activePanel){
                 if(!this._fromLimit){
 
                     //already 3 items in the carousel
                     this.removeChild(this.getDomObject().firstChild);
-                    this.translateTo({x:this._startTranslate + this._panelWidth});
-                    this._startTranslate = this._startTranslate + this._panelWidth;
+                    if(this._transitionType == "Slide"){
+                        this.translateTo({x:this._startTranslate + this._panelWidth});
+                        this._startTranslate = this._startTranslate + this._panelWidth;
+                    }
+                    
                 }
 
                 if(this._newPanel < this._nbPanel){
@@ -384,18 +516,27 @@ var oo = (function (oo) {
                 }
             }
 
+            
             if(this._newPanel < this._activePanel){
                 if(!this._fromLimit){
                     this.removeChild(this.getDomObject().lastChild);
                 }
 
                 if(this._newPanel > 0){
-                    this.translateTo({x:this._startTranslate - this._panelWidth});
+                    
+                    
+                    if(this._transitionType == "Slide"){
+                        this.translateTo({x:this._startTranslate - this._panelWidth});
+                    }
                     this._addPanel(this._newPanel-1, true);
-                    this._startTranslate = this._startTranslate - this._panelWidth;
+                    if(this._transitionType == "Slide"){
+                        this._startTranslate = this._startTranslate - this._panelWidth;
+                    }
+                    
                 }
             }
 
+          
             if(this._upPrev){
                 this._updatePrev(this._newPanel -1);
                 this._upPrev = false;
@@ -404,12 +545,23 @@ var oo = (function (oo) {
                 this._updateNext(this._newPanel +1);
                 this._upNext = false;
             }
-            
 
+            
+            
             this._fromLimit = (this._newPanel < 1 || this._newPanel == this._nbPanel) ? true : false;
 
             this._activePanel = this._newPanel;
             this._available = true;
+            
+            this.triggerEvent(Carousel.EVENT_ON, [this._activePanel]);
+        },
+        _endTransitionSlide : function _endTransitionSlide(id){
+
+        },
+        _endTransitionCustom : function _endTransitionCustom(id){
+            this._items[id].classList.removeClass(Carousel.CLS_SHOWING);
+            this._items[this._activePanel].classList.removeClass(Carousel.CLS_ACTIVE);
+            this._items[id].classList.addClass(Carousel.CLS_ACTIVE);
         },
         render : function render(){
             // update css if needed
@@ -418,7 +570,10 @@ var oo = (function (oo) {
                     (new Dom(this.getDomObject().parentNode)).appendChild(this._pager);
                 } else {
                     //render list
-                    this._pager.appendHtml(this._pager.render(this._datas));
+                    if (this._pager instanceof oo.view.List){
+                        this._pager.appendHtml(this._pager.render(this._datas));
+                    }
+                    
                 }
                 
             }

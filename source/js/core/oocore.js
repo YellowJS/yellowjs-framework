@@ -22,7 +22,8 @@ oo = pline = (function (window) {
     // Flavius;
 
     var _globalConfig = {
-        templateEngine: 'mustache'
+        templateEngine: 'mustache',
+        pushState : false
     };
 
 //    var Core = my.Class({
@@ -178,6 +179,9 @@ oo = pline = (function (window) {
                 if (fn && 'function' == typeof fn)
                     fn.call(this);
             });
+        },
+        _convertNodeListToArray : function _convertNodeListToArray(nL){
+            return Array.prototype.slice.call(nL, 0);
         }
     };
     // });

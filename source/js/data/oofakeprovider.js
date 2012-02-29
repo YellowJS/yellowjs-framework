@@ -94,6 +94,10 @@
         ],
         constructor: function contructor (options) {
             FakeProvider.Super.call(this, options);
+
+            if(options.hasOwnProperty('data')){
+                this.setData(options.data);
+            }
         },
         save: function save (data, callback) {
             if (!(data instanceof Array))
@@ -110,6 +114,19 @@
         },
         fetch: function fetch (callback) {
             callback.success.call(global, this._data);
+        },
+        setData: function setData(data){
+            if(  "object" !== typeof data ){
+                throw new Error('Data missing');
+            }
+
+            if (!(data instanceof Array))
+                data = [data];
+            
+            this._data = data;
+        },
+        clearAll : function clearAll(){
+            this.setData([]);
         }
     });
 

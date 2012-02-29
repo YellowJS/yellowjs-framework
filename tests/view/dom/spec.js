@@ -55,4 +55,10 @@ describe("oodom.js", function() {
             expect(test).toBeTruthy(jasmine.isDomNode(test));
         });
     });
+
+    describe("addClass", function(){
+        var el = new oo.view.Dom(document.querySelector("#testcls"));
+        el.classList.addClass('tst');
+        el.classList.addClass('tst');
+    });
 });

@@ -28,6 +28,7 @@
         _initEvents: function () {
              
             function checkTarget (target) {
+                target = (Node.TEXT_NODE === target.nodeType) ? target.parentNode : target;
                 var t = new Dom(target);
                 var itemId;
                 if (t.classList.hasClass('oo-list-item')) {
@@ -85,6 +86,9 @@
             }
 
             this._structTpl = tpl;
+        },
+        render : function render(data,tpl){
+            this.appendHtml(List.Super.prototype.render.call(this, data,tpl));
         }
     });
     

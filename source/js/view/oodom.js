@@ -3,7 +3,7 @@
     var ClassList = oo.Class({
         constructor : function constructor (obj){
             this._dom = obj;
-            this._list = obj.className.split(' ');
+            this._list = (obj.getAttribute("class")) ? obj.getAttribute("class").split(' ') : [];
         },
         destroy : function destroy () {
             this._dom = null;
@@ -11,7 +11,7 @@
             this._list = null;
         },
         _updateClassList : function _updateClassList (){
-            this._dom.className = this._list.join(' ');
+            this._dom.setAttribute("class",this._list.join(' '));
         },
         // remove one or more css class
         removeClass : function removeClass (clsName) {
@@ -20,6 +20,7 @@
             }
             var updated = false;
             var that = this;
+            this._list = this._getDomCls();
             clsName.forEach(function (element, index, array) {
                 var i = that._list.indexOf(element);
                 if (-1 !== i) {
@@ -37,11 +38,20 @@
             if (typeof clsName == 'string') {
                 clsName = clsName.split(' ');
             }
-            if (!this.hasClass(clsName)) {
+
+            var that = this;
+            this._list = this._getDomCls();
+            clsName.forEach(function(cls){
+                if (!that.hasClass(cls)) {
+                    that._list.push(cls);
+                    that._updateClassList();
+                }
+            });
+            /*if (!this.hasClass(clsName)) {
                 clsName.splice(0, 0, 0, 0);
                 Array.prototype.splice.apply(this._list, clsName);
                 this._updateClassList();
-            }
+            }*/
         },
         // set one or more css class (clear all class previously present)
         setClass : function setClass (clsName) {
@@ -54,7 +64,10 @@
         },
         // check if it has the given class
         hasClass : function hasClass(clsName) {
-            var i = this._list.indexOf(clsName);
+            //var i = this._list.indexOf(clsName);
+            var i = this._getDomCls().indexOf(clsName);
+            //console.log(i);
+
             if (-1 === i) {
                 return false;
             } else {
@@ -63,14 +76,18 @@
         },
         getClasses : function getClasses (){
             return this._list;
+        },
+        _getDomCls : function _getDomCls(){
+            var cls = this._dom.getAttribute('class');
+            return ( (cls) ? cls.split(' ') : [] );
         }
     });
     
     // lists of attributes for wich accessors will be generated
     var prop = {
         readOnly: [],
-        readWrite: ['width', 'height', 'zIndex', 'display', 'top', 'right', 'bottom', 'left',
-                    'webkitTransitionProperty', 'webkitTransitionTimingFunction', 'webkitTransitionDuration']
+        readWrite: ['width', 'height', 'zIndex', 'display', 'top', 'right', 'bottom', 'left', 'opacity',
+                    'webkitTransitionProperty', 'webkitTransitionTimingFunction', 'webkitTransitionDuration', 'webkitTransitionDelay']
     };
 
     var Dom = oo.getNS('oo.view').Dom = oo.Class(oo.emptyFn, oo.core.mixins.Events,{
@@ -226,10 +243,26 @@
             else
                 return new Dom(n);
         },
+        findAll : function findAll (selector, returnDom) {
+            var n = this.getDomObject().querySelectorAll(selector), res = [];
+            if (null === n){
+                return null;
+            } else{
+                oo._convertNodeListToArray(n).forEach(function(item){
+                    res.push( (returnDom) ? item : new Dom(item));
+                });
+                
+                return res;
+            }
+                
+        },
+        parent : function parent(){
+            return new Dom(this.getDomObject().parentNode);
+        },
         findParentByCls : function findParentByCls (cls) {
             var p = this.getDomObject().parentNode;
             var pattern = new RegExp(cls);
-            while (!pattern.test(p.className) && p && (Node.DOCUMENT_NODE !== p.nodeType)) {
+            while (p && (Node.DOCUMENT_NODE !== p.nodeType) && !pattern.test(p.getAttribute('class'))) {
                 p = p.parentNode;
             }
 
@@ -324,13 +357,13 @@
             this.setWebkitTransitionDuration(duration, 'ms');
 
             var currentTimingFunction = this.getWebkitTransitionTimingFunction();
-            if (typeof timmingFunction === 'string') {
+            if (typeof timingFunction === 'string') {
                 this.setWebkitTransitionTimingFunction(timingFunction, '');
             }
 
             var that = this, endListener = function endListener (e) {
-                that.getDomObject().removeEventListener('webkitTransitionEnd', this);
-                that.setWebkitTransitionDuration(currentTransitionDuration, 'ms');
+                that.getDomObject().removeEventListener('webkitTransitionEnd', endListener);
+                //that.setWebkitTransitionDuration(currentTransitionDuration, 'ms');
                 that.setWebkitTransitionTimingFunction(currentTimingFunction, '');
                 if (listener) {
                     listener.call(that, e);
@@ -367,7 +400,63 @@
             this.appendHtml(this._cacheTpl);
     
             return this;
+        },
+        /*animate : function animate(obj){
+            
+            if('object' != typeof obj){
+                throw new Error("Paramerter must be in an object");
+            }
+
+            for ( var key in obj){
+                if (obj.hasOwnProperty(key)){
+                    //cancel all duration
+                    this.setWebkitTransitionDuration(0, "ms");
+                    this.setWebkitTransitionTimingFunction(obj[key].timingFunction || "ease");
+                    //this.setWebkitTransitionDelay(obj[key].delay || 0, "ms");
+                    this["set" + key.charAt(0).toUpperCase()+key.slice(1)](obj[key]["value"]);
+                    this.getDomObject().style.WebkitTransitionDuration = obj[key].duration || 0;
+                    this.getDomObject().style.WebkitTransitionProperty = key;
+
+                    
+                    
+                }
+            }
+        },
+        setWebkitTransition : function setWebkitTransition(property, duration, delay, timingFunction){
+            //this.getWebkitTransition(property);
+            this.getDomObject().style.webkitTransition = [property, duration, delay, timingFunction].join(' ');
+
+
         }
+        getWebkitTransition : function getWebkitTransition (property, noCache) {
+            if (!this._cached.webkitTransition || this._cached.webkitTransition.indexOf(property) === -1  || noCache) {
+
+                var properties = window.getComputedStyle(this.getDomObject()).WebkitTransitionProperty;
+                
+                if(properties.indexOf(property) != -1){
+                    var index = properties.split(', ').indexOf(property);
+                    //[property, duration, delay, timingFunction]
+                    //var pattern = //g;
+                    //console.log(window.getComputedStyle(this.getDomObject()).WebkitTransitionTimingFunction.match(pattern));
+
+                    var values = [
+                        property,
+                        window.getComputedStyle(this.getDomObject()).WebkitTransitionDuration.split(', ')[index],
+                        window.getComputedStyle(this.getDomObject()).WebkitTransitionDelay.split(', ')[index]
+                        //window.getComputedStyle(this.getDomObject()).WebkitTransitionTimingFunction.split(', ')[index]
+                    ];
+
+                    console.log(values);
+                }
+                
+
+
+
+               
+                this._cached.webkitTransition[property] = window.getComputedStyle(this.getDomObject()).webkitTransform;
+            }
+            return this._cached.webkitTransform;
+        }*/
     });
     
 })(oo);
