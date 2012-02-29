@@ -314,7 +314,13 @@ var oo = (function (oo) {
         _buildPagerSlider : function _buildPagerSlider(){
             var that = this;
             this._pager.addListener(oo.view.SliderCursor.EVT_ONGOTO, function(key){
-               that.showPanel(key);
+                if(that.isAvailable()){
+                    that.showPanel(key);
+                } else {
+                    //resetPos
+                    //that._updatePager();
+                }
+               
             });
         },
         _buildPagerPrevNext : function _buildPagerPrevNext(){
