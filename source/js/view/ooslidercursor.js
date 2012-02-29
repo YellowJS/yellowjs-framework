@@ -13,6 +13,7 @@
 
     var SliderCursor =  oo.getNS('oo.view').SliderCursor = oo.Class(oo.view.Slider, oo.core.mixins.Events, {
         _tplItems : '{{key}}',
+        _tplOverlay : '{{key}}',
         _datas : null,
         _step : null,
         _total : null,
@@ -137,7 +138,7 @@
 
             
             if(opt.overlay){
-                this._overlay = oo.createElement('node', {target:opt.overlay, template:'{{key}}'});
+                this._overlay = oo.createElement('node', {target:opt.overlay, template: opt.overlayTemplate || this._tplOverlay});
                 this._overlay.setDisplay('none');
             }
 
