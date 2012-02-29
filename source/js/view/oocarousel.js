@@ -14,6 +14,7 @@ var oo = (function (oo) {
         STATIC : {
             EVENT_ON : "EVENT_ON",
             EVENT_GOTO : "EVENT_GOTO",
+            EVENT_PRESS:"EVENT_PRESS",
             CLS_SHOWING : "is-showing",
             CLS_ACTIVE : "item-active"
         },
@@ -376,6 +377,7 @@ var oo = (function (oo) {
                     that._startX = Touch.getPositionX(e);
                     that['_transitionStart'+that._transitionType]();
                     touchMoveTempo = 0;
+                    that.triggerEvent(Carousel.EVENT_PRESS);
                 }
             }, false);
 
@@ -430,6 +432,7 @@ var oo = (function (oo) {
                     //that.translateTo({x:tVal}, that._transitionDuration);
                     //that._startTranslate = tVal;
                 }
+
             }, false);
 
             window.addEventListener("orientationchange",function(){
