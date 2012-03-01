@@ -64,9 +64,7 @@
         },
         // check if it has the given class
         hasClass : function hasClass(clsName) {
-            //var i = this._list.indexOf(clsName);
             var i = this._getDomCls().indexOf(clsName);
-            //console.log(i);
 
             if (-1 === i) {
                 return false;
@@ -259,6 +257,10 @@
         parent : function parent(){
             return new Dom(this.getDomObject().parentNode);
         },
+        children : function children(){
+            var c = this.getDomObject().children;
+            return oo._convertNodeListToArray(c);
+        },
         findParentByCls : function findParentByCls (cls) {
             var p = this.getDomObject().parentNode;
             var pattern = new RegExp(cls);
@@ -282,8 +284,6 @@
         // append a node on top to the current node children list
         // wrapper for the native API
         prependDomNode : function prependDomNode (domNode) {
-            //var ref = this..getDomObject().firstChild;
-            //console.log(this..getDomObject())
             this.getDomObject().insertBefore(domNode, this.getDomObject().firstChild);
 
             return this;
