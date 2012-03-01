@@ -38,6 +38,10 @@
                     "path" : "../source/js/core/"
                 },
                 {
+                    "text" : "ooajax.js",
+                    "path" : "../source/js/core/net/"
+                },                
+                {
                     "text" : "oorouter.js",
                     "path" : "../source/js/router/"
                 },                
