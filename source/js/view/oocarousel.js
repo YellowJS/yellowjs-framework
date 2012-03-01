@@ -30,6 +30,8 @@ var oo = (function (oo) {
         _transitionType : "Slide",
         _swipe : false,
         _pagerOpt : false,
+        _startX : null,
+        _currentTranslate : null,
         constructor : function constructor(opt) {
             if(!opt){
                 throw new Error('Missing options');
@@ -178,23 +180,25 @@ var oo = (function (oo) {
         _setTransitionSlide: function _setTransitionSlide(id, s){
             var nT;
             if(id >= 0 && id <= this._nbPanel && id !== this._activePanel){
-                nT =  this._startTranslate + s * this._panelWidth;
+                //nT =  this._startTranslate + s * this._panelWidth;
+                nT =  this._currentTranslate + s * this._panelWidth;
+                
             } else {
                 if( id === this._activePanel) {
-                    nT =  this._startTranslate;
+                    nT =  this._currentTranslate;
                 } else {
                    if(id < 0){
                         nT = 0;
                         id = 0;
                     } else {
-                        nT =  this._startTranslate;
+                        nT =  this._currentTranslate;
                         id = this._nbPanel;
                     }
                 }
             }
 
             this.translateTo({x:nT}, this._transitionDuration);
-            this._startTranslate = nT;
+            this._currentTranslate = nT;
 
             //store new id for endTransition
             this._newPanel = id;
@@ -480,7 +484,8 @@ var oo = (function (oo) {
                     this.goToPrev();
                 }
             } else {
-                this.translateTo({x:(this._startTranslate)}, this._transitionDuration);
+                this.translateTo({x:(null !== this._currentTranslate) ? this._currentTranslate : (this._currentTranslate = this._startTranslate)}, this._transitionDuration);
+                
             }
         },
         _transitionStartCustom : function _transitionStartCustom(){
@@ -514,8 +519,8 @@ var oo = (function (oo) {
                     //already 3 items in the carousel
                     this.removeChild(this.getDomObject().firstChild);
                     if(this._transitionType == "Slide"){
-                        this.translateTo({x:this._startTranslate + this._panelWidth});
-                        this._startTranslate = this._startTranslate + this._panelWidth;
+                        this.translateTo({x:this._currentTranslate + this._panelWidth});
+                        this._currentTranslate = this._currentTranslate + this._panelWidth;
                     }
                     
                 }
@@ -535,11 +540,11 @@ var oo = (function (oo) {
                     
                     
                     if(this._transitionType == "Slide"){
-                        this.translateTo({x:this._startTranslate - this._panelWidth});
+                        this.translateTo({x:this._currentTranslate - this._panelWidth});
                     }
                     this._addPanel(this._newPanel-1, true);
                     if(this._transitionType == "Slide"){
-                        this._startTranslate = this._startTranslate - this._panelWidth;
+                        this._currentTranslate = this._currentTranslate - this._panelWidth;
                     }
                     
                 }
@@ -596,8 +601,8 @@ var oo = (function (oo) {
 
             diff = oldW - this._panelWidth;
 
-            this.translateTo({x:this._startTranslate + diff},0);
-            this._startTranslate = this._startTranslate + diff;
+            this.translateTo({x:this._currentTranslate + diff},0);
+            this._startTranslate = this._currentTranslate + diff;
         }
     });
     
