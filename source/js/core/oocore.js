@@ -17,6 +17,7 @@ oo = pline = (function (window) {
     };
 
     return {
+        _ajaxRequestObject: null,
         /**
          * proxy to the my.Class
          */
@@ -184,10 +185,29 @@ oo = pline = (function (window) {
                 fn.call(window, _this);
             }
 
-            if (PhoneGap in window && PhoneGap.available)
+            if ('PhoneGap' in window && PhoneGap.available)
                 document.addEventListener('deviceready', start);
             else
                 window.addEventListener('load', start);
+        },
+        ajax: function ajax (url, method, params, successCallback, errorCallback) {
+
+            var _this= this;
+
+            // for nicer api
+            if(0 === arguments.length)
+                return {
+                    post: function (url, params, successCallback, errorCallback) { oo.ajax(url, 'post', params, successCallback, errorCallback); },
+                    get: function (url, params, successCallback, errorCallback) { oo.ajax(url, 'get', params, successCallback, errorCallback); }
+                };
+
+            if (null === this._ajaxRequestObject) {
+                this._ajaxRequestObject = new oo.core.net.Ajax();
+            }
+
+            var req = this._ajaxRequestObject.buildReq(url, method, params, successCallback, errorCallback);
+            req.send();
+
         }
     };
 
