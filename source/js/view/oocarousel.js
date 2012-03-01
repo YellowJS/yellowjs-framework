@@ -150,6 +150,11 @@ var oo = (function (oo) {
                 throw new Error("Missing 'id' of the panel");
             }
 
+            //disable pager slider
+            if(this._pager && this._pager instanceof oo.view.Slider){
+                this._pager.setDisabled();
+            }
+
             if( id !== this._activePanel && this._datas[id] && this._available){
                 //before transition add the new panel if it not in the dom
                 if(id > this._activePanel+1){
@@ -174,6 +179,10 @@ var oo = (function (oo) {
 
             if (this._newPanel === this._activePanel) {
               this._available = true;
+                  if (this._pager && this._pager instanceof oo.view.Slider){
+                    //enable pager slider
+                    this._pager.setEnabled();
+                }
             }
 
         },
@@ -320,11 +329,7 @@ var oo = (function (oo) {
             this._pager.addListener(oo.view.SliderCursor.EVT_ONGOTO, function(key){
                 if(that.isAvailable()){
                     that.showPanel(key);
-                } else {
-                    //resetPos
-                    //that._updatePager();
                 }
-               
             });
         },
         _buildPagerPrevNext : function _buildPagerPrevNext(){
@@ -567,6 +572,11 @@ var oo = (function (oo) {
             this._activePanel = this._newPanel;
             this._available = true;
             
+            if (this._pager && this._pager instanceof oo.view.Slider){
+                //enable pager slider
+                this._pager.setEnabled();
+            }
+
             this.triggerEvent(Carousel.EVENT_ON, [this._activePanel]);
         },
         _endTransitionSlide : function _endTransitionSlide(id){

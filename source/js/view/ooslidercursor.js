@@ -18,6 +18,7 @@
         _step : null,
         _total : null,
         _overlay : null,
+        _enabled: true,
         STATIC : {
             EVT_ONGOTO : 'onGoTo'
         },
@@ -47,6 +48,7 @@
                 }
 
             domNode.addEventListener(Touch.EVENT_START, function(e){
+                if(!that.isEnabled()) return;
                 startPos = Touch.getPosition(e);
                 isAvailable = true;
                 that._cursor.setWebkitTransitionDuration(0, 'ms');
@@ -69,6 +71,7 @@
             }, false);
 
             domNode.addEventListener(Touch.EVENT_MOVE, function(e){
+                if(!that.isEnabled()) return;
                 var pos = Touch.getPosition(e), x = pos[0], y = pos[1];
                 var dir = ( ((x - deltaX) - newx) > 0 ) ? 'right': 'left', update = false, newindex;
                 
@@ -106,6 +109,7 @@
             }, false);
 
             domNode.addEventListener(Touch.EVENT_END, function(e){
+                if(!that.isEnabled()) return;
                 isAvailable = false;
                 if( parseInt(current,10) !== null ) {
                     that.goTo(current);
@@ -169,6 +173,15 @@
         },
         _createItems : function _createItems(opt){
             this.list = oo.createElement('list', { target: opt.items.el, template: opt.items.template || this._tplItems, model: this._model});
+        },
+        setDisabled: function setDisabled(){
+            this._enabled = false;
+        },
+        setEnabled: function setDisabled(){
+            this._enabled = true;
+        },
+        isEnabled : function isEnabled(){
+            return this._enabled;
         }
     });
 
