@@ -603,6 +603,14 @@ var oo = (function (oo) {
 
             this.translateTo({x:this._currentTranslate + diff},0);
             this._startTranslate = this._currentTranslate + diff;
+        },
+        getPanel : function getActivePanel(id){
+            if( undefined === id){
+                throw new Error('Missing id');
+            }
+            if(!this._items) return;
+
+            return this._items[id];
         }
     });
     
