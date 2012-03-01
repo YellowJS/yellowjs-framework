@@ -33,15 +33,6 @@ describe("ooAjaxProvider.js", function() {
             p.clearAll();
         });
 
-        describe ("_processParams", function () {
-            it ('should convert object into url encoded string', function () {
-
-                var params = {titi:'tata', 'salut':'hello world', 'passe':'mais oui ca passe'};
-
-                expect(p._processParams(params)).toEqual('titi=tata&salut=hello%20world&passe=mais%20oui%20ca%20passe');
-            });
-        });
-
         describe ("fetch", function () {
 
             it('should fetch and return data', function () {
