@@ -96,6 +96,7 @@
             createElement: function createElement (tag) { return new Dom(document.createElement(tag)); }
         },
         constructor : function constructor (identifier) {
+            console.log(identifier)
             /**
              * underlying dom node object
              */
@@ -234,12 +235,12 @@
             return this._dom;
         },
         // find a child element of the current node according to the given selector
-        find : function find (selector) {
+        find : function find (selector, returnDom) {
             var n = this.getDomObject().querySelector(selector);
             if (null === n)
                 return null;
             else
-                return new Dom(n);
+                return (!returnDom) ? new Dom(n) : n;
         },
         findAll : function findAll (selector, returnDom) {
             var n = this.getDomObject().querySelectorAll(selector), res = [];
@@ -455,6 +456,6 @@
             }
             return this._cached.webkitTransform;
         }*/
-    });
+    }); 
     
 })(oo);
