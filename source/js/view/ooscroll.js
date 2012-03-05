@@ -24,6 +24,8 @@
             this._wrapper = new Dom(identifier);
             this._content = this._wrapper.find('.content');
 
+            this._wrapper.classList.addClass('oo-list-wrapper');
+
             this._orientation = orientation || Scroll.VERTICAL;
             this._displayScroll = displayScroll || Scroll.BOTH;
 
@@ -146,6 +148,8 @@
             var listNode = this._content.getDomObject();
             var that = this;
             var touchMoveTempo;
+            var stopPropagationX = false;
+            var stopPropagationY = false;
 
             // start event listener
             listNode.addEventListener(Touch.EVENT_START, function (e) {
@@ -172,19 +176,38 @@
             // move event listener
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
 
-                var diff, newPos;
+                var newPos;
 
-                if (Scroll.VERTICAL == that._orientation || Scroll.BOTH == that._orientation) {
+                var diffY = Touch.getPositionY(e) - that._touchStartY;
+                var diffX = Touch.getPositionX(e) - that._touchStartX;
+
+                if ((Scroll.VERTICAL == that._orientation && (Math.abs(diffX) < 5) || stopPropagationY) || Scroll.BOTH == that._orientation) {
                     diff = Touch.getPositionY(e) - that._touchStartY;
-                    newPos = that._startY + diff;
+                    newPos = that._startY + diffY;
+
+                    if( !stopPropagationY && Math.abs(diffY) > 5) {
+                      stopPropagationY = true;
+                    }
+
+                    if(stopPropagationY){
+                      e.stopPropagation();
+                    }
 
                     that._content.setTranslateY(newPos);
                     that._vscrollbar.setTranslateY(that._determineScrollbarTranslate(newPos, Scroll.VERTICAL));
                 }
 
-                if (Scroll.HORIZONTAL == that._orientation || Scroll.BOTH == that._orientation) {
+                if ((Scroll.HORIZONTAL == that._orientation && (Math.abs(diffY) < 5) || stopPropagationX)  || Scroll.BOTH == that._orientation) {
                     diff = Touch.getPositionX(e) - that._touchStartX;
-                    newPos = that._startX + diff;
+                    newPos = that._startX + diffX;
+
+                    if( !stopPropagationX && Math.abs(diffX) > 5) {
+                      stopPropagationX = true;
+                    }
+
+                    if(stopPropagationX){
+                      e.stopPropagation();
+                    }
 
                     that._content.setTranslateX(newPos);
                     that._hscrollbar.setTranslateX(that._determineScrollbarTranslate(newPos, Scroll.HORIZONTAL));
@@ -249,11 +272,30 @@
                     adjustPos(Scroll.HORIZONTAL);
                 }
 
+                stopPropagationX = false;
+                stopPropagationY = false;
+
             }, false);
+        },
+        scrollTo: function scrollTo (val, direction) {
+            var coord = {};
+            if (2 === arguments.length)
+                coord[(Scroll.VERTICAL == direction && (direction == this._orientation || this._orientation == Scroll.BOTH) ? 'y' : 'x')] = - val;
+            else if (typeof val === 'object')
+                coord = val;
+
+            if ('x' in coord || 'y' in coord) {
+                if ('x' in coord)
+                    coord.x = Math.max(Math.min(coord.x , 0), this._maxhTranslate);
+                if ('y' in coord)
+                    coord.y = Math.max(Math.min(coord.y , 0), this._maxvTranslate);
+
+                this._content.translateTo(coord, 1000);
+            }
+
         },
         // render elements of the component
         _render : function _render(){
-            this._wrapper.classList.addClass('oo-list-wrapper');
 
             this._initListeners();
 

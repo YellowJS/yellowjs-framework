@@ -135,4 +135,19 @@ describe("oocore.js", function() {
        });
     });
 
+    describe('createModel', function(){
+        var model = oo.createModel({
+          "name" : "test",
+          "provider" : {
+              "name" : "testprovider",
+              "type" : "fake",
+              "data" : [{title:"test"}]
+          }
+        });
+
+        it("model should be an instanceof oo.data.model", function(){
+           expect(model instanceof oo.data.Model).toBeTruthy();
+        });
+    });
+
 });

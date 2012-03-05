@@ -108,7 +108,7 @@
               window.location.hash = route;
             } else {
               history.pushState({},"",route);
-              this.dispatch(route);
+              //this.dispatch(route);
             }
         },
         dispatch: function dispatch (hash) {

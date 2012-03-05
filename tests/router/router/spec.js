@@ -187,15 +187,17 @@ describe("oorouter.js", function() {
 
         var params = {
           'Ctl11Controller' : controller1,
-          'Ctl22Controller' : controller2
+          'Ctl22Controller' : controller2,
+          'Ctl33Controller' : controller3
         };
 
         newRouter.addControllers(params);
         newRouter.init();
-        newRouter.dispatch('/ctl11/c11');
-        newRouter.dispatch('/ctl22/c22');
+        //newRouter.load('/ctl11/c11');
+        //newRouter.load('/ctl22/c22');
+        oo.getRouter().load('/ctl33/c33');
         
-        // expect(callback).toHaveBeenCalled();
-        // expect(callback2).toHaveBeenCalled();
+        //expect(callback).toHaveBeenCalled();
+        //expect(callback2).toHaveBeenCalled();
     });
 });

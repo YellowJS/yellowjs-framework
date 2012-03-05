@@ -27,8 +27,11 @@
         prepareData: function prepareData(data) {
             return data;
         },
-        render: function render (data) {
+        render: function render (data, tpl) {
             return ModelElement.Super.prototype.render.call(this, this.prepareData(data || {}));
+        },
+        getModel : function getModel(){
+            return this._model;
         }
 
     });

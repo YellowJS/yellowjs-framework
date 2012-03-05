@@ -208,6 +208,9 @@ oo = pline = (function (window) {
             var req = this._ajaxRequestObject.buildReq(url, method, params, successCallback, errorCallback);
             req.send();
 
+        },
+        _convertNodeListToArray : function _convertNodeListToArray(nL){
+            return Array.prototype.slice.call(nL, 0);
         }
     };
 

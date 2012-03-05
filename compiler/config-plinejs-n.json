@@ -41,12 +41,15 @@
                     "text" : "ooajax.js",
                     "path" : "../source/js/core/net/"
                 },                
-                {
-                    "text" : "oorouter.js",
-                    "path" : "../source/js/router/"
-                },                
+                    "text" : "oogesture.js",
+                    "path" : "../source/js/core/"
+                },
                 {
                     "text" : "oocontroller.js",
+                    "path" : "../source/js/router/"
+                },
+                {
+                    "text" : "oorouter.js",
                     "path" : "../source/js/router/"
                 },
                 {
@@ -115,6 +118,30 @@
                 },
                 {
                     "text" : "oocarousel.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooslider.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooslidercursor.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooscroll.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oopopin.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "oopagerprevnext.js",
+                    "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooaccordion.js",
                     "path" : "../source/js/view/"
                 }
             ]
