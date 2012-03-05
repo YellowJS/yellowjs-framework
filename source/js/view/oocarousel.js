@@ -14,6 +14,7 @@ var oo = (function (oo) {
         STATIC : {
             EVENT_ON : "EVENT_ON",
             EVENT_GOTO : "EVENT_GOTO",
+            EVENT_PRESS:"EVENT_PRESS",
             CLS_SHOWING : "is-showing",
             CLS_ACTIVE : "item-active"
         },
@@ -29,6 +30,8 @@ var oo = (function (oo) {
         _transitionType : "Slide",
         _swipe : false,
         _pagerOpt : false,
+        _startX : null,
+        _currentTranslate : null,
         constructor : function constructor(opt) {
             if(!opt){
                 throw new Error('Missing options');
@@ -147,6 +150,11 @@ var oo = (function (oo) {
                 throw new Error("Missing 'id' of the panel");
             }
 
+            //disable pager slider
+            if(this._pager && this._pager instanceof oo.view.Slider){
+                this._pager.setDisabled();
+            }
+
             if( id !== this._activePanel && this._datas[id] && this._available){
                 //before transition add the new panel if it not in the dom
                 if(id > this._activePanel+1){
@@ -171,29 +179,35 @@ var oo = (function (oo) {
 
             if (this._newPanel === this._activePanel) {
               this._available = true;
+                  if (this._pager && this._pager instanceof oo.view.Slider){
+                    //enable pager slider
+                    this._pager.setEnabled();
+                }
             }
 
         },
         _setTransitionSlide: function _setTransitionSlide(id, s){
             var nT;
             if(id >= 0 && id <= this._nbPanel && id !== this._activePanel){
-                nT =  this._startTranslate + s * this._panelWidth;
+                //nT =  this._startTranslate + s * this._panelWidth;
+                nT =  this._currentTranslate + s * this._panelWidth;
+                
             } else {
                 if( id === this._activePanel) {
-                    nT =  this._startTranslate;
+                    nT =  this._currentTranslate;
                 } else {
                    if(id < 0){
                         nT = 0;
                         id = 0;
                     } else {
-                        nT =  this._startTranslate;
+                        nT =  this._currentTranslate;
                         id = this._nbPanel;
                     }
                 }
             }
 
             this.translateTo({x:nT}, this._transitionDuration);
-            this._startTranslate = nT;
+            this._currentTranslate = nT;
 
             //store new id for endTransition
             this._newPanel = id;
@@ -313,7 +327,9 @@ var oo = (function (oo) {
         _buildPagerSlider : function _buildPagerSlider(){
             var that = this;
             this._pager.addListener(oo.view.SliderCursor.EVT_ONGOTO, function(key){
-               that.showPanel(key);
+                if(that.isAvailable()){
+                    that.showPanel(key);
+                }
             });
         },
         _buildPagerPrevNext : function _buildPagerPrevNext(){
@@ -376,6 +392,7 @@ var oo = (function (oo) {
                     that._startX = Touch.getPositionX(e);
                     that['_transitionStart'+that._transitionType]();
                     touchMoveTempo = 0;
+                    that.triggerEvent(Carousel.EVENT_PRESS);
                 }
             }, false);
 
@@ -430,6 +447,7 @@ var oo = (function (oo) {
                     //that.translateTo({x:tVal}, that._transitionDuration);
                     //that._startTranslate = tVal;
                 }
+
             }, false);
 
             window.addEventListener("orientationchange",function(){
@@ -471,7 +489,8 @@ var oo = (function (oo) {
                     this.goToPrev();
                 }
             } else {
-                this.translateTo({x:(this._startTranslate)}, this._transitionDuration);
+                this.translateTo({x:(null !== this._currentTranslate) ? this._currentTranslate : (this._currentTranslate = this._startTranslate)}, this._transitionDuration);
+                
             }
         },
         _transitionStartCustom : function _transitionStartCustom(){
@@ -505,8 +524,8 @@ var oo = (function (oo) {
                     //already 3 items in the carousel
                     this.removeChild(this.getDomObject().firstChild);
                     if(this._transitionType == "Slide"){
-                        this.translateTo({x:this._startTranslate + this._panelWidth});
-                        this._startTranslate = this._startTranslate + this._panelWidth;
+                        this.translateTo({x:this._currentTranslate + this._panelWidth});
+                        this._currentTranslate = this._currentTranslate + this._panelWidth;
                     }
                     
                 }
@@ -526,11 +545,11 @@ var oo = (function (oo) {
                     
                     
                     if(this._transitionType == "Slide"){
-                        this.translateTo({x:this._startTranslate - this._panelWidth});
+                        this.translateTo({x:this._currentTranslate - this._panelWidth});
                     }
                     this._addPanel(this._newPanel-1, true);
                     if(this._transitionType == "Slide"){
-                        this._startTranslate = this._startTranslate - this._panelWidth;
+                        this._currentTranslate = this._currentTranslate - this._panelWidth;
                     }
                     
                 }
@@ -553,6 +572,11 @@ var oo = (function (oo) {
             this._activePanel = this._newPanel;
             this._available = true;
             
+            if (this._pager && this._pager instanceof oo.view.Slider){
+                //enable pager slider
+                this._pager.setEnabled();
+            }
+
             this.triggerEvent(Carousel.EVENT_ON, [this._activePanel]);
         },
         _endTransitionSlide : function _endTransitionSlide(id){
@@ -587,8 +611,16 @@ var oo = (function (oo) {
 
             diff = oldW - this._panelWidth;
 
-            this.translateTo({x:this._startTranslate + diff},0);
-            this._startTranslate = this._startTranslate + diff;
+            this.translateTo({x:this._currentTranslate + diff},0);
+            this._startTranslate = this._currentTranslate + diff;
+        },
+        getPanel : function getActivePanel(id){
+            if( undefined === id){
+                throw new Error('Missing id');
+            }
+            if(!this._items) return;
+
+            return this._items[id];
         }
     });
     

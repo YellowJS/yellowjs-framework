@@ -126,6 +126,10 @@
                 {
                     "text" : "oopagerprevnext.js",
                     "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooaccordion.js",
+                    "path" : "../source/js/view/"
                 }
             ]
         }
