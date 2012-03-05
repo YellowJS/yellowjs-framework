@@ -398,7 +398,7 @@
             this.appendHtml(this._cacheTpl);
     
             return this;
-        },
+        }
         /*animate : function animate(obj){
             
             if('object' != typeof obj){
