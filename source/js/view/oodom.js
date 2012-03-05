@@ -96,7 +96,6 @@
             createElement: function createElement (tag) { return new Dom(document.createElement(tag)); }
         },
         constructor : function constructor (identifier) {
-            console.log(identifier)
             /**
              * underlying dom node object
              */
