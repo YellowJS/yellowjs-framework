@@ -1,5 +1,5 @@
 describe("oopopin.js", function() {
-    var popin = oo.createElement('popin', { target:"#popin"});
+    var popin = oo.createElement('popin', { el:"#popin"});
 
     document.querySelector('#open').addEventListener('click', function(){
         popin.open();
