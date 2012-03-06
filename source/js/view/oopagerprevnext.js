@@ -33,11 +33,11 @@ var oo = (function (oo) {
             delete opt.buttonNext;
 
             if( !(this.buttonPrev instanceof Button) && ("string" === typeof this.buttonPrev || "object" === typeof this.buttonPrev)){
-                this.buttonPrev = oo.createElement('button',this.buttonPrev);
+                this.buttonPrev = oo.createElement('button',{el:this.buttonPrev});
             }
 
             if(!(this.buttonNext instanceof Button) && ("string" === typeof this.buttonNext || "object" === typeof this.buttonNext)){
-                this.buttonNext = oo.createElement('button',this.buttonNext);
+                this.buttonNext = oo.createElement('button',{el:this.buttonNext});
             }
 
             this._attachEvents();

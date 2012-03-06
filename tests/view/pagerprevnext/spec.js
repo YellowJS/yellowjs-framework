@@ -40,7 +40,7 @@ describe("oopagerprevnext.js", function() {
             expect(pager.buttonPrev instanceof oo.view.Button).toBeTruthy();
 
             var pager3 = oo.createElement('pagerPrevNext', {
-                prev : oo.createElement('button', '#prev'),
+                prev : oo.createElement('button', {el:'#prev'}),
                 next : "#next"
             });
 
@@ -64,7 +64,7 @@ describe("oopagerprevnext.js", function() {
 
             var pager3 = oo.createElement('pagerPrevNext', {
                 prev : '#prev',
-                next : oo.createElement('button', '#next')
+                next : oo.createElement('button', {el:'#next'})
             });
 
             expect(pager.buttonNext instanceof oo.view.Button).toBeTruthy();
