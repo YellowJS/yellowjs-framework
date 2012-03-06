@@ -15,17 +15,13 @@ describe("oopager.js", function() {
     });
 
     var opt = {
-        target : '#pager',
+        el : '#pager',
         model : modelArticle,
         template : '<img src="{{picture}}" />'
     };
 
     var pager = oo.createElement('pager',opt);
-    pager.addEventListener('navigate',function(){
-        app.router();
-        
-    });
-
+    
     modelArticle.fetch();
 
 });
