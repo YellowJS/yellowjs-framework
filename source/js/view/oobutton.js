@@ -63,11 +63,6 @@
         setActive : function setActive (active) {
             this._active = !!active;
             this.classList[(this._active ? 'add' : 'remove') + 'Class']('active');
-        },
-
-        // @todo : what the hell do this function here ?
-        tap : function tap(){
-          this.triggerEvent(Button.EVT_RELEASE, [this]);
         }
     });
      
