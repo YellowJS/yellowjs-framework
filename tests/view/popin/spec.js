@@ -9,7 +9,17 @@ describe("oopopin.js", function() {
         popin.close();
     },false);
 
-    /*describe('constructor', function(){
+    var popin2 = oo.createElement('popin', { el:"#popin2"});
+
+    document.querySelector('#open2').addEventListener('click', function(){
+        popin2.open();
+    },false);
+
+    document.querySelector('#close2').addEventListener('click', function(){
+        popin2.close();
+    },false);
+
+    describe('constructor', function(){
         it('popin must be an instance of oo.view.Popin', function(){
             expect(popin instanceof oo.view.Popin).toBeTruthy();
         });
@@ -19,7 +29,7 @@ describe("oopopin.js", function() {
     describe('open', function(){
         it('popin must have popin-opened cls and not have popin-closed cls', function(){
             popin.open();
-            expect(popin.classList.hasClass('pl-popin-opened')).toBeTruthy();
+            expect(popin.classList.hasClass('pl-popin-is-showing')).toBeTruthy();
             expect(popin.classList.hasClass('pl-popin-closed')).toBeFalsy();
         });
 
@@ -32,7 +42,7 @@ describe("oopopin.js", function() {
     describe('close', function(){
         it('popin must have popin-closed cls and not have popin-opend cls', function(){
             popin.close();
-            expect(popin.classList.hasClass('pl-popin-closed')).toBeTruthy();
+            expect(popin.classList.hasClass('pl-popin-is-hiding')).toBeTruthy();
             expect(popin.classList.hasClass('pl-popin-opened')).toBeFalsy();
         });
 
@@ -40,5 +50,5 @@ describe("oopopin.js", function() {
             popin.close();
             expect(popin.isOpened()).toBeFalsy();
         });
-    });*/
+    });
 });
