@@ -40,7 +40,8 @@
                 {
                     "text" : "ooajax.js",
                     "path" : "../source/js/core/net/"
-                },                
+                },
+                {              
                     "text" : "oogesture.js",
                     "path" : "../source/js/core/"
                 },
