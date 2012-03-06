@@ -13,7 +13,7 @@ describe("oocarousel.js", function() {
         });
 
         var slider = oo.createElement('sliderCursor',{
-            target:"#slider",
+            el:"#slider",
             model : model,
             cursor:"#slider > .cursor",
             items : {el: "#slider > .items", template : '<i></i>'},
@@ -21,7 +21,7 @@ describe("oocarousel.js", function() {
             overlay : '#overlay'
         });
 
-        var slider2 = oo.createElement('sliderCursor',{target:"#slider2", model : model, cursor:"#slider2 > div", translate:{x:false,y:true}});
+        var slider2 = oo.createElement('sliderCursor',{el:"#slider2", model : model, cursor:"#slider2 > div", translate:{x:false,y:true}});
 
     });
 
