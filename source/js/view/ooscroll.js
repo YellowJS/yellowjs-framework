@@ -185,7 +185,7 @@
                     diff = Touch.getPositionY(e) - that._touchStartY;
                     newPos = that._startY + diffY;
 
-                    if( !stopPropagationY && Math.abs(diffY) > 5) {
+                    if( !stopPropagationY && Math.abs(diffY) > 2) {
                       stopPropagationY = true;
                     }
 
@@ -201,7 +201,7 @@
                     diff = Touch.getPositionX(e) - that._touchStartX;
                     newPos = that._startX + diffX;
 
-                    if( !stopPropagationX && Math.abs(diffX) > 5) {
+                    if( !stopPropagationX && Math.abs(diffX) > 2) {
                       stopPropagationX = true;
                     }
 
