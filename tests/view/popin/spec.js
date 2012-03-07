@@ -1,5 +1,13 @@
 describe("oopopin.js", function() {
-    var popin = oo.createElement('popin', { target:"#popin"});
+    var popin = oo.createElement('popin', {
+        target:"#popin",
+        onOpen : function onOpen(){
+            //alert('onOpen');
+        },
+        onClose : function onClose(){
+            //alert('onClose');
+        }
+    });
 
     document.querySelector('#open').addEventListener('click', function(){
         popin.open();
