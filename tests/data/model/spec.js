@@ -50,7 +50,7 @@ describe("oomodel.js", function() {
                 provider.fetch({success:function(datas){
                     dataProvider = datas;
                     expect(dataProvider).toContain(obj);
-                });
+                }});
             });
 
             describe("save with callback", function() {
@@ -77,18 +77,23 @@ describe("oomodel.js", function() {
         });
     });
 
-    /*describe('listeners', function(){
-       var model2 = oo.createModel({
-            id : 'post-model2',
-            provider : provider
-       });
+    describe('get/set ModelName', function(){
+        var model2 = oo.createModel({
+            name : "modelname",
+            provider : {
+                type: "fake"
+            }
+        });
 
-       model2.addListener(oo.data.Model.AFTER_SAVE, function(){
-          alert('opdfkgpodfkg');
-       });
+        var name = model2.getModelName();
+        it( 'must return the name of the model', function(){
+          expect(name).toBe("modelname");
+        });
 
-       model2.fetch(function(datas){
-           console.log(datas);
-       });
-    });*/
+        model2.setModelName('newname');
+        it('model name must have been changed', function(){
+            var name = model2.getModelName();
+            expect(name).toBe('newname');
+        });
+    });
 });
