@@ -11,6 +11,8 @@
             CLS_CLOSED: 'popin-closed'
         },
         _isOpened : true,
+        onOpen : null,
+        onClose : null,
         constructor: function constructor(conf) {
             Popin.Super.call(this, conf);
 
@@ -22,6 +24,8 @@
                 this.setDomObject();
             }
 
+            this.onOpen = conf.onOpen || oo.emptyFn;
+            this.onClose = conf.onClose || oo.emptyFn;
             
             this._isOpened = (this.classList.hasClass(Popin.CLS_CLOSED)) ? false : true;
             if(this._isOpened && !this.classList.hasClass(Popin.CLS_OPENED)){
@@ -44,11 +48,13 @@
             this.classList.removeClass(Popin.CLS_CLOSED);
             this._setOpenCls();
             this._isOpened = true;
+            this.onOpen();
         },
         close : function close(){
             this.classList.removeClass(Popin.CLS_OPENED);
             this._setCloseCls();
             this._isOpened = false;
+            this.onClose();
         },
         _createButtonClose : function _createButtonClose(button){
             var btn = oo.createElement('button', button), that = this;
