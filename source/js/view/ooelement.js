@@ -44,7 +44,7 @@
             if(!options.hasOwnProperty('el'))
                 throw "call Element constructor but \"el\" property of object options is missing";
 
-            Element.Super.call(this, options.el || options.target);
+            Element.Super.call(this, options.el);
 
             if( options.hasOwnProperty('template') ){
                 this.setTemplate(options.template);

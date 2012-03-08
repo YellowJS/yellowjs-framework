@@ -96,4 +96,38 @@ describe("oomodel.js", function() {
             expect(name).toBe('newname');
         });
     });
+
+    describe('get(id)', function(){
+        var model = oo.createModel({
+            "name" : "modelajax",
+            "provider": {
+                "type" : "fake"
+            },
+            "indexes" : ["key", "firstname"]
+        });
+
+        //simulate fetch
+        model.fetch(function(data){
+
+        });
+
+        it('errors in key', function(){
+            expect(function(){
+                var item = model.get();
+            }).toThrow("Missing key or key is not a number");
+
+            expect(function(){
+                var item = model.get('10');
+            }).toThrow("Missing key or key is not a number");
+
+            expect(function(){
+                var item = model.get({});
+            }).toThrow("Missing key or key is not a number");
+        });
+
+        it('must return good item', function(){
+            var data = model.get(7);
+            expect(data.key).toBe(7);
+        });
+    });
 });

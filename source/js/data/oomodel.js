@@ -8,8 +8,8 @@
             AFTER_FETCH : 'AFTER_FETCH'
         },
         _data: null,
-        _indexes: null,
-        _previouslyFetched: {},
+        _indexes: {},
+        _previouslyFetched: null,
         constructor: function constructor(options){
             if(!options || (!options.hasOwnProperty('name') || !options.hasOwnProperty('provider')) )
                 throw "Either property \"name\" or \"provider\" is missing in the options given to the Model constructor";
@@ -31,8 +31,19 @@
         },
         setIndexes : function setIndexes(indexes) {
             for(var i = 0, len = indexes.length; i < len; i++) {
-                this._indexes = indexes[i];
+                this._indexes[indexes[i]] = {};
             }
+        },
+        _createIndexes : function _createIndexes(data){
+            var i, len = data.length, lenj = this._indexes.length;
+            
+            for(i=0 ; i<len ; i++){
+                for (ind in this._indexes){
+                    //this._indexes[ind][i] = data[i][ind];
+                    this._indexes[ind][data[i][ind]] = i;
+                }
+            }
+            console.log(this._indexes);
         },
         fetch : function fetch(callback) {
 
@@ -56,7 +67,10 @@
             var self = this,
                 cb = function cb(datas){
                     if (datas){
-                        this._previouslyFetched = datas;
+                        
+                        self._previouslyFetched = datas;
+                        self._createIndexes(datas);
+                        
 
                         // why do the callback have different params than the event
                         if (callback.success){
@@ -96,6 +110,13 @@
         },
         setData : function setData(data){
             this._provider.setData(data);
+        },
+        get : function get(key){
+            if(undefined === key || (isNaN(key)) || ('string' === typeof(key))){
+                throw new Error('Missing key or key is not a number');
+            }
+
+            return this._previouslyFetched[this._indexes["key"][key]];
         }
     });
     
