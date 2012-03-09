@@ -138,6 +138,13 @@
             }
 
             return this.getBy("key",key);
+        },
+        set : function set(obj){
+            if(undefined === obj || "object" !== typeof obj ){
+                throw new Error("Parameter must exist and be an object");
+            }
+
+            this.save(obj);
         }
     });
     

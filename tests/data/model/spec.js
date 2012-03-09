@@ -179,6 +179,38 @@ describe("oomodel.js", function() {
             expect(model.get(100)).toBe(null);
             expect(model.getBy("firstname", "clairedfkgldfjglkdfj")).toBe(null);
         });
-        
+    });
+
+    describe('set', function(){
+        var model = oo.createModel({
+            "name" : "modelajax",
+            "provider": {
+                "type" : "fake"
+            },
+            "indexes" : ["firstname"]
+        });
+
+        //simulate fetch
+        model.fetch(function(data){});
+        it('parameter must exist', function(){
+            expect(function(){
+                model.set();
+            }).toThrow('Parameter must exist and be an object');
+
+            expect(function(){
+                model.set("kljlkj");
+            }).toThrow('Parameter must exist and be an object');
+        });
+
+        it('new item must be saved', function(){
+            var nItem = {'key':60, "firstname":"new item", "nickname":"toto"};
+            model.set(nItem);
+            model.fetch(function(data){});
+
+            var rItem = model.get(60);
+            expect(rItem.key).toBe(60);
+            expect(rItem.firstname).toBe("new item");
+            expect(rItem.nickname).toBe("toto");
+        });
     });
 });
