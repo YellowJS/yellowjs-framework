@@ -103,7 +103,7 @@ describe("oomodel.js", function() {
             "provider": {
                 "type" : "fake"
             },
-            "indexes" : ["key", "firstname"]
+            "indexes" : ["firstname"]
         });
 
         //simulate fetch
@@ -114,20 +114,71 @@ describe("oomodel.js", function() {
         it('errors in key', function(){
             expect(function(){
                 var item = model.get();
-            }).toThrow("Missing key or key is not a number");
-
-            expect(function(){
-                var item = model.get('10');
-            }).toThrow("Missing key or key is not a number");
+            }).toThrow("Missing key or key must\'t be an object");
 
             expect(function(){
                 var item = model.get({});
-            }).toThrow("Missing key or key is not a number");
+            }).toThrow("Missing key or key must\'t be an object");
         });
 
         it('must return good item', function(){
             var data = model.get(7);
             expect(data.key).toBe(7);
         });
+    });
+
+    describe('getBy', function(){
+        var model = oo.createModel({
+            "name" : "modelajax",
+            "provider": {
+                "type" : "fake"
+            },
+            "indexes" : ["firstname"]
+        });
+
+        //simulate fetch
+        model.fetch(function(data){
+
+        });
+
+        it('params must exist', function(){
+            expect(function(){
+                var item = model.getBy();
+            }).toThrow('Missing params index or key');
+
+            expect(function(){
+                var item = model.getBy('ml');
+            }).toThrow('Missing params index or key');
+
+            expect(function(){
+                var item = model.getBy(undefined, 'ml');
+            }).toThrow('Missing params index or key');
+        });
+
+        it('first param must be a string', function(){
+            expect(function(){
+                var item = model.getBy(10, "ok");
+            }).toThrow('Param index must be a string');
+            expect(function(){
+                var item = model.getBy( {}, "ok");
+            }).toThrow('Param index must be a string');
+        });
+
+        it('must return the good item', function(){
+            var item = model.getBy("firstname", "claire");
+            expect(item.firstname).toBe("claire");
+        });
+
+        it('must return error when index used are not been declared', function(){
+            expect(function(){
+                var item = model.getBy('title', 'article 10');
+            }).toThrow('Index are not been declared');
+        });
+
+        it('must return null when no matched', function(){
+            expect(model.get(100)).toBe(null);
+            expect(model.getBy("firstname", "clairedfkgldfjglkdfj")).toBe(null);
+        });
+        
     });
 });

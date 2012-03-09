@@ -66,7 +66,6 @@
         },
         {
             'key' : 7,
-            'firstname': 'gg',
             'nickname': 'FreakDev',
             'title' : 'article 8',
             'picture' : '4.jpg',

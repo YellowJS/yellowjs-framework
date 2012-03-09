@@ -8,7 +8,9 @@
             AFTER_FETCH : 'AFTER_FETCH'
         },
         _data: null,
-        _indexes: {},
+        _indexes: {
+            "key" : {}
+        },
         _previouslyFetched: null,
         constructor: function constructor(options){
             if(!options || (!options.hasOwnProperty('name') || !options.hasOwnProperty('provider')) )
@@ -34,16 +36,19 @@
                 this._indexes[indexes[i]] = {};
             }
         },
-        _createIndexes : function _createIndexes(data){
-            var i, len = data.length, lenj = this._indexes.length;
-            
+        _createIndexes : function _createIndexes(){
+            var i, len = this._previouslyFetched.length, lenj = this._indexes.length;
+            //transformer en tableau si key exist et !== key
             for(i=0 ; i<len ; i++){
                 for (ind in this._indexes){
-                    //this._indexes[ind][i] = data[i][ind];
-                    this._indexes[ind][data[i][ind]] = i;
+                    if("key" === ind && undefined === this._previouslyFetched[i][ind]){
+                       this._previouslyFetched[i][ind] = oo.generateId();
+                    }
+
+                    this._indexes[ind][this._previouslyFetched[i][ind]] = i;
                 }
             }
-            console.log(this._indexes);
+            
         },
         fetch : function fetch(callback) {
 
@@ -69,7 +74,7 @@
                     if (datas){
                         
                         self._previouslyFetched = datas;
-                        self._createIndexes(datas);
+                        self._createIndexes();
                         
 
                         // why do the callback have different params than the event
@@ -111,12 +116,28 @@
         setData : function setData(data){
             this._provider.setData(data);
         },
-        get : function get(key){
-            if(undefined === key || (isNaN(key)) || ('string' === typeof(key))){
-                throw new Error('Missing key or key is not a number');
+        getBy: function getBy(index, key){
+            if(undefined === index || undefined === key){
+                throw new Error('Missing params index or key');
             }
 
-            return this._previouslyFetched[this._indexes["key"][key]];
+            if('string' !== typeof index){
+                throw new Error('Param index must be a string');
+            }
+
+            if(! this._indexes.hasOwnProperty(index)){
+                throw new Error('Index are not been declared');
+            }
+
+            return this._previouslyFetched[this._indexes[index][key]] || null;
+        },
+        get : function get(key){
+            //getBy('key', key);
+            if(undefined === key || "object" === typeof key){
+                throw new Error('Missing key or key must\'t be an object');
+            }
+
+            return this.getBy("key",key);
         }
     });
     
