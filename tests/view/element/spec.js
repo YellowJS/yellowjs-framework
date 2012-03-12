@@ -13,7 +13,7 @@ describe("ooelement.js", function() {
         
         it("should return a list", function () {
             var cls = oo.view.Element.get('list');
-            var obj = new cls({name: 'oo', target: '#elem-target'});
+            var obj = new cls({name: 'oo', el: '#elem-target'});
             expect(obj instanceof oo.view.List).toBeTruthy();
         });
 
@@ -39,7 +39,7 @@ describe("ooelement.js", function() {
     describe("constructor", function() {
         var el = null;
         beforeEach(function () {
-            el = new oo.view.Element({"template":"test", "target" : "#elem-target"});
+            el = new oo.view.Element({"template":"test", "el" : "#elem-target"});
         });
         
         it("should be an instanceof oo.view.Dom", function () {
@@ -60,7 +60,7 @@ describe("ooelement.js", function() {
         var el = null;
 
         beforeEach(function () {
-            el = new oo.view.Element({target: '#elem-target'});
+            el = new oo.view.Element({el: '#elem-target'});
         });
 
         describe("setTemplate", function() {
@@ -69,35 +69,5 @@ describe("ooelement.js", function() {
                 expect(el._tpl).toEqual("test");
             });
         });
-
-        describe("setModel", function() {
-           it('_model must an instance of oo.data.Model', function() {
-                el.setModel({name:'test', provider: 'fake'});
-                expect(el._model instanceof oo.data.Model).toBeTruthy();
-            });
-        });
-
     });
-
-    describe('render', function(){
-        var provider = new oo.data.FakeProvider({
-            "name" : "fdsfsdf"
-        });
-
-        var model = oo.createModel({
-            'name' : "test",
-            'provider' : provider
-        });
-
-        var list2 = new oo.view.Element({
-            model : model,
-            'template' : '<span class="h1">{{firstname}}</span> | <span class="h2">{{nickname}}</span><br />',
-            'target' : '#elem-target'
-        });
-
-        model.fetch(function (data) {
-            console.log(data);
-        });
-    });    
-
 });

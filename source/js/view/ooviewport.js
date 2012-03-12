@@ -122,9 +122,10 @@
          * show a panel with a optional animation
          * @param {string|int} the panel string identifier or index
          * @param {direction} Right To Left or Left To Right or no anim (use constant)
+         * @param params are data come from the model to be passed in the view
          **/
-        showPanel : function showPanel(panelIdentifier, direction) {
-            this.getPanel(panelIdentifier).show(direction || Viewport.ANIM_RTL);
+        showPanel : function showPanel(panelIdentifier, direction, params) {
+            this.getPanel(panelIdentifier).show(direction || Viewport.ANIM_RTL, params);
 
             var index = this._identifierToIndex(panelIdentifier);
 
@@ -149,8 +150,9 @@
          * @param oldPanel the panel to hide
          * @param newPanel the panel to show
          * @param define an animation for both hide and show transitions (use constant)
+         * @param params are data come from model to be passed at the view
          **/
-        switchPanel : function switchPanel(oldPanel, newPanel, direction) {
+        switchPanel : function switchPanel(oldPanel, newPanel, direction, params) {
             var dir, oldP, newP;
 
             if (arguments.length <= 2) {
@@ -166,7 +168,7 @@
             if (!this.hasPanel(newP))
                 this.addPanel(newP, false, true);
                 
-            this.showPanel(newP, dir);
+            this.showPanel(newP, dir, params);
 
             if (oldP)
                 this.hidePanel(oldP, dir);

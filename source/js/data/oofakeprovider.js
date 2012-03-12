@@ -7,6 +7,7 @@
             'firstname': 'claire',
             'nickname': 'Claire_So',
             'title' : 'article 1',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'picture' : '1.jpg',
             'elementCls': 'elementA',
             'url' : 'article/1'
@@ -15,6 +16,7 @@
             'firstname': 'mathias',
             'nickname': 'FreakDev',
             'title' : 'article 2',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'picture' : '2.jpg',
             'elementCls': 'elementA',
             'url' : 'article/2'
@@ -25,6 +27,7 @@
             'nickname': 'FreakDev',
             'title' : 'article 3',
             'picture' : '3.jpg',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'elementCls': 'elementA',
             'url' : 'article/3'
         },
@@ -35,6 +38,7 @@
             'title' : 'article 4',
             'picture' : '4.jpg',
             'elementCls': 'elementA',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'url' : 'article/4'
         },
         {
@@ -44,6 +48,7 @@
             'title' : 'article 5',
             'picture' : '3.jpg',
             'elementCls': 'elementA',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'url' : 'article/5'
         },
         {
@@ -52,6 +57,7 @@
             'nickname': 'FreakDev',
             'title' : 'article 6',
             'picture' : '1.jpg',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'elementCls': 'elementA',
             'url' : 'article/6'
         },
@@ -61,6 +67,7 @@
             'nickname': 'FreakDev',
             'title' : 'article 7',
             'picture' : '3.jpg',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'elementCls': 'elementA',
             'url' : 'article/7'
         },
@@ -70,6 +77,7 @@
             'nickname': 'FreakDev',
             'title' : 'article 8',
             'picture' : '4.jpg',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'elementCls': 'elementA',
             'url' : 'article/8'
         },
@@ -80,6 +88,7 @@
             'title' : 'article 9',
             'picture' : '1.jpg',
             'elementCls': 'elementA',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'url' : 'article/9'
         },
         {
@@ -89,6 +98,7 @@
             'title' : 'article 10',
             'picture' : '2.jpg',
             'elementCls': 'elementA',
+            'content': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.',
             'url' : 'article/10'
         }
         ],

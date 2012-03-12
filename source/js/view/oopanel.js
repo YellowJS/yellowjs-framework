@@ -49,8 +49,12 @@
             // for (var id in this._uiElements)
             //     this._uiElements[id].destroy();
         },
-        show: function show(direction) {
+        show: function show(direction, params) {
             this.animShow();
+            
+            if('onShow' in this && "function" === typeof this.onShow){
+                this.onShow(params);
+            }
 
             this.triggerEvent('onShow');
         },

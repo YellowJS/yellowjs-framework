@@ -12,7 +12,7 @@ describe("oolist.js", function() {
     var list2 = oo.createElement('list', {
         model : model,
         'template' : '<span class="h1">{{firstname}}</span> | <span class="h2">{{nickname}}</span>',
-        'target' : '#target'
+        'el' : '#target'
     });
 
     describe('prepareData', function(){

@@ -2,7 +2,7 @@
  * Slider with a cursor and an overlay preview (optional)
  *
  * @namespace oo.view
- * @target : domElement or queryString
+ * @el : domElement or queryString
  * @cursor : domElement or queryString (will be move on touch events)
  * @model : model to show (optional)
  * @overlay : domElement or queryString (optional)
@@ -132,7 +132,7 @@
             var callback = function callback(){
                 //createCursor and attach events
                 if(opt.hasOwnProperty('cursor')){
-                    that._cursor = oo.createElement('node',{target:opt.cursor});
+                    that._cursor = oo.createElement('node',{el:opt.cursor});
                     that._cursor.getDomObject().style.position = "absolute";
                     //dev to good positionning the cursor
                     that.getDomObject().style.position="relative";
@@ -142,7 +142,7 @@
 
             
             if(opt.overlay){
-                this._overlay = oo.createElement('node', {target:opt.overlay, template: opt.overlayTemplate || this._tplOverlay});
+                this._overlay = oo.createElement('node', {el:opt.overlay, template: opt.overlayTemplate || this._tplOverlay});
                 this._overlay.setDisplay('none');
             }
 
@@ -172,7 +172,7 @@
             this._overlay.appendHtml(this._overlay.render( this._datas[index]));
         },
         _createItems : function _createItems(opt){
-            this.list = oo.createElement('list', { target: opt.items.el, template: opt.items.template || this._tplItems, model: this._model});
+            this.list = oo.createElement('list', { el: opt.items.el, template: opt.items.template || this._tplItems, model: this._model});
         },
         setDisabled: function setDisabled(){
             this._enabled = false;

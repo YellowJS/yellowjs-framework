@@ -3,7 +3,7 @@ describe("oomodelelement.js", function() {
     describe("constructor", function() {
         var el = null;
         beforeEach(function () {
-            el = new oo.view.ModelElement({"template":"test", "target" : "#elem-target"});
+            el = new oo.view.ModelElement({"template":"test", "el" : "#elem-target"});
         });
         
         it("should be an instanceof oo.view.Element", function () {
@@ -15,7 +15,7 @@ describe("oomodelelement.js", function() {
         var el = null;
 
         beforeEach(function () {
-            el = new oo.view.ModelElement({target: '#elem-target'});
+            el = new oo.view.ModelElement({el: '#elem-target'});
         });
 
         describe("setModel", function() {
@@ -39,7 +39,7 @@ describe("oomodelelement.js", function() {
         var list2 = new oo.view.ModelElement({
             model : model,
             'template' : '<span class="h1">{{firstname}}</span> | <span class="h2">{{nickname}}</span><br />',
-            'target' : '#elem-target'
+            'el' : '#elem-target'
         });
 
         list2.render();
