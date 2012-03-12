@@ -1,24 +1,30 @@
-/**
- * emulate the overflow:auto
- *
- * @namespace oo.view
- * @class Scroll
- * @requires oo.view.Dom, oo.core.Touch
- *
- * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
- */
 (function (oo) {
 
     // shorthand
     var Dom = oo.view.Dom, Touch = oo.core.Touch;
     
-    var Scroll = oo.getNS('oo.view').Scroll = oo.Class({
+    var Scroll = oo.getNS('oo.view').Scroll = oo.Class(null, oo.core.mixins.Events, {
         STATIC : {
             VERTICAL : 'v',
             HORIZONTAL : 'h',
             BOTH : 'b',
             NONE : 'none'
         },
+        _wrapper: null,
+        _content: null,
+        _orientation: null,
+        _displayScroll: null,
+        _maxvScrollTranslate: null,
+        _maxhScrollTranslate: null,
+        _startY: 0,
+        _startX: 0,
+        _touchStartY: null,
+        _touchInterY: null,
+        _touchStartX: null,
+        _touchInterX: null,
+        _startTime: null,
+        _sections: {x:[], y:[]},
+        _currentSection: {x:0, y:0},
         constructor : function constructor(identifier, orientation, displayScroll) {
             
             this._wrapper = new Dom(identifier);
@@ -29,31 +35,12 @@
             this._orientation = orientation || Scroll.VERTICAL;
             this._displayScroll = displayScroll || Scroll.BOTH;
 
-            this._vscrollbarWrapper = null;
-            this._vscrollbar = null;
-
-            this._hscrollbarWrapper = null;
-            this._hscrollbar = null;
-
             // due to a bug in the oo.Dom cache management this value couldn't be set in the constructor
             // this._maxVScrollTranslate = (this._wrapper.getHeight() - this._vscrollbar.getHeight());
-            this._maxvScrollTranslate = null;
-            this._maxhScrollTranslate = null;
 
             this._buildScrollbars();
 
             this.initSizes();
-
-            this._startY = 0;
-            this._startX = 0;
-
-            this._touchStartY = null;
-            this._touchInterY = null;
-
-            this._touchStartX = null;
-            this._touchInterX = null;
-
-            this._startTime = null;
 
             this._render();
         },
@@ -171,12 +158,13 @@
                 that._startTime = (new Date()).getTime();
                 that._startY = that._content.getTranslateY(false, true);
                 that._startX = that._content.getTranslateX(false, true);
+
             }, false);
 
             // move event listener
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
 
-                var newPos;
+                var newPos, currentSection;
 
                 var diffY = Touch.getPositionY(e) - that._touchStartY;
                 var diffX = Touch.getPositionX(e) - that._touchStartX;
@@ -192,6 +180,15 @@
                     if(stopPropagationY){
                       e.stopPropagation();
                     }
+
+                    // new pos will mainly be negatve, so the minus prefix force it to positive value (to compare with sections)
+                    for (var i=that._sections.y.length - 1 ; i>=0 && -newPos < that._sections.y[i]; i--);
+
+                    currentSection = (i <= 0 ? 0 : i);
+                    if (currentSection !== that._currentSection.y)
+                        that.triggerEvent('sectionChange', [currentSection, that._currentSection.y]);
+
+                    that._currentSection.y = currentSection;
 
                     that._content.setTranslateY(newPos);
                     that._vscrollbar.setTranslateY(that._determineScrollbarTranslate(newPos, Scroll.VERTICAL));
@@ -209,13 +206,23 @@
                       e.stopPropagation();
                     }
 
+                    // new pos will mainly be negatve, so the minus prefix force it to positive value (to compare with sections)
+                    for (var j=that._sections.x.length - 1 ; j>=0 && -newPos < that._sections.x[j]; j--);
+
+                    currentSection = (j <= 0 ? 0 : j);
+                    if (currentSection !== that._currentSection.x)
+                        that.triggerEvent('sectionChange', [currentSection, that._currentSection.x]);
+
+                    that._currentSection.x = currentSection;
+
                     that._content.setTranslateX(newPos);
                     that._hscrollbar.setTranslateX(that._determineScrollbarTranslate(newPos, Scroll.HORIZONTAL));
                 }
 
                 touchMoveTempo++;
                 // if (touchMoveTempo > 300) {
-                //     that._touchInterY = Touch.getPositionY(e);
+                    that._touchInterY = Touch.getPositionY(e);
+                    that._touchInterX = Touch.getPositionX(e);
                 //     that._startTime = (new Date()).getTime();
                 //     touchMoveTempo = 0;
                 // }
@@ -229,7 +236,7 @@
 
                 var stopTime = (new Date()).getTime();
                 var duration = stopTime - that._startTime;
-                var deceleration = 0.0006;
+                var deceleration = 0.006;
                 var newTime = 500;
 
                 function adjustPos (orientation) {
@@ -293,6 +300,9 @@
                 this._content.translateTo(coord, 1000);
             }
 
+        },
+        setSections: function setSections (sectionsX, sectionsY) {
+            this._sections = {x:sectionsX, y:sectionsY};
         },
         // render elements of the component
         _render : function _render(){
