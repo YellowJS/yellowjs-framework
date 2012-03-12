@@ -50,7 +50,7 @@ describe("oomodel.js", function() {
                 provider.fetch({success:function(datas){
                     dataProvider = datas;
                     expect(dataProvider).toContain(obj);
-                });
+                }});
             });
 
             describe("save with callback", function() {
