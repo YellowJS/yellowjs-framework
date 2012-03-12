@@ -64,9 +64,7 @@
         },
         // check if it has the given class
         hasClass : function hasClass(clsName) {
-            //var i = this._list.indexOf(clsName);
             var i = this._getDomCls().indexOf(clsName);
-            //console.log(i);
 
             if (-1 === i) {
                 return false;
@@ -236,12 +234,12 @@
             return this._dom;
         },
         // find a child element of the current node according to the given selector
-        find : function find (selector) {
+        find : function find (selector, returnDom) {
             var n = this.getDomObject().querySelector(selector);
             if (null === n)
                 return null;
             else
-                return new Dom(n);
+                return (!returnDom) ? new Dom(n) : n;
         },
         findAll : function findAll (selector, returnDom) {
             var n = this.getDomObject().querySelectorAll(selector), res = [];
@@ -258,6 +256,10 @@
         },
         parent : function parent(){
             return new Dom(this.getDomObject().parentNode);
+        },
+        children : function children(){
+            var c = this.getDomObject().children;
+            return oo._convertNodeListToArray(c);
         },
         findParentByCls : function findParentByCls (cls) {
             var p = this.getDomObject().parentNode;
@@ -282,8 +284,6 @@
         // append a node on top to the current node children list
         // wrapper for the native API
         prependDomNode : function prependDomNode (domNode) {
-            //var ref = this..getDomObject().firstChild;
-            //console.log(this..getDomObject())
             this.getDomObject().insertBefore(domNode, this.getDomObject().firstChild);
 
             return this;
@@ -400,7 +400,7 @@
             this.appendHtml(this._cacheTpl);
     
             return this;
-        },
+        }
         /*animate : function animate(obj){
             
             if('object' != typeof obj){
@@ -457,6 +457,6 @@
             }
             return this._cached.webkitTransform;
         }*/
-    });
+    }); 
     
 })(oo);

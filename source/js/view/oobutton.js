@@ -43,6 +43,9 @@ var oo = (function (oo) {
         setActive : function setActive (active) {
             this._active = !!active;
             this.classList[(this._active ? 'add' : 'remove') + 'Class']('active');
+        },
+        tap : function tap(){
+          this.triggerEvent(Button.EVT_RELEASE, [this]);
         }
     });
      

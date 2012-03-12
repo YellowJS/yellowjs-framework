@@ -24,6 +24,8 @@
             this._wrapper = new Dom(identifier);
             this._content = this._wrapper.find('.content');
 
+            this._wrapper.classList.addClass('oo-list-wrapper');
+
             this._orientation = orientation || Scroll.VERTICAL;
             this._displayScroll = displayScroll || Scroll.BOTH;
 
@@ -183,7 +185,7 @@
                     diff = Touch.getPositionY(e) - that._touchStartY;
                     newPos = that._startY + diffY;
 
-                    if( !stopPropagationY && Math.abs(diffY) > 5) {
+                    if( !stopPropagationY && Math.abs(diffY) > 2) {
                       stopPropagationY = true;
                     }
 
@@ -199,7 +201,7 @@
                     diff = Touch.getPositionX(e) - that._touchStartX;
                     newPos = that._startX + diffX;
 
-                    if( !stopPropagationX && Math.abs(diffX) > 5) {
+                    if( !stopPropagationX && Math.abs(diffX) > 2) {
                       stopPropagationX = true;
                     }
 
@@ -275,9 +277,25 @@
 
             }, false);
         },
+        scrollTo: function scrollTo (val, direction) {
+            var coord = {};
+            if (2 === arguments.length)
+                coord[(Scroll.VERTICAL == direction && (direction == this._orientation || this._orientation == Scroll.BOTH) ? 'y' : 'x')] = - val;
+            else if (typeof val === 'object')
+                coord = val;
+
+            if ('x' in coord || 'y' in coord) {
+                if ('x' in coord)
+                    coord.x = Math.max(Math.min(coord.x , 0), this._maxhTranslate);
+                if ('y' in coord)
+                    coord.y = Math.max(Math.min(coord.y , 0), this._maxvTranslate);
+
+                this._content.translateTo(coord, 1000);
+            }
+
+        },
         // render elements of the component
         _render : function _render(){
-            this._wrapper.classList.addClass('oo-list-wrapper');
 
             this._initListeners();
 
