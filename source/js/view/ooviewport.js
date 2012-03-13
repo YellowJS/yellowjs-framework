@@ -36,6 +36,7 @@
         },
         /**
          * return true if the panel has already been added
+         *
          * @param panel {String} identifier as string or index
          **/
         hasPanel : function hasPanel(panel) {
@@ -43,6 +44,7 @@
         },
         /**
          * add a panel to the viewport
+         *
          * @param identifier {string} a name that will be used as reference to the panel
          * @parma autoShow {bool} [OPTIONAL] will render/show the panel directly after adding it
          * @param autoRender {bool|string} [OPTIONAL] will render the panel directly after adding - if the autoShow param is set to true then it is used as animDirection
@@ -56,17 +58,15 @@
             this._panels.push(p);
             this._panelsDic.push(identifier);
 
-            if (autoShow) {
-                animDirection = autoRender || animDirection;
+            if (autoRender || autoShow) {
                 if (!this.panelIsEnable(identifier))
                     this._enablePanel(identifier);
+            }
+
+            if (autoShow) {
+                animDirection = autoRender || animDirection;
 
                 this.showPanel(identifier, animDirection);
-            } else {
-                if (autoRender) {
-                    if (!this.panelIsEnable(identifier))
-                        this._enablePanel(identifier);
-                }
             }
         },
         _identifierToIndex : function _identifierToIndex(identifier){
@@ -100,12 +100,6 @@
                 return this.getPanel(this._indexToIdentifier(index));
             }
         },
-        /**
-         * return the Panel as a oo.Dom object
-         **/
-        getPanel : function getPanel(identifier) {
-           return this._panels[this._identifierToIndex(identifier)] || false;
-        },
         panelIsEnable : function panelIsEnable(identifier) {
            return (-1 != this._enabledPanels.indexOf(this._identifierToIndex(identifier)) ? true : false);
         },
@@ -120,12 +114,18 @@
         },
         /**
          * show a panel with a optional animation
+         *
          * @param {string|int} the panel string identifier or index
          * @param {direction} Right To Left or Left To Right or no anim (use constant)
          * @param params are data come from the model to be passed in the view
          **/
         showPanel : function showPanel(panelIdentifier, direction, params) {
-            this.getPanel(panelIdentifier).show(direction || Viewport.ANIM_RTL, params);
+            var p = this.getPanel(panelIdentifier);
+            
+            if (!this.panelIsEnable(panelIdentifier))
+                this._enablePanel(panelIdentifier);
+
+            p.show(direction || Viewport.ANIM_RTL, params);
 
             var index = this._identifierToIndex(panelIdentifier);
 
@@ -147,9 +147,10 @@
          * show the newPanel and hide the oldPanel
          * this method usualy takes three parameter, you may pass only two (first as the new Panel, and second
          * as the direction of the animation) the current panel will be auto hidden
+         *
          * @param oldPanel the panel to hide
          * @param newPanel the panel to show
-         * @param define an animation for both hide and show transitions (use constant)
+         * @param direction define an animation for both hide and show transitions (use constant)
          * @param params are data come from model to be passed at the view
          **/
         switchPanel : function switchPanel(oldPanel, newPanel, direction, params) {
@@ -164,19 +165,42 @@
                 newP = newPanel;
                 dir = direction;
             }
-
-            if (!this.hasPanel(newP))
-                this.addPanel(newP, false, true);
                 
             this.showPanel(newP, dir, params);
 
             if (oldP)
                 this.hidePanel(oldP, dir);
         },
-
+        /**
+         * register a panel in order to make the vieport able to manage it
+         *
+         * @param  {String} id an identifier
+         * @param  {oo.view.Panel} p  the panel to register
+         * @return {void}
+         */
         register: function register(id, p) {
             this._panelClasses[id] = p;
         },
+        /**
+         * retunrs the panel object associated with the given identifier
+         *
+         * @param {String} identifier the identifier that had been used to register/create the panel
+         * @return {oo.view.Panle} the Panel
+         **/
+        getPanel : function getPanel(identifier) {
+            if (!this.hasPanel(identifier))
+                this.addPanel(identifier, false, false);
+
+           return this._panels[this._identifierToIndex(identifier)] || false;
+        },
+        /**
+         * @deprecated
+         * DO NOT USE IT ANYMORE !!!
+         *
+         * @param  {[type]}   identifier [description]
+         * @param  {Function} fn         [description]
+         * @return {[type]}
+         */
         show: function show (identifier, fn) {
             if (!this.hasPanel(identifier)) {
                 this.addPanel(identifier, true);
