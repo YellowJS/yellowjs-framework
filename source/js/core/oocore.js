@@ -1,9 +1,8 @@
 /**
- * Private class providing utils method
- * via a singleton instance
+ * Provides utils method
+ * via an instance
  *
- * @namespace oo.core
- * @private class
+ * @requires [description]
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
@@ -17,17 +16,23 @@ oo = pline = (function (window) {
     };
 
     return {
+        /**
+         * @var {oo.net.Ajax} _ajaxRequestObject instance of oo.net.Ajax class
+         */
         _ajaxRequestObject: null,
+
         /**
          * proxy to the my.Class
+         * @see my.Class
          */
         Class: function Class () {
             return my.Class.apply(this, arguments);
         },
+
         /**
          * use oo.log instead of console.log
          *
-         * @param {String} data - the data to log
+         * @param {string} data - the data to log
          *
          * @return void
          */
@@ -37,6 +42,14 @@ oo = pline = (function (window) {
                 console.log(data.toStirng());
             }
         },
+
+        /**
+         * use oo.warn instead of console.warn
+         *
+         * @param {string} data - the data to log
+         *
+         * @return {void}
+         */
         warn: function warn (data) {
             var msg = ('string' !== typeof data && 'toString' in data) ? data.toString() : data;
             if (window.console && window.console.warn) {
@@ -45,14 +58,15 @@ oo = pline = (function (window) {
                 oo.log('/!\\ Warning : ' + msg);
             }
         },
+
         /**
          * create, if needed, and return a "namespaced object"
          *
          * @todo implement the base parameter
          *
-         * @param {String} ns - the namespace name (with dot notation)
-         * @param {Object} base - the described namesape scope
-         * @return {Object}
+         * @param {string} ns - the namespace name (with dot notation)
+         * @param {object} base - the described namesape scope
+         * @return {object}
          */
         getNS: function getNS (ns, base) {
             var names = ns.split('.');
@@ -66,18 +80,20 @@ oo = pline = (function (window) {
             }
             return parent;
         },
+
         /**
          * bind a scope to a function
          *
-         * @param {Function} fn - the function to be scoped
-         * @param {Object} sopce - the desired scope
-         * @return {Function}
+         * @param {function} fn - the function to be scoped
+         * @param {object} sopce - the desired scope
+         * @return {function}
          */
         createDelegate: function createDelegate (fn, scope) {
             return function () {
                 return fn.apply(scope, arguments);
             };
         },
+
         /**
          * empty function
          * @return {void}
@@ -86,7 +102,7 @@ oo = pline = (function (window) {
 
         /**
          * returns a unique identifier (by way of Backbone.localStorage.js)
-         * @return {String}
+         * @return {string}
          */
         generateId: function generateId (tagName) {
             var S4 = function () {
@@ -98,7 +114,7 @@ oo = pline = (function (window) {
 
         /**
          * mix two object in one, the second override the first one
-         * @return {Object}
+         * @return {object}
          */
         override: function override (obj, ext) {
             for (var prop in ext)
@@ -106,6 +122,7 @@ oo = pline = (function (window) {
 
             return obj;
         },
+
         /**
          * create a controller from the class passed in parameter
          */
@@ -129,9 +146,9 @@ oo = pline = (function (window) {
         },
 
         initViewport: function initViewport(identifier) {
-            var ns = this.getNS('oo.view');
-            ns.viewport = new ns.Viewport(identifier);
-            return ns.viewport;
+            var ns = this.getNS('oo.view'),
+                v = ns.viewport = new ns.Viewport(identifier);
+            return v;
         },
 
         getViewport: function getViewport() {
@@ -141,7 +158,6 @@ oo = pline = (function (window) {
             } else {
                 return this.initViewport();
             }
-            
         },
 
         createPanel: function createPanel(panel, noRegister) {
@@ -172,15 +188,40 @@ oo = pline = (function (window) {
         createElement : function createElement(type, opt){
             return new ( oo.view.Element.get(type))(opt || null);
         },
+
+        /**
+         * define values for global configuration
+         *
+         * @param  {object} opt literal object containing key and associated values
+         * @return {void}
+         */
         define : function define(opt){
             this.override(_globalConfig, opt);
         },
+
+        /**
+         * get the value associated with the given key from the global configuration
+         *
+         * @param  {string} key the key to match in the global configuration
+         * @return {string|number|bool}
+         */
         getConfig : function getConfig(key){
             if (key && key in _globalConfig)
                 return _globalConfig[key];
             else
                 return _globalConfig;
         },
+
+        /**
+         * the entry point of your application
+         * this method takes as parameter a callback that will be called
+         * either when 'phonegapready' event is triggered or if phonegap
+         * is not available, when the 'load' event is triggered by the
+         * window object
+         *
+         * @param  {function} fn [description]
+         * @return {void}
+         */
         bootstrap: function bootstrap (fn) {
             if (typeof fn !== 'function')
                 throw "parameter must be a function";
@@ -201,11 +242,23 @@ oo = pline = (function (window) {
             else
                 window.addEventListener('load', start);
         },
+
+        /**
+         * provide an easy way to do ajax call
+         *
+         * @param  {string} url               the target url
+         * @param  {string} method            use POST or GET HTTP method
+         * @param  {object} params            data to send
+         * @param  {function} successCallback callback in case of success
+         * @param  {function} errorCallback   callback in case of failure
+         * @return {void}
+         */
         ajax: function ajax (url, method, params, successCallback, errorCallback) {
 
-            var _this= this;
-
-            // for nicer api
+            // nicer api
+            // if called without argument, it returns an object with
+            // get and a post methods that are currying of the current
+            // ajax method
             if(0 === arguments.length)
                 return {
                     post: function (url, params, successCallback, errorCallback) { oo.ajax(url, 'post', params, successCallback, errorCallback); },

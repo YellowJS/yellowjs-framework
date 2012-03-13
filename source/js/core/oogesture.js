@@ -1,14 +1,14 @@
 /**
  * Contains class for gesture management
  *
+ * @class Gesture
  * @namespace oo
- * @class Touch
  *
  * @author Claire Sosset <claire.sosset@gmail.com> || @claire_so
  */
-var oo = (function (oo) {
+(function (oo) {
     var Touch = oo.core.Touch;
-    var Gesture = oo.Class({
+    var Gesture = oo.getNS('oo.core').Gesture = oo.Class({
         constructor : function constructor(){
             var that = this;
             //attach events to document
@@ -125,9 +125,6 @@ var oo = (function (oo) {
     
     
     var gesture = new Gesture();
-    var exports = oo.getNS('oo.core');
-    exports.Gesture = gesture;
-    
-    return oo;
-    
+    oo.getNS('oo.core').gesture = gesture;
+        
 })(oo || {});

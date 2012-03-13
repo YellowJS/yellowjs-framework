@@ -26,7 +26,7 @@
         return listenerConf;
     }
 
-    var Events = oo.Class({
+    var Events = oo.getNS('oo.core.mixins').Events = oo.Class({
         _getListenersArray : function _getListenersArray () {
             if (!this._listeners)
                 this._listeners = {};
@@ -79,8 +79,5 @@
             }
         }
     });
-    
-    var exports = oo.getNS('oo.core.mixins');
-    exports.Events = Events;
         
 })(oo || {});

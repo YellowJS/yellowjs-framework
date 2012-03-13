@@ -1,8 +1,8 @@
 /**
  * Dom helper
  *
- * @namespace oo.view
  * @class Dom
+ * @namespace oo.view
  * @requires oo.core.mixins.Events
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
@@ -143,9 +143,7 @@
         },
         generateAccessor : function generateAccessor (){
             var p = this, i, len;
-            /**
-             * generates accessors fonction
-             */
+            // generates accessors fonction
             for (i=0, len=prop.readOnly.length; i<len; i++) {
                 eval(['p.get', prop.readOnly[i].charAt(0).toUpperCase(), prop.readOnly[i].slice(1), ' = function (unit, noCache) { if (noCache || !this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]) { this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = (unit ? window.getComputedStyle(this.getDomObject()).', prop.readOnly[i], ' : (window.getComputedStyle(this.getDomObject()).', prop.readOnly[i], ').replace(/s|ms|px|em|pt|%/, \'\')); this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')] = parseInt(this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')], 10) || this._cached[[\'', prop.readOnly[i], '\',(unit ? \'u\' : \'\')].join(\'\')]; } return this._cached[[\'', prop.readOnly[i], '\', (unit ? \'u\' : \'\')].join(\'\')]; };'].join(''));
             }

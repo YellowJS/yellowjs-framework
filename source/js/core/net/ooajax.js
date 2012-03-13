@@ -1,6 +1,16 @@
+/**
+ * Helper for ajax request
+ *
+ * @class Ajax
+ * @namespace oo.core.net
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ * @author Claire Sosset <claire.sosset@gmail.com> || @Claire_So
+ */
 (function (oo) {
     
     var global = this;
+    
     var Ajax = oo.getNS('oo.core.net').Ajax = oo.Class({
         buildReq: function _buildReq (url, method, params, successCallback, errorCallback) {
             var req = this._getRequest();
