@@ -8,28 +8,30 @@ var CONTROLLERS = (function(CONTROLLERS) {
                     oo.Router.load('/index/categ/categ/' + itemKey);
                 });
 
-                model.fetch();                
+                model.fetch();
             });
         },
 
         categAction: function categAction(params) {
-            oo.getViewport().show('list-article', function (panel) {
+            oo.getViewport().addPanel('list-article', false, true);
+            oo.getViewport().switchPanel('list-article');
+            // function (panel) {
 
-                articlesModel.fetch({params: {categ: params.categ}});
+            //     articlesModel.fetch({params: {categ: params.categ}});
 
-                panel.getEl('articles').addListener(oo.view.List.EVT_ITEM_RELEASED, function (el, itemKey) {
-                    oo.Router.load('/index/article/id/' + itemKey);
-                });
-            });
+            //     panel.getEl('articles').addListener(oo.view.List.EVT_ITEM_RELEASED, function (el, itemKey) {
+            //         oo.Router.load('/index/article/id/' + itemKey);
+            //     });
+            // };
         },
 
         articleAction: function articleAction() {
             oo.getViewport().show('article', function (panel) {
                 oneArticleModel.fetch({article: params.article});
             });
-        }        
+        }
                 
-    }
+    };
     
     return CONTROLLERS;
 

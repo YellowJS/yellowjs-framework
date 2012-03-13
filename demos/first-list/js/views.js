@@ -4,12 +4,14 @@
         id: 'list-categ',
         init: function init() {
             this.setTemplate('<div class="monpanel">&nbsp;</div>');
-        },
-        onEnabled: function onEnabled() {
+
             var l = oo.createElement('list', {target: '.monpanel', model: model, template: '<h2>{{label}}</h2>'});
             l.setId('categories');
 
-            this.register(l);
+            this.addEl(l);
+        },
+        onEnabled: function onEnabled() {
+
         }
     });
 
@@ -26,7 +28,7 @@
             var l = oo.createElement('list', {target: '.monpanel-articles', model: articlesModel, template: '<div class="square" style="background: url(\'{{pic}}\')"><div class="overlay"></div></div>'});
             l.setId('articles');
 
-            this.register(l);
+            this.addEl(l);
         }
     });
 

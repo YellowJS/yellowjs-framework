@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>oo.view.Button | Flavius | Jasmine Spec Runner</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+  <!-- Home screen icon  Mathias Bynens http://goo.gl/6nVq0 -->
+  <!-- For iPhone 4 with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/h/apple-touch-icon.png">
+  <!-- For first-generation iPad: -->
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/m/apple-touch-icon.png">
+  <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon-precomposed" href="images/l/apple-touch-icon-precomposed.png">
+
+
+  <!--iOS web app, deletable if not needed -->
+  <!--the script prevents links from opening in mobile safari. https://gist.github.com/1042026 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link href="../../lib/jasmine-core/jasmine.css" rel="stylesheet"/>
+
+  <style type="text/css">
+
+    .accordion-section-closed div[data-accordioncontent] {display: none;}
+    .accordion-section-opened div[data-accordioncontent] {display: block;}
+  </style>
+
+
+
+  <script type="text/javascript" src="../../lib/jasmine-core/jasmine.js"></script>
+  <script type="text/javascript" src="../../lib/jasmine-core/jasmine-html.js"></script>  
+  <script type="text/javascript">
+    // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
+    undefined = "diz be undefined yo";
+  </script>
+
+
+  <!-- include source files here... -->
+  <script type="text/javascript" src="../../../source/js/vendor/my.class.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/ootouch.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/mixins/ooevents.js"></script>  
+  <script type="text/javascript" src="../../../source/js/view/oodom.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/ooelement.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/oobutton.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/ootouch.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/ooaccordion.js"></script>
+
+   
+  
+    <script type="text/javascript">
+      (function() {
+        var jasmineEnv = jasmine.getEnv();
+        jasmineEnv.updateInterval = 1000;
+
+        var trivialReporter = new jasmine.TrivialReporter();
+
+        jasmineEnv.addReporter(trivialReporter);
+
+        jasmineEnv.specFilter = function(spec) {
+          return trivialReporter.specFilter(spec);
+        };
+
+        var currentWindowOnload = window.onload;
+
+        window.onload = function() {
+          if (currentWindowOnload) {
+            currentWindowOnload();
+          }
+          execJasmine();
+        };
+
+        function execJasmine() {
+          jasmineEnv.execute();
+        }
+
+      })();
+    </script>
+
+  </head>
+
+  <body>
+      <div class="accordion">
+        <section>
+          <div data-accordionheader="true">Header1</div>
+          <div data-accordioncontent="true">Content1</div>
+        </section>
+        <section>
+          <div data-accordionheader="true">Header1</div>
+          <div data-accordioncontent="true">Content1</div>
+        </section>
+      </div>
+      <div class="accordion">
+        <section>
+          <div data-accordionheader="true">Header2</div>
+          <div data-accordioncontent="true">Content2</div>
+        </section>
+        <section>
+          <div data-accordionheader="true">Header2</div>
+          <div data-accordioncontent="true">Content2</div>
+        </section>
+      </div>
+      <!-- include spec files here... -->
+       <script type="text/javascript" src="spec.js"></script>
+  </body>
+  </html>

@@ -1,13 +1,13 @@
-/** 
+/**
  * Contains class for event management
- * 
+ *
  * @namespace oo.core.mixins
  * @class Events
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  * @author Claire Sosset <claire.sosset@gmail.com> || @Claire_So
  */
-var oo = (function (oo) {
+(function (oo) {
     
     //var listeners = {};
     
@@ -26,7 +26,7 @@ var oo = (function (oo) {
         return listenerConf;
     }
 
-    var Events = my.Class({
+    var Events = oo.getNS('oo.core.mixins').Events = oo.Class({
         _getListenersArray : function _getListenersArray () {
             if (!this._listeners)
                 this._listeners = {};
@@ -60,7 +60,7 @@ var oo = (function (oo) {
          * trigerEvent(eventName, sender, params)
          *
          * use this one instead
-         * trigerEvent(eventName, params) 
+         * trigerEvent(eventName, params)
          */
         triggerEvent : function triggerEvent(eventName, params){
             // backward compatibility
@@ -79,10 +79,5 @@ var oo = (function (oo) {
             }
         }
     });
-    
-    var exports = oo.getNS('oo.core.mixins');
-    exports.Events = Events;
-    
-    return oo;
-    
+        
 })(oo || {});

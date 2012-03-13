@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>oo.view.Carousel | Flavius | Jasmine Spec Runner</title>
+
+  <link href="../../lib/jasmine-core/jasmine.css" rel="stylesheet"/>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style type="text/css">
+    *{ margin:0; padding:0; -webkit-user-select:none;} 
+    #slider { background:orange; height:20px; margin:80px 40px 80px 40px; position: relative; width:625px; }
+    .cursor { width:26px; height:26px; background:red; position: relative; border-radius:5px;}
+
+    #overlay { position: absolute; bottom:20px; padding:10px;}
+    #slider .cursor { top:-3px; position: absolute; left:-13px;}
+    #slider2 .cursor { left:-3px;}
+
+    #slider .items { list-style: none;}
+    #slider .items i { background:#ccc; width:5px; height:5px; border-radius:5px; display: block;}
+    #slider .items li { display: inline-block; width:5px; margin:5px 0 0 63px;}
+    #slider .items li:first-child { margin-left:0;}
+
+    #slider2 { height:150px; width:20px; background-color: #DDD; margin:40px;}
+
+    #overlay { background:#ccc; width:150px; padding:5px; bottom:40px; left:-75px; text-align:center;}
+    #overlay:after { }
+
+  </style>
+
+
+  <script type="text/javascript" src="../../lib/jasmine-core/jasmine.js"></script>
+  <script type="text/javascript" src="../../lib/jasmine-core/jasmine-html.js"></script>  
+  <script type="text/javascript">
+    // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
+    undefined = "diz be undefined yo";
+  </script>
+  
+    <script type="text/javascript">
+      (function() {
+        var jasmineEnv = jasmine.getEnv();
+        jasmineEnv.updateInterval = 1000;
+
+        var trivialReporter = new jasmine.TrivialReporter();
+
+        jasmineEnv.addReporter(trivialReporter);
+
+        jasmineEnv.specFilter = function(spec) {
+          return trivialReporter.specFilter(spec);
+        };
+
+        var currentWindowOnload = window.onload;
+
+        window.onload = function() {
+          if (currentWindowOnload) {
+            currentWindowOnload();
+          }
+          execJasmine();
+        };
+
+        function execJasmine() {
+          jasmineEnv.execute();
+        }
+
+      })();
+    </script>
+
+  </head>
+
+  <body>
+      <div id="slider">
+        <div class="items"></div>
+        <div class="cursor">
+            <div id="overlay"></div>
+        </div>
+      </div>
+
+      <div id="slider2">
+        <div class="cursor"></div>
+      </div>
+      <!-- include spec files here... -->
+      <!-- include source files here... -->
+      <script type="text/javascript">
+        document.addEventListener('touchmove',function(e){
+          e.preventDefault();
+        },false);
+      </script>
+      <script type="text/javascript" src="../../../source/js/vendor/my.class.js"></script>
+      <script type="text/javascript" src="../../../source/js/vendor/mustache.js"></script>
+      <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>
+      <script type="text/javascript" src="../../../source/js/core/mixins/ooevents.js"></script>
+      <script type="text/javascript" src="../../../source/js/core/ootouch.js"></script>  
+      <script type="text/javascript" src="../../../source/js/view/oodom.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/ooelement.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/oomodelelement.js"></script>
+      <script type="text/javascript" src="../../../source/js/data/ooprovider.js"></script>
+      <script type="text/javascript" src="../../../source/js/data/oofakeprovider.js"></script>
+      <script type="text/javascript" src="../../../source/js/data/oomodel.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplate.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplatemustache.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/oolist.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/ooslider.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/ooslidercursor.js"></script>
+      <script type="text/javascript" src="../../../source/js/view/ooviewport.js"></script>
+       <script type="text/javascript" src="spec.js"></script>
+  </body>
+  </html>

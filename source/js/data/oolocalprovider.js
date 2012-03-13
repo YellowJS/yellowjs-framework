@@ -1,12 +1,12 @@
 (function (oo) {
     
     var global = this, ns = oo.getNS('oo.data');
-    var LocalProvider = ns.LocalProvider = my.Class(oo.data.Provider, {
+    var LocalProvider = ns.LocalProvider = oo.Class(oo.data.Provider, {
         _store: {},
         constructor: function contructor (options) {
             LocalProvider.Super.call(this, options);
 
-            // gives an empty callback is not the best idea i have never had
+            // /!\ give an empty callback is not the best idea i have never had
             this._store = Lawnchair({name: this._name, record: 'record'}, function () {});
         },
         save: function save (data, callback) {
@@ -21,6 +21,12 @@
             this._store.all(function (data) {
                 callback.call(global, data);
             });
+        },
+        get: function get (cond, callback) {
+            this._store.get(cond, callback);
+        },
+        clearAll: function clearAll () {
+            this._store.nuke();
         }
     });
 

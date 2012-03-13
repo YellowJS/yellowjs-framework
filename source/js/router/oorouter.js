@@ -1,22 +1,25 @@
-/** 
+/**
  * Class providing url routing logic
  * handle management of history API
- * 
+ *
  * @namespace oo
  * @class Router
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var oo = (function(oo){
+(function(oo){
 
-
-    var ns = oo.getNS('oo.router');
-
-    var Router = ns.Router= my.Class({
+    var Router = oo.getNS('oo.router').Router = oo.Class({
         constructor : function constructor(){
             this._routes = {};
             this._registeredControllers = {};
             this._controllers = {};
+
+            var that = this;
+
+        },
+        _usePushState : function _usePushState(){
+          return oo.getConfig('pushState');
         },
         addRoutes : function addRoutes(routes){
             if(!routes || (Object.prototype.toString.call( routes ) !== '[object Object]')){
@@ -74,11 +77,12 @@ var oo = (function(oo){
         init : function init(){
             var that = this, wl = window.location, f = false;
 
+
             var callback = function callback(route){
               that.dispatch(route);
             };
 
-            if( window.history && window.history.pushState ){
+            if( this._usePushState() && window.history && window.history.pushState){
               this.hasHistory = true;
               window.addEventListener('popstate',function(event){
                  f = true;
@@ -100,11 +104,11 @@ var oo = (function(oo){
             }
         },
         load : function load(route){
-            if(!this.hasHistory){
+            if( !this._usePushState() || !this.hasHistory){
               window.location.hash = route;
             } else {
               history.pushState({},"",route);
-              this.dispatch(route);
+              //this.dispatch(route);
             }
         },
         dispatch: function dispatch (hash) {
@@ -116,7 +120,7 @@ var oo = (function(oo){
                 var ctrl;
 
 
-                if (typeof this._registeredControllers[ctrlClass] !== 'function') {
+                if ( (typeof this._registeredControllers[ctrlClass] !== 'function') && ("undefined" !== typeof this._controllers[ctrlClass])) {
                     if ('undefined' === typeof this._registeredControllers[ctrlClass]) {
                         this._registeredControllers[ctrlClass] = new this._controllers[ctrlClass]();
                     }
@@ -130,7 +134,7 @@ var oo = (function(oo){
         },
         parseRoute: function parseRoute (route) {
             var routes = this._routes;
-            var routeObject = null, r;
+            var routeObject = null;
             
             for(var keyr in routes) {
                var r = routes[keyr];
@@ -161,7 +165,7 @@ var oo = (function(oo){
                     parts.shift();
                 }
 
-                if (!routeObject.action || routeObject.action == undefined) {
+                if (!routeObject.action || routeObject.action === undefined) {
                     routeObject.action = 'index';
                 } else {
                     parts.shift();
@@ -186,7 +190,7 @@ var oo = (function(oo){
         url: function url (routeName, params) {
             var route = this._routes[routeName];
             if (!route) {
-                throw Error('route name doesn’t exists');
+                throw Error('route name doesn\'t exists');
             }
             
             var paramsUrl = '';
@@ -199,7 +203,5 @@ var oo = (function(oo){
         }
         
     });
-
-    return oo;
 
 })(oo || {});

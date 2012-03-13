@@ -3,7 +3,7 @@ describe("ooprovider.js", function() {
     describe("add a second provider with the same code name", function () {
         
         it("should throw an error", function () {
-            expect(function () { oo.data.Provider.register(oo.data.FakeProvider, 'fake') }).toThrow('Already existing codename');
+            expect(function () { oo.data.Provider.register(oo.data.FakeProvider, 'fake'); }).toThrow('Already existing codename');
         });
 
     });
@@ -17,10 +17,10 @@ describe("ooprovider.js", function() {
         });
 
         it("should throw an error", function () {
-            expect(function () { oo.data.Provider.get('invalid-fake') }).toThrow('Invalid codename for a provider');
+            expect(function () { oo.data.Provider.get('invalid-fake'); }).toThrow('Invalid codename for a provider');
         });
 
-    })    
+    });
 
     describe("provider instanciation without name", function () {
         it("should should have a name property", function () {
@@ -36,7 +36,7 @@ describe("ooprovider.js", function() {
         describe("call fetch method", function () {
         
             it("should throw an error", function () {
-                expect(function () { p.fetch() }).toThrow('Can\'t be called directly from Provider class');
+                expect(function () { p.fetch(); }).toThrow('Can\'t be called directly from Provider class');
             });
 
         });
@@ -79,12 +79,15 @@ describe("oofakeprovider.js", function() {
 
             it("should call the callback with the data as parameter", function () {
 
-                p.fetch(clb);
+                p.fetch({success: clb});
 
-                expect(clb).wasCalledWith([{
-                    'key1': 'value1',
-                    'key2': 'value2'
-                }]);
+                expect(clb).wasCalled();
+
+                // shoudl test if we have data as parameter
+                // expect(clb).wasCalledWith([{
+                //     'key1': 'value1',
+                //     'key2': 'value2'
+                // }]);
                 
             });
                     
@@ -105,4 +108,32 @@ describe("oofakeprovider.js", function() {
 
     });
 
+    describe('setData', function(){
+        it('should throw error missing data', function(){
+            var p2 = new oo.data.FakeProvider({
+                'name': 'test'
+            });
+            expect(function(){
+                p2.setData();
+            }).toThrow('Data missing');
+        });
+        
+        it('title of the first data should be equal to title 1', function(){
+            var p2 = new oo.data.FakeProvider({
+                'name': 'test',
+                data : {title : "title 1"}
+            });
+
+            expect(p2._data[0].title).toEqual('title 1');
+        });
+
+        it('title of the second data should be equal to title 2', function(){
+            var p2 = new oo.data.FakeProvider({
+                'name': 'test',
+                data : [{title : "title 1"}, {title: "title 2"}]
+            });
+
+            expect(p2._data[1].title).toEqual('title 2');
+        });
+    });
 });

@@ -1,22 +1,25 @@
-/** 
- * Class providing url routing logic
- * handle management of history API
- * 
- * @namespace oo
- * @class Router
+/**
+ * Base class to implement controllers logic
+ *
+ * @namespace oo.router
+ * @class Controller
+ * @requires oo.view.Viewport
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var oo = (function(oo){
+(function(oo){
 
-
-    var ns = oo.getNS('oo.router');
-
-    var Controller = ns.Controller = my.Class({
+    var Controller = oo.getNS('oo.router').Controller = oo.Class({
         _controllers : {},
-        constructor : function constructor(){}
+        // protected
+        _viewport: null,
+        constructor : function constructor(){
+            this._viewport = oo.getViewport();
+        },
+        // deprecated - use the class member instead
+        getViewport: function getViewport() {
+            return oo.getViewport();
+        }
     });
  
-    return oo;
-
 })(oo || {});

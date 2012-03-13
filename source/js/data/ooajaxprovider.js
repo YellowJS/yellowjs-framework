@@ -1,9 +1,10 @@
 (function (oo) {
     
     var global = this, ns = oo.getNS('oo.data');
-    var AjaxProvider = ns.AjaxProvider = my.Class(oo.data.Provider, {
+    var AjaxProvider = ns.AjaxProvider = oo.Class(oo.data.Provider, {
         _store: {},
         _cacheProvider: null,
+        _clearCache: true,
         _url: null,
         constructor: function constructor (options) {
 
@@ -20,9 +21,7 @@
 
             AjaxProvider.Super.call(this, {name: opt.name});
 
-            if (opt.cacheProvider) {
-                this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))({name: 'pline-cache__' + opt.name});
-            }
+            this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider || 'local'))({name: 'pline-cache__' + opt.name});
         },
         save: function save (data, config) {
             var method = 'POST';
@@ -33,17 +32,18 @@
             };
 
             if (typeof config == 'function') {
-                config = {success: config}
+                config = {success: config};
             }
 
             var conf = oo.override(defaultConf, config);
 
-            var req = this._buildReq(this._url, method, data, conf.success, conf.error);
+            var req = oo.ajax(this._url, method, data, oo.createDelegate(function (rep) {
+
+                this._cacheProvider.save(data, function () {
+                    conf.success.call(global, rep);
+                });
+            }, this), conf.error);
             req.send();
-
-            //this._store.save(data);
-
-            //callback.call(global);
         },
         fetch: function fetch (config) {
 
@@ -53,74 +53,94 @@
                 success: oo.emptyFn,
                 error: oo.emptyFn,
                 params: {}
-            }
+            };
 
             if (typeof config == 'function') {
-                config = {success: config}
+                config = {success: config};
             }
 
             var conf = oo.override(defaultConf, config);
 
-            var req = this._buildReq(this._url, method, config.params, conf.success, conf.error);
+            var req = oo.ajax(this._url, method, conf.params, oo.createDelegate(function (data) {
+                var _this = this;
+                this._cacheProvider.clearAll();
+                this._cacheProvider.save(data, function () {
+                    _this._clearCache = false;
+                    conf.success.call(global, data);
+                });
+
+            }, this), conf.error);
             req.send();
                         
             // this._store.all(function (data) {
             //     callback.call(global, data);
             // });
         },
+        get: function get (cond, callback) {
+            var _this = this;
+            if (this._clearCache)
+                this.fetch(function (data) {
+                    _this._cacheProvider.get(cond, callback);
+                });
+            else
+                this._cacheProvider.get(cond, callback);
+        },
+        clearAll: function clearAll () {
+            this._clearCache = true;
+        }//,
+        // _buildReq: function _buildReq (url, method, params, successCallback, errorCallback) {
+        //     var req = this._getRequest(), _this = this;
 
-        _buildReq: function _buildReq (url, method, params, successCallback, errorCallback) {
-            var req = this._getRequest();
-
-            req.addEventListener('readystatechange', function (e) {
-                if (e.target.readyState==4) {
-                    if (e.target.status == 200) {
+        //     req.addEventListener('readystatechange', function (e) {
+        //         if (e.target.readyState==4) {
+        //             if (e.target.status == 200) {
                         
-                        // check against response content-type header to determine if is JSON formatted response
-                        var str = JSON.parse(e.target.responseText);
+        //                 // @todo : check against response content-type header to determine if is JSON formatted response
+        //                 var str = JSON.parse(e.target.responseText);
                         
-                        successCallback.call(global, str);
-                    }
-                    else
-                        errorCallback.call(global);
-                }
-            });
+        //                 successCallback.call(_this, str);
+        //             }
+        //             else
+        //                 errorCallback.call(_this);
+        //         }
+        //     });
 
-            var paramString = this._processParams(params);
-            if (method == 'GET') {
-                url = url + '?' + paramString;
-            }
+        //     var paramString = this._processParams(params), targetUrl = "" + url;
+        //     if (method == 'GET') {
+        //         targetUrl = url + '?' + paramString;
+        //     }
 
-            req.open(method, url);
-            if ('POST' == method)
-                this._setPostHeaders(req);
+        //     req.open(method, targetUrl);
+        //     if ('POST' == method)
+        //         this._setPostHeaders(req);
 
-            return {
-                send: function send(params) {
-                    if (method = 'POST') {
-                        req.send(paramString);
-                    }                        
-                    else
-                        req.send();
-                }
-            };
+        //     return {
+        //         send: function send(params) {
+        //             if ('POST' === method) {
+        //                 req.send(paramString);
+        //             }
+        //             else
+        //                 req.send();
+        //         }
+        //     };
 
-        },
-        _processParams: function _processParams (paramObj) {
-            var paramArrayString = [];
-            for (var prop in paramObj) {
-                paramArrayString.push(prop + '=' + encodeURI(paramObj[prop]));
-            }
-            return paramArrayString.join('&');
-        },
-        _getRequest: function _getRequest () {
-            return new XMLHttpRequest();
-        },
-        _setPostHeaders: function _setPostHeaders (req) {
-            req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            req.setRequestHeader('Connection', 'close');
-        }     
+        // },
+        // _processParams: function _processParams (paramObj) {
+        //     var paramArrayString = [];
+        //     for (var prop in paramObj) {
+        //         paramArrayString.push(prop + '=' + encodeURI(paramObj[prop]));
+        //     }
+        //     return paramArrayString.join('&');
+        // },
+        // _getRequest: function _getRequest () {
+        //     return new XMLHttpRequest();
+        // },
+        // _setPostHeaders: function _setPostHeaders (req) {
+        //     req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        //     req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        //     // Unsafe header
+        //     // req.setRequestHeader('Connection', 'close');
+        // }
     });
 
     oo.data.Provider.register(AjaxProvider, 'ajax');

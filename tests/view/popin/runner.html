@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>oo.view.Button | Flavius | Jasmine Spec Runner</title>
+
+  <link href="../../lib/jasmine-core/jasmine.css" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style type="text/css">
+    .popin { width:250px; height:250px; background:orange; margin: 0 auto; position: absolute; top:50px; left:50%; margin-left:-125px;}
+    #popin {
+      -webkit-transition:opacity .5s ease;
+      -moz-transition:opacity .5s ease;
+      -o-transition:opacity .5s ease;
+      -ms-transition:opacity .5s ease;
+      transition:opacity .5s ease;
+    }
+
+    #popin.pl-popin-closed, #popin.pl-popin-is-hiding {
+      opacity: 0;
+    }
+    #popin.pl-popin-closed{
+       -webkit-transform:translate3d(-200%,0,0);
+    }
+
+    #popin.pl-popin-opened, #popin.pl-popin-is-showing {
+      opacity: 1; -webkit-transform:translate3d(0,0,0);
+    }
+
+    .content { width:978px; margin:0 auto 30px; position: relative;}
+
+    #popin2 {
+      -webkit-transition:-webkit-transform .3s ease, opacity .3s ease;
+      -moz-transition:-moz-transform .3s ease, opacity .3s ease;
+      -o-transition:-o-transform .3s ease, opacity .3s ease;
+      -ms-transition:-ms-transform .3s ease, opacity .3s ease;
+      transition:transform .3s ease, opacity .3s ease;
+    }
+    #popin2.pl-popin-closed, #popin2.pl-popin-is-hiding { 
+      -webkit-transform:scale(0); opacity:0;
+    }
+    #popin2.pl-popin-opened { 
+      -webkit-transform:scale(1); opacity:1;
+    }
+  </style>
+
+
+
+  <script type="text/javascript" src="../../lib/jasmine-core/jasmine.js"></script>
+  <script type="text/javascript" src="../../lib/jasmine-core/jasmine-html.js"></script>  
+  <script type="text/javascript">
+    // yes, really keep this here to keep us honest, but only for jasmine's own runner! [xw]
+    undefined = "diz be undefined yo";
+  </script>
+
+
+  <!-- include source files here... -->
+  <script type="text/javascript" src="../../../source/js/vendor/my.class.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/mixins/ooevents.js"></script>  
+  <script type="text/javascript" src="../../../source/js/view/oodom.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/ootouch.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/ooelement.js"></script>
+  <script type="text/javascript" src="../../../source/js/view/oopopin.js"></script>
+
+   
+  
+    <script type="text/javascript">
+      (function() {
+        var jasmineEnv = jasmine.getEnv();
+        jasmineEnv.updateInterval = 1000;
+
+        var trivialReporter = new jasmine.TrivialReporter();
+
+        jasmineEnv.addReporter(trivialReporter);
+
+        jasmineEnv.specFilter = function(spec) {
+          return trivialReporter.specFilter(spec);
+        };
+
+        var currentWindowOnload = window.onload;
+
+        window.onload = function() {
+          if (currentWindowOnload) {
+            currentWindowOnload();
+          }
+          execJasmine();
+        };
+
+        function execJasmine() {
+          jasmineEnv.execute();
+        }
+
+      })();
+    </script>
+
+  </head>
+
+  <body>
+      <div class="content"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+      cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+      proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum <a href="#">dolore</a> eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <div id="popin" class="popin"></div>
+      <button id="open">Open</button>
+      <button id="close">Close</button>
+    </div>
+    <div class="content"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+      cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+      proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum <a href="#">dolore</a> eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <div id="popin2" class="popin"></div>
+      <button id="open2">Open</button>
+      <button id="close2">Close</button>
+    </div>
+      
+
+      
+
+      <!-- include spec files here... -->
+       <script type="text/javascript" src="spec.js"></script>
+  </body>
+  </html>
