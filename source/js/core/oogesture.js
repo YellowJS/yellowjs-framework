@@ -8,7 +8,7 @@
  */
 var oo = (function (oo) {
     var Touch = oo.core.Touch;
-    var Gesture = my.Class({
+    var Gesture = oo.Class({
         constructor : function constructor(){
             var that = this;
             //attach events to document

@@ -9,7 +9,7 @@ var oo = (function (oo) {
     
     var Touch = oo.core.Touch, List = oo.view.List, Events = oo.core.mixins.Events, ns = oo.getNS('oo.view');
 
-    var Pager = ns.Pager = my.Class(List, Events, {
+    var Pager = ns.Pager = oo.Class(List, Events, {
         STATIC : {
             NAVIGATE:'navigate'
         },

@@ -10,7 +10,7 @@ var oo = (function (oo) {
     // shorthand
     var Dom = oo.view.Dom, Touch = oo.core.Touch, ns = oo.getNS('oo.view');
     
-    var Carousel = ns.Carousel = my.Class(oo.view.ModelElement, oo.core.mixins.Events, {
+    var Carousel = ns.Carousel = oo.Class(oo.view.ModelElement, oo.core.mixins.Events, {
         STATIC : {
             EVENT_ON : "EVENT_ON",
             EVENT_GOTO : "EVENT_GOTO",

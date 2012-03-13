@@ -4,7 +4,7 @@ var oo = (function (oo){
 
     var templateRepository = {};
 
-    var Template = tplEngine.Template = my.Class({
+    var Template = tplEngine.Template = oo.Class({
         STATIC: {
             register: function register (cls, codename) {
                 if (templateRepository[codename])

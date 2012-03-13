@@ -27,7 +27,7 @@
          
     };
      
-    var Touch = my.Class({
+    var Touch = oo.Class({
         STATIC : {
             getPosition : getPosition,
             getPositionX : function getPositionX(e, index) {

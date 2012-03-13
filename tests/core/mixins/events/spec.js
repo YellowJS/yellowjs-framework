@@ -1,6 +1,6 @@
 describe("ooevents.js", function() {
 
-    var Cls = my.Class({}, oo.core.mixins.Events, {});
+    var Cls = oo.Class({}, oo.core.mixins.Events, {});
     var obj = new Cls();
 
     var modifiedByListener = null;

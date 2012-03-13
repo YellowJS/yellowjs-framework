@@ -2,7 +2,7 @@ var oo = (function (oo){
     var global = this;
     var tplEngine = oo.getNS('oo.view.templateengine');
 
-    var templateEngineHandlebars = tplEngine.TemplateEngineHandlebars = my.Class(oo.view.templateengine.Template,{
+    var templateEngineHandlebars = tplEngine.TemplateEngineHandlebars = oo.Class(oo.view.templateengine.Template,{
         constructor: function (options) {
             templateEngineHandlebars.Super.call(this, options);
         },

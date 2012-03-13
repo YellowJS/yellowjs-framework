@@ -9,7 +9,7 @@ var oo = (function (oo) {
     
     var Dom = oo.view.Dom, Touch = oo.core.Touch, Events = oo.core.mixins.Events, Button = oo.view.Button, ns = oo.getNS('oo.view');
 
-    var PagerPrevNext = ns.PagerPrevNext = my.Class(null, Events, {
+    var PagerPrevNext = ns.PagerPrevNext = oo.Class(null, Events, {
         buttonPrev : null,
         buttonNext : null,
         STATIC : {

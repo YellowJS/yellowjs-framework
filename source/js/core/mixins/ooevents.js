@@ -26,7 +26,7 @@
         return listenerConf;
     }
 
-    var Events = my.Class({
+    var Events = oo.Class({
         _getListenersArray : function _getListenersArray () {
             if (!this._listeners)
                 this._listeners = {};
