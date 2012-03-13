@@ -1,5 +1,5 @@
 oo.define({
-    "templateEngine": "handlebars",
+    //"templateEngine": "handlebars",
     "viewportSelector": "#viewport"
 });
 
