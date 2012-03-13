@@ -23,6 +23,10 @@
                 this._model = model;
             else
                 this._model = oo.createModel(model);
+
+            this._model.addListener(oo.data.Model.AFTER_FETCH, oo.createDelegate(function (datas) {
+                this.renderTo(this, datas);
+            }, this));
         },
         prepareData: function prepareData(data) {
             return data;
