@@ -37,13 +37,13 @@
 
             var conf = oo.override(defaultConf, config);
 
-            var req = oo.ajax(this._url, method, data, oo.createDelegate(function (rep) {
+            var req = oo.ajax().post(this._url, data, oo.createDelegate(function (rep) {
 
                 this._cacheProvider.save(data, function () {
                     conf.success.call(global, rep);
                 });
             }, this), conf.error);
-            req.send();
+            //req.send();
         },
         fetch: function fetch (config) {
 
@@ -61,7 +61,7 @@
 
             var conf = oo.override(defaultConf, config);
 
-            var req = oo.ajax(this._url, method, conf.params, oo.createDelegate(function (data) {
+            var req = oo.ajax().get(this._url, conf.params, oo.createDelegate(function (data) {
                 var _this = this;
                 this._cacheProvider.clearAll();
                 this._cacheProvider.save(data, function () {
@@ -70,7 +70,7 @@
                 });
 
             }, this), conf.error);
-            req.send();
+            //req.send();
                         
             // this._store.all(function (data) {
             //     callback.call(global, data);
