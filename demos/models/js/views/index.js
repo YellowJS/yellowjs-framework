@@ -8,7 +8,7 @@
             var list = oo.createElement('list', {
                 el : '#list',
                 template : doc.querySelector('#tpl-list').innerHTML,
-                model : app.model.mag,
+                model : oo.getModel('mag'),
                 refresh: function refresh(params){
                     //oo.getRouter().load("/index/criteria/all");
                 }
@@ -18,10 +18,11 @@
                 oo.getRouter().load('/index/article/id/'+key);
             });
 
-            app.model.mag.fetch(function(data){
-                list.render(data);
-            });
+            this.addEl(list);
 
+            // app.model.mag.fetch(function(data){
+            //     list.render(data);
+            // });
 
             /*var btnR = oo.createElement('button', {
                 el : "#refresh",

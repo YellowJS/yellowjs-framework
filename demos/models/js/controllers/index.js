@@ -8,7 +8,13 @@
                 //model.get('value');
             }*/
 
+            var p = v.getPanel('home');
+            p.addListener(oo.view.Panel.ON_SHOW, function () {
+                oo.getModel('mag').fetch();
+            });
+
             v.switchPanel('home', oo.view.Viewport.ANIM_LTR);
+
         },
         articleAction: function articleAction(params){
             
