@@ -4,6 +4,8 @@
     
     var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, {
         STATIC: {
+            APPEND : 'append',
+            PREPEND : 'prepend',
             register: function register (cls, codename) {
                 if (viewRepository[codename])
                     throw 'Already existing codename';
@@ -65,12 +67,16 @@
 
             return tplEng.render(tpl, data || {});
         },
-        renderTo: function renderTo (target, data, tpl) {
-            var content = this.render(data, tpl);
+        renderTo: function renderTo (target, data, tpl, position) {
+            var content = this.render(data, tpl),
+                currentTarget = target.find('#' + this.getId()) || target;
+
+            position = position || '';
+
             if (typeof content === 'string')
-                target.appendHtml(content);
+                currentTarget[position + (position ? 'H': 'h') + 'tml'](content);
             else
-                target.appendChild(content);
+                currentTarget.appendChild(content);
         },
         // do exactly the same thing as the oo.createElement, but add a prefix to the el property
         // in order to "scope" the newly created element into the current one
