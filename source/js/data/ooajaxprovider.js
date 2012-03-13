@@ -43,7 +43,7 @@
                     conf.success.call(global, rep);
                 });
             }, this), conf.error);
-            req.send();
+
         },
         fetch: function fetch (config) {
 
@@ -70,7 +70,6 @@
                 });
 
             }, this), conf.error);
-            req.send();
                         
             // this._store.all(function (data) {
             //     callback.call(global, data);
