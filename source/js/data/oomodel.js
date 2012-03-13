@@ -2,10 +2,24 @@
     
     var Provider = oo.data.Provider;
 
+    var _registry = {};
+
     var Model = oo.getNS('oo.data').Model = oo.Class(null, oo.core.mixins.Events,{
         STATIC : {
             AFTER_SAVE : 'AFTER_SAVE',
-            AFTER_FETCH : 'AFTER_FETCH'
+            AFTER_FETCH : 'AFTER_FETCH',
+            register : function register (model) {
+                if (!_registry.hasOwnProperty(model._name))
+                    _registry[model._name] = model;
+                else
+                    throw "Model already exists in registry";
+            },
+            get: function get (id) {
+                if (!_registry.hasOwnProperty(id))
+                    throw "No model registred with the given id";
+                else
+                    return _registry[id];
+            }
         },
         _data: null,
         _indexes: {
@@ -40,7 +54,7 @@
             var i, len = this._previouslyFetched.length, lenj = this._indexes.length;
             //transformer en tableau si key exist et !== key
             for(i=0 ; i<len ; i++){
-                for (ind in this._indexes){
+                for (var ind in this._indexes){
                     if("key" === ind && undefined === this._previouslyFetched[i][ind]){
                        this._previouslyFetched[i][ind] = oo.generateId();
                     }
