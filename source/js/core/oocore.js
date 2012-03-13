@@ -78,12 +78,16 @@ oo = pline = (function (window) {
                 return fn.apply(scope, arguments);
             };
         },
-        emptyFn: function emptyFn () { },
         /**
-         *
-         *  returns a unique identifier (by way of Backbone.localStorage.js)
-         *
-         **/
+         * empty function
+         * @return {void}
+         */
+        emptyFn: function emptyFn () { },
+
+        /**
+         * returns a unique identifier (by way of Backbone.localStorage.js)
+         * @return {String}
+         */
         generateId: function generateId (tagName) {
             var S4 = function () {
                 return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
@@ -94,6 +98,7 @@ oo = pline = (function (window) {
 
         /**
          * mix two object in one, the second override the first one
+         * @return {Object}
          */
         override: function override (obj, ext) {
             for (var prop in ext)
@@ -114,7 +119,7 @@ oo = pline = (function (window) {
                 Tmp.Super.call(this);
             };
 
-            var c = my.Class(oo.router.Controller, actions);
+            var c = oo.Class(oo.router.Controller, actions);
 
             return c;
         },
@@ -139,7 +144,7 @@ oo = pline = (function (window) {
             
         },
 
-        createPanel: function createPanel(panel) {
+        createPanel: function createPanel(panel, noRegister) {
             if (!(typeof panel == 'object' && 'id' in panel))
                 throw 'Wrong parameter';
 
@@ -151,12 +156,18 @@ oo = pline = (function (window) {
             };
             var p = oo.Class(oo.view.Panel, panel);
 
-            oo.getViewport().register(id, p);
+            if (noRegister !== true)
+                oo.getViewport().register(id, p);
 
             return p;
         },
         createModel : function createModel(model){
-            return new oo.data.Model(model);
+            var m = new oo.data.Model(model);
+            oo.data.Model.register(m);
+            return m;
+        },
+        getModel : function getModel(id){
+            return oo.data.Model.get(id);
         },
         createElement : function createElement(type, opt){
             return new ( oo.view.Element.get(type))(opt || null);

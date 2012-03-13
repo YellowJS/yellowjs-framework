@@ -8,7 +8,11 @@
  */
 (function (oo) {
 
-    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, {
+    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, oo.core.mixins.Events, {
+        STATIC : {
+            ON_SHOW: 'on_show',
+            ON_HIDE: 'on_hide'
+        },
         // references elements registered into this view
         _uiElements: {},
         constructor: function constructor() {
@@ -52,11 +56,12 @@
         show: function show(direction, params) {
             this.animShow();
             
+            // @todo : why? there is an event triggered few lines after
             if('onShow' in this && "function" === typeof this.onShow){
                 this.onShow(params);
             }
 
-            this.triggerEvent('onShow');
+            this.triggerEvent(Panel.ON_SHOW);
         },
         animShow: function animShow (direction) {
 
@@ -81,7 +86,7 @@
 
             this.animHide(direction);
 
-            this.triggerEvent('onHide');
+            this.triggerEvent(Panel.ON_HIDE);
         },
         animHide: function animHide (direction) {
             var Viewport = oo.view.Viewport, vp = oo.getViewport();

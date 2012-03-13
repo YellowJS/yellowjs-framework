@@ -86,10 +86,10 @@
             }
 
             this._structTpl = tpl;
-        },
-        render : function render(data,tpl){
-            this.appendHtml(List.Super.prototype.render.call(this, data,tpl));
-        }
+        }//,
+        // render : function render(data,tpl){
+        //     this.appendHtml(List.Super.prototype.render.call(this, data,tpl));
+        // }
     });
     
     oo.view.Element.register(List, 'list');

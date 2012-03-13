@@ -243,6 +243,7 @@
             return this._dom;
         },
         // find a child element of the current node according to the given selector
+        // @todo : shouldn't returnDom be called notReturnDom
         find : function find (selector, returnDom) {
             var n = this.getDomObject().querySelector(selector);
             if (null === n)
@@ -325,6 +326,16 @@
             this.getDomObject().innerHTML += html;
 
             return this;
+        },
+        prependHtml : function appendHtml (html) {
+            var h = this.getDomObject().innerHTML;
+            h = html + h;
+
+            return this;
+        },
+        html: function html (htmlString) {
+            this.clear();
+            this.appendHtml(htmlString);
         },
         removeChild : function removeChild(node){
             this.getDomObject().removeChild(node);
