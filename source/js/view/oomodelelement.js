@@ -4,7 +4,6 @@
 
     var ModelElement = oo.getNS('oo.view').ModelElement = oo.Class(oo.view.Element, {
         _model : null,
-
         constructor: function constructor (options) {
             if( options.hasOwnProperty('model') ){
                 this.setModel(options.model);
@@ -32,12 +31,15 @@
             return data;
         },
         render: function render (data, tpl) {
-            return ModelElement.Super.prototype.render.call(this, this.prepareData(data || {}));
+            if(!data){
+              tpl = this.getTemplateError();
+            }
+
+            return ModelElement.Super.prototype.render.call(this, this.prepareData(data || {}), tpl || null);
         },
         getModel : function getModel(){
             return this._model;
         }
-
     });
 
 })(oo);
