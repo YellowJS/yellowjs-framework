@@ -14,10 +14,12 @@
             ON_HIDE: 'on_hide'
         },
         // references elements registered into this view
-        _uiElements: {},
+        _uiElements: null,
         constructor: function constructor() {
 
             Panel.Super.call(this, {el: document.createElement('div')});
+
+            this._uiElements = {};
 
             if ('init' in this)
                 this.init();
