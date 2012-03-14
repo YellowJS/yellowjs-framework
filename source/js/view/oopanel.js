@@ -57,12 +57,6 @@
         },
         show: function show(direction, params) {
             this.animShow();
-            
-            // @todo : why? there is an event triggered few lines after
-            if('onShow' in this && "function" === typeof this.onShow){
-                this.onShow(params);
-            }
-
             this.triggerEvent(Panel.ON_SHOW);
         },
         animShow: function animShow (direction) {
