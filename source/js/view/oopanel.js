@@ -57,7 +57,7 @@
         },
         show: function show(direction) {
             this.animShow();
-            this.triggerEvent(Panel.ON_SHOW);
+            this.triggerEvent(Panel.ON_SHOW, [this]);
         },
         animShow: function animShow (direction) {
 
