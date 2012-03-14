@@ -55,7 +55,7 @@
             // for (var id in this._uiElements)
             //     this._uiElements[id].destroy();
         },
-        show: function show(direction, params) {
+        show: function show(direction) {
             this.animShow();
             this.triggerEvent(Panel.ON_SHOW);
         },
