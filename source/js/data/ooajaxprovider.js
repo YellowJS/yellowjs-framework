@@ -43,7 +43,6 @@
                     conf.success.call(global, rep);
                 });
             }, this), conf.error);
-
         },
         fetch: function fetch (config) {
 
