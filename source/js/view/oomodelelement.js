@@ -4,6 +4,13 @@
 
     var ModelElement = oo.getNS('oo.view').ModelElement = oo.Class(oo.view.Element, {
         _model : null,
+        _tplError: null,
+        setTemplateError : function setTemplateError(tpl){
+            this._tplError = tpl || '';
+        },
+        getTemplateError : function getTemplateError(){
+          return this._tplError;
+        },
         constructor: function constructor (options) {
             if( options.hasOwnProperty('model') ){
                 this.setModel(options.model);

@@ -38,7 +38,6 @@
         },
         
         _tpl : null,
-        _tplError: null,
         constructor: function constructor (options) {
             if(!options || typeof options != 'object')
                 throw "call Element constructor but \"options\" missing";
@@ -65,12 +64,6 @@
         },
         getTemplate : function getTemplate(){
           return this._tpl;
-        },
-        setTemplateError : function setTemplateError(tpl){
-            this._tplError = tpl || '';
-        },
-        getTemplateError : function getTemplateError(){
-          return this._tplError;
         },
         render: function render (data, tpl) {
 
