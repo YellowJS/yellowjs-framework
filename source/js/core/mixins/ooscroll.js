@@ -6,10 +6,6 @@
  */
 (function (oo) {
     
-    //var listeners = {};
-    
-    //var Events = {};
-    
     var global = this;
     
     var Scroll = oo.getNS('oo.core.mixins').Scroll = oo.Class({
