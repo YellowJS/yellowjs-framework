@@ -30,7 +30,7 @@
 
             IScroll.Super.call(this);
 
-            this._scroll = new iScroll(this.el.getId());
+            this._scroll = new iScroll(this.el.getId(), opt);
         },
         _isOoDom : function _isOoDom(){
             return this.el instanceof(oo.view.Dom);
