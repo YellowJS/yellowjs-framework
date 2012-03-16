@@ -9,6 +9,7 @@
     var global = this;
     
     var Scroll = oo.getNS('oo.core.mixins').Scroll = oo.Class({
+        isScrollable:false,
         _createScroll : function _createScoll (opt) {
             if (null === this.scroll){
                 if(undefined === opt){
@@ -26,6 +27,7 @@
         setScrollable : function setScrollable(opt){
             this.scroll = null;
             this.scroll = this._createScroll(opt);
+            this.isScrollable = true;
         }
     });
         

@@ -32,6 +32,9 @@
         },
         scrollTo : function scrollTo(){
             throw 'Can\'t be called directly from Scroll class';
+        },
+        refresh : function refresh(){
+            throw 'Can\'t be called directly from Scroll class';
         }
     });
 

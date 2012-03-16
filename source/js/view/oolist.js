@@ -6,7 +6,7 @@
         Scroll = oo.core.mixins.Scroll,
         ns = oo.getNS('oo.view');
     
-    var List = ns.List = oo.Class(oo.view.ModelElement, Scroll, {
+    var List = ns.List = oo.Class(oo.view.ModelElement, {
         STATIC: {
             EVT_RENDER: 'render',
             EVT_ITEM_PRESSED: 'item-pressed',
@@ -22,6 +22,9 @@
             List.Super.call(this, conf);
 
             this._initEvents();
+            if(conf.scrollable){
+                this.setScrollable(conf.scrollable);
+            }
         },
         setTemplate : function setTemplate(tpl){
             this._tpl = this._structTpl.replace('{{tpl}}', tpl || '');

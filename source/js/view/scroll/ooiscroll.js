@@ -34,6 +34,9 @@
         },
         _isOoDom : function _isOoDom(){
             return this.el instanceof(oo.view.Dom);
+        },
+        refresh : function refresh(){
+            this._scroll.refresh();
         }
     });
 

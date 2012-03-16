@@ -2,7 +2,7 @@
     var global = this,
         viewRepository = {};
     
-    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, {
+    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, oo.core.mixins.Scroll, {
         STATIC: {
             APPEND : 'append',
             PREPEND : 'prepend',
