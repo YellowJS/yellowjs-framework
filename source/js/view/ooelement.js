@@ -84,11 +84,13 @@
             if (opt.el)
                 opt.el = '#' + this.getId() + ' ' + opt.el;
             return oo.createElement(type, opt);
-        },
+        }
+        //deprecated
+        /*,
         setScrollable: function setScrollable (orientation) {
             //if (null === this.getDomObject.querySelector('.content'))
             var scroll = new oo.view.Scroll(this.getDomObject(), orientation, orientation);
-        }
+        }*/
     });
 
     oo.view.Element.register(Element, 'node');

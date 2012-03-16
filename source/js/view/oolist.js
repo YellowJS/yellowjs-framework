@@ -3,9 +3,10 @@
     // shorthand
     var Dom = oo.view.Dom,
         Touch = oo.core.Touch,
+        Scroll = oo.core.mixins.Scroll,
         ns = oo.getNS('oo.view');
     
-    var List = ns.List = oo.Class(oo.view.ModelElement, {
+    var List = ns.List = oo.Class(oo.view.ModelElement, Scroll, {
         STATIC: {
             EVT_RENDER: 'render',
             EVT_ITEM_PRESSED: 'item-pressed',

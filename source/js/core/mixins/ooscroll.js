@@ -9,13 +9,13 @@
     var global = this;
     
     var Scroll = oo.getNS('oo.core.mixins').Scroll = oo.Class({
-        _scroll : null,
         _createScroll : function _createScoll () {
-            if (null === this._scroll)
+            if (null === this.scroll)
                 return new (oo.view.scroll.Scroll.get(oo.getConfig('scroll')))();
         },
         setScrollable : function setScrollable(){
-            this._scroll = this._createScoll();
+            this.scroll = null;
+            this.scroll = this._createScroll();
         }
     });
         
