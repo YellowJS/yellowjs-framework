@@ -1,36 +1,36 @@
-describe("ootemplate.js", function() {
-    describe("add a second template with the same code name", function () {
+describe("ooscroll.js", function() {
+    describe("add a second scroll with the same code name", function () {
         
         it("should throw an error", function () {
-            expect(function () { oo.view.templateengine.Template.register(oo.view.templateengine.TemplateEngineMustache, 'mustache'); }).toThrow('Already existing codename');
+            expect(function () { oo.view.scroll.Scroll.register(oo.view.scroll.IScroll, 'iscroll'); }).toThrow('Already existing codename');
         });
 
     });
 
-    describe("try to get a template", function () {
+    describe("try to get a scroll", function () {
         
-        it("should return a templateEngineMustache", function () {
-            var cls = oo.view.templateengine.Template.get('mustache');
+        it("should return a IScroll", function () {
+            var cls = oo.view.scroll.Scroll.get('iscroll');
             var obj = new cls();
-            expect(obj instanceof oo.view.templateengine.TemplateEngineMustache).toBeTruthy();
+            expect(obj instanceof oo.view.scroll.IScroll).toBeTruthy();
         });
 
         it("should throw an error", function () {
-            expect(function () { oo.view.templateengine.Template.get('invalid-fake'); }).toThrow('Invalid codename');
+            expect(function () { oo.view.scroll.Scroll.get('invalid-scroll'); }).toThrow('Invalid codename');
         });
 
     });
 
     
 
-    describe("call forbiden method on Provider \"interface\"", function () {
+    describe("call forbiden method on Scroll \"interface\"", function () {
 
-        var p = new oo.view.templateengine.Template();
+        var p = new oo.view.scroll.Scroll();
 
-        describe("call render method", function () {
+        describe("call scrollTo method", function () {
         
             it("should throw an error", function () {
-                expect(function () { p.render(); }).toThrow();
+                expect(function () { p.scrollTo(); }).toThrow();
             });
 
         });
