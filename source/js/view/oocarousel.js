@@ -174,7 +174,7 @@ var oo = (function (oo) {
             var s = (id < this._activePanel ? +1 : -1 );
             this["_setTransition"+this._transitionType](id, s);
             
-            this.triggerEvent(Carousel.EVENT_GOTO, [this._newPanel]);
+            this.triggerEvent(Carousel.EVENT_GOTO, [this._newPanel, this._getItem(this._newPanel)]);
             this._updatePager(this._newPanel);
 
             if (this._newPanel === this._activePanel) {
