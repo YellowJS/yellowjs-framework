@@ -220,12 +220,12 @@
                 }
 
                 touchMoveTempo++;
-                // if (touchMoveTempo > 300) {
+                if (touchMoveTempo > 100) {
                     that._touchInterY = Touch.getPositionY(e);
                     that._touchInterX = Touch.getPositionX(e);
-                //     that._startTime = (new Date()).getTime();
-                //     touchMoveTempo = 0;
-                // }
+                    that._startTime = (new Date()).getTime();
+                    touchMoveTempo = 0;
+                }
 
                 e.preventDefault();
 
@@ -237,7 +237,7 @@
                 var stopTime = (new Date()).getTime();
                 var duration = stopTime - that._startTime;
                 var deceleration = 0.006;
-                var newTime = 500;
+                var newTime = 700;
 
                 function adjustPos (orientation) {
                     var cVal = that._content[['getTranslate', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](false, true);
