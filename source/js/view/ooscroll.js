@@ -285,19 +285,38 @@
             }, false);
         },
         scrollTo: function scrollTo (val, direction) {
-            var coord = {};
+            var coord = {}, scrollCoord = {};
             if (2 === arguments.length)
                 coord[(Scroll.VERTICAL == direction && (direction == this._orientation || this._orientation == Scroll.BOTH) ? 'y' : 'x')] = - val;
             else if (typeof val === 'object')
                 coord = val;
 
             if ('x' in coord || 'y' in coord) {
-                if ('x' in coord)
+                if ('x' in coord) {
                     coord.x = Math.max(Math.min(coord.x , 0), this._maxhTranslate);
-                if ('y' in coord)
+                    scrollCoord.x = this._determineScrollbarTranslate(coord.x, 'h');
+                }
+                if ('y' in coord) {
                     coord.y = Math.max(Math.min(coord.y , 0), this._maxvTranslate);
+                    scrollCoord.y = this._determineScrollbarTranslate(coord.y, 'v');
+                }
+
 
                 this._content.translateTo(coord, 1000);
+                this._vscrollbar.translateTo({y:scrollCoord.y},
+                                              1000,
+                                              function () {
+                                                that[scrollbar].stopAnimation();
+                                              },
+                                              'ease-out');
+                this._hscrollbar.translateTo({x:scrollCoord.x},
+                                              1000,
+                                              function () {
+                                                that[scrollbar].stopAnimation();
+                                              },
+                                              'ease-out');
+
+
             }
 
         },
