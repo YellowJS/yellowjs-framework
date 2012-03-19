@@ -53,9 +53,17 @@
                 delete options.template;
             }
 
+            if( options.hasOwnProperty('templateError') ){
+                this.setTemplateError(options.templateError);
+                delete options.templateError;
+            }
+
         },
         setTemplate : function setTemplate(tpl){
             this._tpl = tpl || '';
+        },
+        getTemplate : function getTemplate(){
+          return this._tpl;
         },
         render: function render (data, tpl) {
 

@@ -14,10 +14,12 @@
             ON_HIDE: 'on_hide'
         },
         // references elements registered into this view
-        _uiElements: {},
+        _uiElements: null,
         constructor: function constructor() {
 
             Panel.Super.call(this, {el: document.createElement('div')});
+
+            this._uiElements = {};
 
             if ('init' in this)
                 this.init();
@@ -53,15 +55,9 @@
             // for (var id in this._uiElements)
             //     this._uiElements[id].destroy();
         },
-        show: function show(direction, params) {
+        show: function show(direction) {
             this.animShow();
-            
-            // @todo : why? there is an event triggered few lines after
-            if('onShow' in this && "function" === typeof this.onShow){
-                this.onShow(params);
-            }
-
-            this.triggerEvent(Panel.ON_SHOW);
+            this.triggerEvent(Panel.ON_SHOW, [this]);
         },
         animShow: function animShow (direction) {
 

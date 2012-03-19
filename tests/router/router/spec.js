@@ -180,7 +180,7 @@ describe("oorouter.js", function() {
 
         var controller1 = oo.createController({c11Action: function(){console.log('c1');}});
         var controller2 = oo.createController({c22Action:function(){console.log('c2');}});
-        var controller3 = oo.createController({c33Action:function(){ console.log('c3'); newRouter.load('/ctl22/c22');}});
+        var controller3 = oo.createController({c33Action:function(){ console.log('c3'); /*newRouter.load('/ctl22/c22');*/}});
         var c = oo.createController({indexAction:function indexAction(){ }});
 
         newRouter.addController('IndexController',c);
@@ -199,5 +199,21 @@ describe("oorouter.js", function() {
         
         //expect(callback).toHaveBeenCalled();
         //expect(callback2).toHaveBeenCalled();
+    });
+    describe('back', function(){
+        it('should load the previous url', function(){
+            runs(function(){
+                var r = oo.getRouter();
+                r.load('/ctl11/c11');
+                r.load('/ctl22/c22');
+                //warning : dependencies with the previous test
+                r.back();
+            });
+            waits(1000);
+            runs(function(){
+                var url = window.location.href;
+                this.expect(url).toEqual("http://pline-reader.local/vendor/flavius/tests/router/router/runner.html#/ctl11/c11");
+            });
+        });
     });
 });
