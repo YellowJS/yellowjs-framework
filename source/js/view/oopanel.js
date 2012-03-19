@@ -21,7 +21,7 @@
 
             this._uiElements = {};
             var that = this;
-            window.addEventListener('orientationchange', that.refresh,false);
+            //window.addEventListener('orientationchange', that.refresh,false);
             
             if ('init' in this)
                 this.init();
@@ -70,7 +70,9 @@
             var anim_duration = 0;
             if (direction !== Viewport.NO_ANIM) {
                 // prepare transition
-                var translateDist = vp.getWidth() * (direction == Viewport.ANIM_RTL ? 1 : -1);
+                //vp.getWidth(false, true) :
+                //Warning : avoid the cached dom value cause bug in android navigator when orientationchange is fired
+                var translateDist = vp.getWidth(false, true) * (direction == Viewport.ANIM_RTL ? 1 : -1);
                 this.setTranslateX(translateDist);
                 anim_duration = Viewport.ANIM_DURATION;
             }
@@ -97,7 +99,9 @@
             }
 
             // transition
-            var translateDist = vp.getWidth() * (direction == Viewport.ANIM_RTL ? -1 : 1);
+            //vp.getWidth(false, true) :
+                //Warning : avoid the cached dom value cause bug in android navigator when orientationchange is fired
+            var translateDist = vp.getWidth(false, true) * (direction == Viewport.ANIM_RTL ? -1 : 1);
             var that = this;
             this.translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
                 that.setDisplay('none');
