@@ -32,6 +32,9 @@
 
             this._model.addListener(oo.data.Model.AFTER_FETCH, oo.createDelegate(function (datas) {
                 this.renderTo(this, datas);
+                if(this.isScrollable){
+                    this.scroll.refresh();
+                }
             }, this));
         },
         prepareData: function prepareData(data) {

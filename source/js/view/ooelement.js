@@ -2,7 +2,7 @@
     var global = this,
         viewRepository = {};
     
-    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, {
+    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, oo.core.mixins.Scroll, {
         STATIC: {
             APPEND : 'append',
             PREPEND : 'prepend',
@@ -92,11 +92,13 @@
             if (opt.el)
                 opt.el = '#' + this.getId() + ' ' + opt.el;
             return oo.createElement(type, opt);
-        },
+        }
+        //deprecated
+        /*,
         setScrollable: function setScrollable (orientation) {
             //if (null === this.getDomObject.querySelector('.content'))
             var scroll = new oo.view.Scroll(this.getDomObject(), orientation, orientation);
-        }
+        }*/
     });
 
     oo.view.Element.register(Element, 'node');

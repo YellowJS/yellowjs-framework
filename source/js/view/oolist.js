@@ -3,6 +3,7 @@
     // shorthand
     var Dom = oo.view.Dom,
         Touch = oo.core.Touch,
+        Scroll = oo.core.mixins.Scroll,
         ns = oo.getNS('oo.view');
     
     var List = ns.List = oo.Class(oo.view.ModelElement, {
@@ -21,6 +22,9 @@
             List.Super.call(this, conf);
 
             this._initEvents();
+            if(conf.scrollable){
+                this.setScrollable(conf.scrollable);
+            }
         },
         setTemplate : function setTemplate(tpl){
             this._tpl = this._structTpl.replace('{{tpl}}', tpl || '');

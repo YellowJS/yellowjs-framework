@@ -8,7 +8,7 @@
  */
 (function (oo) {
 
-    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, oo.core.mixins.Events, {
+    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, oo.core.mixins.Events, oo.core.mixins.Scroll, {
         STATIC : {
             ON_SHOW: 'on_show',
             ON_HIDE: 'on_hide'
