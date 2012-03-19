@@ -20,7 +20,9 @@
             Panel.Super.call(this, {el: document.createElement('div')});
 
             this._uiElements = {};
-
+            var that = this;
+            window.addEventListener('orientationchange', that.refresh,false);
+            
             if ('init' in this)
                 this.init();
         },
@@ -100,6 +102,11 @@
             this.translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
                 that.setDisplay('none');
             });
+        },
+        refresh: function refresh(){
+          var vp = oo.getViewport();
+          vp.getWidth(null, true);
+          vp.getHeight(null, true);
         }
     });
 
