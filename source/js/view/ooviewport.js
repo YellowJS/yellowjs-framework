@@ -69,6 +69,12 @@
                 this.showPanel(identifier, animDirection);
             }
         },
+        /**
+         * utility method to get an index from an string identifier
+         *
+         * @param  {string} identifier the panel string identifier
+         * @return {int}
+         */
         _identifierToIndex : function _identifierToIndex(identifier){
             var index;
             if (typeof identifier == 'string') {
@@ -76,9 +82,21 @@
             }
             return index;
         },
+        /**
+         * utility method to get an identifier from an index
+         *
+         * @param  {int} a panel index
+         * @return {string}
+         */
         _indexToIdentifier : function _indexToIdentifier(index){
            return this._panelsDic[index];
         },
+        /**
+         * Enable a Panel, trigger the rendering of the panel
+         *
+         * @param  {strinf} identifier the panel string identifier
+         * @return {void}
+         */
         _enablePanel : function _enablePanel(identifier){
             var index = this._identifierToIndex(identifier),
                 panel = this._panels[index];
@@ -92,6 +110,12 @@
 
             this._enabledPanels.push(index);
         },
+        /**
+         * return the current focused panel or its index in the panel repository
+         *
+         * @param  {bool} getIndex if true the returned value will be an index, else it will return the panel object itself
+         * @return {oo.view.Panel|int}
+         */
         getFocusedPanel : function getFocusedPanel(getIndex){
             index = this._focusedStack[this._focusedStack.length - 1];
             if (getIndex) {
@@ -100,24 +124,36 @@
                 return this.getPanel(this._indexToIdentifier(index));
             }
         },
+        /**
+         * returns true if the panel has already been enabled
+         *
+         * @param  {string} identifier the panel string identifier
+         * @return {bool}
+         */
         panelIsEnable : function panelIsEnable(identifier) {
            return (-1 != this._enabledPanels.indexOf(this._identifierToIndex(identifier)) ? true : false);
         },
+        /**
+         * remove a panel from the viewport and destroy it
+         *
+         * @param  {string} panel the panel string identifier
+         * @return {void}
+         */
         removePanel : function removePanel(panel) {
-           var index = this._identifierToIndex(panel);
+            var index = this._identifierToIndex(panel);
 
-           // event ?
-           this._panels[index].destroy();
+            // event ?
+            this._panels[index].destroy();
 
-           this._panels.slice(index, 1);
-           this._panelsDic.slice(index, 1);
+            this._panels.slice(index, 1);
+            this._panelsDic.slice(index, 1);
+            this._enabledPanels.slice(this._enabledPanels.indexOf(index), 1);
         },
         /**
          * show a panel with a optional animation
          *
-         * @param {string|int} the panel string identifier or index
+         * @param {string} the panel string identifier
          * @param {direction} Right To Left or Left To Right or no anim (use constant)
-         * @param params are data come from the model to be passed in the view
          **/
         showPanel : function showPanel(panelIdentifier, direction) {
             var p = this.getPanel(panelIdentifier);
@@ -132,16 +168,27 @@
             this._focusedStack.push(index);
 
         },
+        /**
+         * hide a panel with a optional animation
+         *
+         * @param {string|int} panelIdentifier the panel string identifier or index
+         * @param {direction} direction Right To Left (ANIM_RTL) or Left To Right (ANIM_LTR) or no anim (NO_ANIM)
+         * @param {bool} destroy destroy the panel or not (not implemented yet)
+         **/
         hidePanel : function hidePanel(panelIdentifier, direction, destroy) {
             direction = direction || Viewport.ANIM_RTL;
-
-            this.getPanel(panelIdentifier).hide(direction || Viewport.ANIM_RTL);
+            var p = this.getPanel(panelIdentifier);
+            
+            p.hide(direction || Viewport.ANIM_RTL);
 
             var index = this._identifierToIndex(panelIdentifier);
 
             if (index == this.getFocusedPanel(true)) {
                 this._focusedStack.pop();
             }
+
+            // if (destroy) {
+            // }
         },
         /**
          * show the newPanel and hide the oldPanel
@@ -196,10 +243,6 @@
         /**
          * @deprecated
          * DO NOT USE IT ANYMORE !!!
-         *
-         * @param  {[type]}   identifier [description]
-         * @param  {Function} fn         [description]
-         * @return {[type]}
          */
         show: function show (identifier, fn) {
             if (!this.hasPanel(identifier)) {
