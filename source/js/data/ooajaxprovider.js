@@ -45,6 +45,12 @@
             }, this), conf.error);
 
         },
+
+        /**
+         * perform an ajax GET request
+         * @param  {object|function} config if it is a function, it will be used as the success callback else it should be an object with the properties "success", "error", "params"
+         * @return {void}
+         */
         fetch: function fetch (config) {
 
             var method = 'GET';
@@ -86,60 +92,7 @@
         },
         clearAll: function clearAll () {
             this._clearCache = true;
-        }//,
-        // _buildReq: function _buildReq (url, method, params, successCallback, errorCallback) {
-        //     var req = this._getRequest(), _this = this;
-
-        //     req.addEventListener('readystatechange', function (e) {
-        //         if (e.target.readyState==4) {
-        //             if (e.target.status == 200) {
-                        
-        //                 // @todo : check against response content-type header to determine if is JSON formatted response
-        //                 var str = JSON.parse(e.target.responseText);
-                        
-        //                 successCallback.call(_this, str);
-        //             }
-        //             else
-        //                 errorCallback.call(_this);
-        //         }
-        //     });
-
-        //     var paramString = this._processParams(params), targetUrl = "" + url;
-        //     if (method == 'GET') {
-        //         targetUrl = url + '?' + paramString;
-        //     }
-
-        //     req.open(method, targetUrl);
-        //     if ('POST' == method)
-        //         this._setPostHeaders(req);
-
-        //     return {
-        //         send: function send(params) {
-        //             if ('POST' === method) {
-        //                 req.send(paramString);
-        //             }
-        //             else
-        //                 req.send();
-        //         }
-        //     };
-
-        // },
-        // _processParams: function _processParams (paramObj) {
-        //     var paramArrayString = [];
-        //     for (var prop in paramObj) {
-        //         paramArrayString.push(prop + '=' + encodeURI(paramObj[prop]));
-        //     }
-        //     return paramArrayString.join('&');
-        // },
-        // _getRequest: function _getRequest () {
-        //     return new XMLHttpRequest();
-        // },
-        // _setPostHeaders: function _setPostHeaders (req) {
-        //     req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        //     req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        //     // Unsafe header
-        //     // req.setRequestHeader('Connection', 'close');
-        // }
+        }
     });
 
     oo.data.Provider.register(AjaxProvider, 'ajax');

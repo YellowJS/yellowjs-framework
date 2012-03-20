@@ -31,7 +31,10 @@
 
             var paramString = this._processParams(params), targetUrl = "" + url;
             if (method == 'GET') {
-                targetUrl = url + '?' + paramString;
+                if (targetUrl.indexOf('?') === -1)
+                    targetUrl = url + '?' + paramString;
+                else
+                    targetUrl = url + '&' + paramString;
             }
 
             req.open(method, targetUrl);
@@ -39,7 +42,7 @@
                 this._setPostHeaders(req);
 
             return {
-                send: function send(params) {
+                send: function send() {
                     if ('POST' === method) {
                         req.send(paramString);
                     }
