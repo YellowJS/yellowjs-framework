@@ -119,13 +119,13 @@
          * @param {direction} Right To Left or Left To Right or no anim (use constant)
          * @param params are data come from the model to be passed in the view
          **/
-        showPanel : function showPanel(panelIdentifier, direction, params) {
+        showPanel : function showPanel(panelIdentifier, direction) {
             var p = this.getPanel(panelIdentifier);
             
             if (!this.panelIsEnable(panelIdentifier))
                 this._enablePanel(panelIdentifier);
 
-            p.show(direction || Viewport.ANIM_RTL, params);
+            p.show(direction || Viewport.ANIM_RTL);
 
             var index = this._identifierToIndex(panelIdentifier);
 
@@ -153,7 +153,7 @@
          * @param direction define an animation for both hide and show transitions (use constant)
          * @param params are data come from model to be passed at the view
          **/
-        switchPanel : function switchPanel(oldPanel, newPanel, direction, params) {
+        switchPanel : function switchPanel(oldPanel, newPanel, direction) {
             var dir, oldP, newP;
 
             if (arguments.length <= 2) {
@@ -166,7 +166,7 @@
                 dir = direction;
             }
                 
-            this.showPanel(newP, dir, params);
+            this.showPanel(newP, dir);
 
             if (oldP)
                 this.hidePanel(oldP, dir);

@@ -199,7 +199,9 @@
                 paramsUrl = [paramsUrl, '/', paramName, '/', params[paramName]].join('');
             }
             return [route.url, paramsUrl].join('');
-
+        },
+        back : function back(){
+            history.back();
         }
         
     });

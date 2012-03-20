@@ -2,7 +2,7 @@
     var global = this,
         viewRepository = {};
     
-    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, {
+    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, oo.core.mixins.Scroll, {
         STATIC: {
             APPEND : 'append',
             PREPEND : 'prepend',
@@ -50,12 +50,20 @@
                 delete options.template;
             }
 
+            if( options.hasOwnProperty('templateError') ){
+                this.setTemplateError(options.templateError);
+                delete options.templateError;
+            }
+
         },
         needToRender: function needToRender() {
             return this._needToRender;
         },
         setTemplate : function setTemplate(tpl){
             this._tpl = tpl || '';
+        },
+        getTemplate : function getTemplate(){
+          return this._tpl;
         },
         render: function render (data, tpl) {
 
@@ -84,11 +92,13 @@
             if (opt.el)
                 opt.el = '#' + this.getId() + ' ' + opt.el;
             return oo.createElement(type, opt);
-        },
+        }
+        //deprecated
+        /*,
         setScrollable: function setScrollable (orientation) {
             //if (null === this.getDomObject.querySelector('.content'))
             var scroll = new oo.view.Scroll(this.getDomObject(), orientation, orientation);
-        }
+        }*/
     });
 
     oo.view.Element.register(Element, 'node');

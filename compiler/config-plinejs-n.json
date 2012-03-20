@@ -18,10 +18,6 @@
                     "path" : "../source/js/vendor/"
                 },
                 {
-                    "text" : "handlebar.js",
-                    "path" : "../source/js/vendor/"
-                },
-                {
                     "text" : "lawnchair-0.6.1.min.js",
                     "path" : "../source/js/vendor/"
                 },
@@ -31,6 +27,10 @@
                 },
                 {
                     "text" : "ooevents.js",
+                    "path" : "../source/js/core/mixins/"
+                },
+                {
+                    "text" : "ooscroll.js",
                     "path" : "../source/js/core/mixins/"
                 },
                 {
@@ -90,10 +90,6 @@
                     "path" : "../source/js/view/"
                 },
                 {
-                    "text" : "ooscroll.js",
-                    "path" : "../source/js/view/"
-                },
-                {
                     "text" : "ooelement.js",
                     "path" : "../source/js/view/"
                 },
@@ -130,10 +126,6 @@
                     "path" : "../source/js/view/"
                 },
                 {
-                    "text" : "ooscroll.js",
-                    "path" : "../source/js/view/"
-                },
-                {
                     "text" : "oopopin.js",
                     "path" : "../source/js/view/"
                 },
@@ -144,6 +136,14 @@
                 {
                     "text" : "ooaccordion.js",
                     "path" : "../source/js/view/"
+                },
+                {
+                    "text" : "ooscroll.js",
+                    "path" : "../source/js/view/scroll/"
+                },
+                {
+                    "text" : "ooiscroll.js",
+                    "path" : "../source/js/view/scroll/"
                 }
             ]
         }

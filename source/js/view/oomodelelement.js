@@ -4,7 +4,13 @@
 
     var ModelElement = oo.getNS('oo.view').ModelElement = oo.Class(oo.view.Element, {
         _model : null,
-
+        _tplError: null,
+        setTemplateError : function setTemplateError(tpl){
+            this._tplError = tpl || '';
+        },
+        getTemplateError : function getTemplateError(){
+          return this._tplError;
+        },
         constructor: function constructor (options) {
             if( options.hasOwnProperty('model') ){
                 this.setModel(options.model);
@@ -26,18 +32,24 @@
 
             this._model.addListener(oo.data.Model.AFTER_FETCH, oo.createDelegate(function (datas) {
                 this.renderTo(this, datas);
+                if(this.isScrollable){
+                    this.scroll.refresh();
+                }
             }, this));
         },
         prepareData: function prepareData(data) {
             return data;
         },
         render: function render (data, tpl) {
-            return ModelElement.Super.prototype.render.call(this, this.prepareData(data || {}));
+            if(!data){
+              tpl = this.getTemplateError();
+            }
+
+            return ModelElement.Super.prototype.render.call(this, this.prepareData(data || {}), tpl || null);
         },
         getModel : function getModel(){
             return this._model;
         }
-
     });
 
 })(oo);

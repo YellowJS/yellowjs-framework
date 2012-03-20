@@ -12,7 +12,8 @@ oo = pline = (function (window) {
     var _globalConfig = {
         templateEngine: 'mustache',
         viewportSelector: 'body',
-        pushState : false
+        pushState : false,
+        scroll : 'iscroll'
     };
 
     return {
