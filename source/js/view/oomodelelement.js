@@ -17,6 +17,11 @@
                 delete options.model;
             }
 
+            if( options.hasOwnProperty('templateError') ){
+                this.setTemplateError(options.templateError);
+                delete options.templateError;
+            }
+
             ModelElement.Super.call(this, options);
 
         },
