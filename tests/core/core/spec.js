@@ -50,7 +50,7 @@ describe("oocore.js", function() {
 
     describe("createElement list", function(){
         it('list must be an instance of oo.view.List', function(){
-            var list = oo.createElement('list',{'target':'#test'});
+            var list = oo.createElement('list',{'el':'#test'});
             expect(list instanceof oo.view.List).toBeTruthy();
         });
     });
