@@ -14,6 +14,7 @@
     var Ajax = oo.getNS('oo.core.net').Ajax = oo.Class({
         buildReq: function _buildReq (url, method, params, successCallback, errorCallback) {
             var req = this._getRequest();
+            method = method.toUpperCase();
 
             req.addEventListener('readystatechange', function (e) {
                 if (e.target.readyState==4) {
