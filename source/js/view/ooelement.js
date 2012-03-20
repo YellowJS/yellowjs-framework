@@ -31,13 +31,10 @@
             templateEngine : null
         },
 
-        // read only property
         _needToRender: true,
-        needToRender: function needToRender() {
-            return this._needToRender;
-        },
         
         _tpl : null,
+        
         constructor: function constructor (options) {
             if(!options || typeof options != 'object')
                 throw "call Element constructor but \"options\" missing";
@@ -53,6 +50,9 @@
                 delete options.template;
             }
 
+        },
+        needToRender: function needToRender() {
+            return this._needToRender;
         },
         setTemplate : function setTemplate(tpl){
             this._tpl = tpl || '';
