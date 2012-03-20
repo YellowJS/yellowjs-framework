@@ -32,6 +32,7 @@
         },
         addEl: function addEl(el) {
             this._uiElements[el.getId()] = el;
+            el.setContainer(this);
         },
         // deprecated -> please use "addEl()" method instead
         register: function register(el) {
@@ -46,6 +47,15 @@
             this.appendHtml(Panel.Super.prototype.render.call(this, this._data));
 
             return this;
+        },
+        /**
+         * do exactly the same thing as the oo.view.Element.createElement and automatically add the created element to the current panel
+         * @see oo.view.Element.createElement
+         */
+        createElement: function createElement() {
+            var el = Panel.Super.prototype.createElement.apply(this, arguments);
+            this.addEl(el);
+            return el;
         },
         initElement: function initElement() {
             
