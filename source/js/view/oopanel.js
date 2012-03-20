@@ -15,6 +15,7 @@
         },
         // references elements registered into this view
         _uiElements: null,
+        _data: {},
         constructor: function constructor() {
 
             Panel.Super.call(this, {el: document.createElement('div')});
@@ -37,9 +38,12 @@
             oo.warn('the method oo.view.Panel.register() is deprecated, please use addEl instead');
             this.addEl(el);
         },
+        setData: function setData (data) {
+            this._data = data || {};
+        },
         render: function render() {
             this.classList.addClass('oo-panel');
-            this.appendHtml(Panel.Super.prototype.render.call(this));
+            this.appendHtml(Panel.Super.prototype.render.call(this, this._data));
 
             return this;
         },
