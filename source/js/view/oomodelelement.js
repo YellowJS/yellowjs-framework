@@ -42,6 +42,9 @@
                 }
             }, this));
         },
+        markAsError: function markAsError() {
+            this.renderTo(this._getContainer());
+        },
         prepareData: function prepareData(data) {
             return data;
         },
