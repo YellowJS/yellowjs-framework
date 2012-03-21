@@ -127,7 +127,7 @@ oo = pline = (function (window) {
         /**
          * create a controller from the class passed in parameter
          */
-        createController: function createController(actions) {
+        createController: function createController(actions, noRegister) {
             if(!actions && ( 'object' !== typeof actions)){
                 throw new Error('Wrong parameter');
             }
@@ -139,19 +139,36 @@ oo = pline = (function (window) {
 
             var c = oo.Class(oo.router.Controller, actions);
 
+            // if (!noRegister)
+            //     this.getRouter().addController(identifier, c);
+
             return c;
         },
-
+        /**
+         * make the router singleton instance accessible from anywhere
+         * @return {oo.router.Router}
+         */
         getRouter: function getRouter() {
             return oo.router.router || ( oo.router.router = new oo.router.Router());
         },
 
+        /**
+         * should not be called without a good reason ;)
+         * instanciate the singleton viewport's instance
+         *
+         * @param  {string} identifier css query qelector to define the root node of the viewport
+         * @return {oo.view.Viewport}
+         */
         initViewport: function initViewport(identifier) {
             var ns = this.getNS('oo.view'),
                 v = ns.viewport = new ns.Viewport(identifier);
             return v;
         },
-
+        /**
+         * get the singleton instance of the Viewport class
+         *
+         * @return {oo.view.Viewport}
+         */
         getViewport: function getViewport() {
             var ns = this.getNS('oo.view');
             if (ns.viewport) {
@@ -161,6 +178,14 @@ oo = pline = (function (window) {
             }
         },
 
+        /**
+         * create a panel class and register it into the viewport registry
+         * @todo  change the name of this method for a more consistent api - addPanel?
+         *
+         * @param  {object} panel      a litteral object that describe your panel class
+         * @param  {bool} noRegister   disable auto registering into the viewport
+         * @return {function}          the class of your panel - should not be used without a good reason ;)
+         */
         createPanel: function createPanel(panel, noRegister) {
             if (!(typeof panel == 'object' && 'id' in panel))
                 throw 'Wrong parameter';
@@ -178,14 +203,37 @@ oo = pline = (function (window) {
 
             return p;
         },
+
+        /**
+         * create a model object and register it, the return value should not be used directly
+         * @todo  add Model's config object documentation
+         *
+         * @param  {object} model key/value pair object to configure your model
+         * @return {oo.data.Model}
+         */
         createModel : function createModel(model){
             var m = new oo.data.Model(model);
             oo.data.Model.register(m);
             return m;
         },
+
+        /**
+         * get a model instance with ite registration id
+         *
+         * @param  {[type]} id [description]
+         * @return {[type]}    [description]
+         */
         getModel : function getModel(id){
             return oo.data.Model.get(id);
         },
+
+        /**
+         * create any UI element
+         *
+         * @param  {string} type the type of UI component you want to create
+         * @param  {object} opt  key/value pair to configure your UI component
+         * @return {oo.view.Element} an instance of the desired UI component class
+         */
         createElement : function createElement(type, opt){
             return new ( oo.view.Element.get(type))(opt || null);
         },
@@ -262,8 +310,8 @@ oo = pline = (function (window) {
             // ajax method
             if(0 === arguments.length)
                 return {
-                    post: function (url, params, successCallback, errorCallback) { oo.ajax(url, 'post', params, successCallback, errorCallback); },
-                    get: function (url, params, successCallback, errorCallback) { oo.ajax(url, 'get', params, successCallback, errorCallback); }
+                    post: function (url, parameters, successCallback, errorCallback) { oo.ajax(url, 'post', parameters, successCallback, errorCallback); },
+                    get: function (url, parameters, successCallback, errorCallback) { oo.ajax(url, 'get', parameters, successCallback, errorCallback); }
                 };
 
             if (null === this._ajaxRequestObject) {

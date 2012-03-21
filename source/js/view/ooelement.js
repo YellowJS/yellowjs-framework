@@ -109,12 +109,24 @@
             var content = this.render(data, tpl),
                 currentTarget = target.find('#' + this.getId()) || target;
 
-            position = position || '';
+            position = [Element.APPEND, Element.PREPEND].indexOf(position) !== -1 ? position : '';
 
+            var methodPrefix = 'append', methodSuffix = 'Child';
             if (typeof content === 'string')
-                currentTarget[position + (position ? 'H': 'h') + 'tml'](content);
-            else
-                currentTarget.appendChild(content);
+                methodSuffix = 'Html';
+
+            if ('' !== position)
+                methodPrefix = position;
+            else {
+                if ('Child' === methodSuffix)
+                    methodPrefix = 'append';
+                else
+                    methodSuffix = methodSuffix.toLowerCase();
+            }
+
+
+            currentTarget[methodPrefix + methodSuffix](content);
+
         },
         /**
          * do exactly the same thing as the oo.createElement, but add a prefix to the el property in order to "scope" the newly created element into the current one (for Dom query performance purpose)

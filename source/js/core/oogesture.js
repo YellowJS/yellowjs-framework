@@ -2,7 +2,7 @@
  * Contains class for gesture management
  *
  * @class Gesture
- * @namespace oo
+ * @namespace oo.core
  *
  * @author Claire Sosset <claire.sosset@gmail.com> || @claire_so
  */

@@ -12,6 +12,16 @@
     var global = this;
     
     var Ajax = oo.getNS('oo.core.net').Ajax = oo.Class({
+        /**
+         * create a ajax request object
+         *
+         * @param  {string} url               the target url
+         * @param  {string} method            the hhtp method 'get' or 'post'
+         * @param  {object} params            parameters to send
+         * @param  {function} successCallback callback function in case of success
+         * @param  {function} errorCallback   callback function in case of error
+         * @return {object}                   an object with only one method "send"
+         */
         buildReq: function _buildReq (url, method, params, successCallback, errorCallback) {
             var req = this._getRequest();
             method = method.toUpperCase();
@@ -52,9 +62,20 @@
                 }
             };
         },
+        /**
+         * get a native XMLHttpRequest
+         *
+         * @return {XMLHttpRequest}
+         */
         _getRequest: function _getRequest () {
             return new XMLHttpRequest();
         },
+        /**
+         * converts an object to a string http protocol compliant
+         *
+         * @param  {object} paramObj a key/value object
+         * @return {string}
+         */
         _processParams: function _processParams (paramObj) {
             var paramArrayString = [];
             for (var prop in paramObj) {
@@ -62,6 +83,10 @@
             }
             return paramArrayString.join('&');
         },
+        /**
+         * add the http headers needed to build a proper "post request"
+         * @param {[type]} req [description]
+         */
         _setPostHeaders: function _setPostHeaders (req) {
             req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

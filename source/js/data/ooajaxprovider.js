@@ -4,7 +4,7 @@
     var AjaxProvider = ns.AjaxProvider = oo.Class(oo.data.Provider, {
         _store: {},
         _cacheProvider: null,
-        _clearCache: true,
+        _cacheCleared: true,
         _url: null,
         constructor: function constructor (options) {
 
@@ -66,11 +66,18 @@
 
             var conf = oo.override(defaultConf, config);
 
+            // conf.params.toString = function () {
+            //     var str = '';
+            //     for (var p in this)
+            //         str += p + '=' + this[p];
+            //     return str;
+            // };
+
             var req = oo.ajax().get(this._url, conf.params, oo.createDelegate(function (data) {
-                var _this = this;
+                var that = this;
                 this._cacheProvider.clearAll();
                 this._cacheProvider.save(data, function () {
-                    _this._clearCache = false;
+                    that._cacheCleared = false;
                     conf.success.call(global, data);
                 });
 
@@ -81,16 +88,16 @@
             // });
         },
         get: function get (cond, callback) {
-            var _this = this;
-            if (this._clearCache)
+            var that = this;
+            if (this._cacheCleared)
                 this.fetch(function (data) {
-                    _this._cacheProvider.get(cond, callback);
+                    that._cacheProvider.get(cond, callback);
                 });
             else
                 this._cacheProvider.get(cond, callback);
         },
         clearAll: function clearAll () {
-            this._clearCache = true;
+            this._cacheCleared = true;
         }
     });
 
