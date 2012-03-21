@@ -76,19 +76,37 @@
             }, this);
             this._buildFullIndexes();
         },
+        _resetIndexes: function _resetIndexes() {
+            var indexedField = Object.getOwnPropertyNames(this._indexes);
+            this.setIndexes(indexedField);
+        },
         _buildIndex: function _buildIndex(obj) {
-            var indexedField = this_indexes.getOwnPropertyNames();
+            var indexedField = Object.getOwnPropertyNames(this._indexes);
             indexedField.forEach(function (field) {
                 if (obj[field]) {
-                    var pos = this._indexes[field][obj[field]];
-                    if (!pos)
-                        pos = [];
+                    if (!this._indexes[field][obj[field]])
+                        this._indexes[field][obj[field]] = [];
 
-                    pos.push(obj);
+                    this._indexes[field][obj[field]].push(obj);
+                }
+            }, this);
+        },
+        _removeFromIndex: function _removeFromIndex(obj) {
+            var indexedField = Object.getOwnPropertyNames(this._indexes);
+            indexedField.forEach(function (field) {
+                if (obj[field]) {
+                    this._indexes[field][obj[field]].slice(this._indexes[field][obj[field]].indexOf(obj), 1);
+                    if (0 === this._indexes[field][obj[field]].length) {
+                        this._indexes[field].slice(this._indexes[field].indexOf(obj[field]), 1);
+                    }
                 }
             }, this);
         },
 
+        /**
+         * @deprecated
+         * @see _buildFullIndexes
+         */
         _createIndexes: function _createIndexes() {
             return _buildFullIndexes();
         },
@@ -116,7 +134,6 @@
             }
 
             callback = oo.override(defaultConf, callback);
-
 
             var that = this,
                 cb = function cb(data){
@@ -151,6 +168,7 @@
         },
         clearAll : function clearAll(){
             this._data = [];
+            this._resetIndexes();
         },
 
 
@@ -177,7 +195,7 @@
             return values;
         },
         getBy: function getBy(index, key) {
-            var values = this.filterBy.apply(this, arguments);
+            var values = this.filterBy(index, key);
             if (values.length)
                 return values[0];
             else
@@ -204,16 +222,19 @@
             if (null === row) {
                 this.add(obj);
             } else {
+                this._removeFromIndex(row);
                 row = oo.override(row, obj);
+                this._buildIndex(row);
             }
         },
-        add: function ads(obj) {
+        add: function add(obj) {
             if (!obj.hasOwnProperty('key')) {
                 obj.key = oo.generateId();
             } else if (null !== this.get(obj.key))
                 throw "Trying to add a record with an already existing id";
 
             this._data.push(obj);
+            this._buildIndex(obj);
         }
     });
     
