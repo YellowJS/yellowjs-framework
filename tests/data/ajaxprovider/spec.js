@@ -23,11 +23,9 @@ describe("ooAjaxProvider.js", function() {
 
     describe("methods", function () {
         
-        var errorCb, successCb, p;
+        var p;
 
         beforeEach(function () {
-            successCb = jasmine.createSpy();
-            errorCb = jasmine.createSpy();
 
             p = new Cls({name: 'toto', url: 'toto.php', cacheProvider: 'local'});
             p.clearAll();
@@ -36,23 +34,36 @@ describe("ooAjaxProvider.js", function() {
         describe ("fetch", function () {
 
             it('should fetch and return data', function () {
-                p.fetch({
-                    success: function (data) {
-                        successCb();
-                        console.log(data);
-                    },
-                    //error: errorCb,
-                    params: {'param1': 'value', 'bool': true, 'int': 3}
+                runs(function () {
+
+                    this.errorCb = jasmine.createSpy();
+                    var successCb = this.successCb = jasmine.createSpy();
+
+                    p.fetch({
+                        success: function (data) {
+                            successCb();
+                            console.log(data);
+                        },
+                        //error: errorCb,
+                        params: {'param1': 'value', 'bool': true, 'int': 3}
+                    });
+                });
+
+                waits(1500);
+
+                runs(function () {
+                    expect(this.successCb).wasCalled();
                 });
                 
                 // check where is the bug...
-                //expect(successCb).wasCalled();
                 //expect(errorCb).wasCalled();
             });
 
         });
 
         describe ("save", function () {
+
+            var errorCb = jasmine.createSpy(), successCb = jasmine.createSpy();
 
             it ("should save values", function () {
                 p.save({key:'key3', value:'value3'}, successCb /*function() {
@@ -67,20 +78,57 @@ describe("ooAjaxProvider.js", function() {
 
         describe ("get", function () {
 
-            it ("should return the value store in the provider cache", function () {
-                // by this way, force the get method to be called after a feth method has been previously called
-                p.fetch();
+            var errorCb = jasmine.createSpy(), successCb = jasmine.createSpy();
 
-                setTimeout(function () {
+            it ("should return the value store in the provider cache", function () {
+                // by this way, force the get method to be called after a fetch method has been previously called
+                runs(function () {
+                    p.fetch();
+                });
+
+                waits(1500);
+
+                runs(function () {
                     p.get(1, function(row) {
                         expect(row.firstname).toEqual('claire');
-                        // don't know why the test won't work...
-                        // so use the following workaround
-                        if (row.firstname !== 'claire')
-                            throw "expect " + row.firstname + "to equal \"claire\"";
                     });
-                }, 1000);
+                });
             });
+        });
+
+        describe ("fetch form cache", function () {
+
+            it('should fetch and return data', function () {
+                runs(function () {
+                    p.fetch({
+                        params: {'param1': 'value', 'bool': true, 'int': 3}
+                    });
+                });
+
+                waits(1500);
+
+                runs(function () {
+
+                    this.errorCb = jasmine.createSpy();
+                    var successCb = this.successCb = jasmine.createSpy();
+
+                    p.fetch({
+                        success: function (data) {
+                            successCb();
+                            console.log(data);
+                        },
+                        //error: errorCb,
+                        params: {'param1': 'value', 'bool': true, 'int': 3}
+                    });
+                });
+
+                waits(200);
+
+                runs(function () {
+                    expect(this.successCb).wasCalled();
+                });
+            });
+
         });
 
     });
