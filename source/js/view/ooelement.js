@@ -109,13 +109,11 @@
             var content = this.render(data, tpl),
                 currentTarget = target.find('#' + this.getId()) || target;
 
-            position = [Element.APPEND, Element.PREPEND].indexOf(position) !== -1 ? position : '';
-
-            var methodPrefix = 'append', methodSuffix = 'Child';
+            var methodPrefix = '', methodSuffix = 'Child';
             if (typeof content === 'string')
                 methodSuffix = 'Html';
 
-            if ('' !== position)
+            if ([Element.APPEND, Element.PREPEND].indexOf(position) !== -1)
                 methodPrefix = position;
             else {
                 if ('Child' === methodSuffix)
