@@ -40,12 +40,12 @@
                 }
             });
 
-            var paramString = this._processParams(params), targetUrl = "" + url;
-            if (method == 'GET') {
+            var paramString = this._processParams(params), targetUrl = url;
+            if (method == 'GET' && '' !== paramString) {
                 if (targetUrl.indexOf('?') === -1)
-                    targetUrl = url + '?' + paramString;
+                    targetUrl += ('?' + paramString);
                 else
-                    targetUrl = url + '&' + paramString;
+                    targetUrl += ('&' + paramString);
             }
 
             req.open(method, targetUrl);
@@ -62,6 +62,7 @@
                 }
             };
         },
+
         /**
          * get a native XMLHttpRequest
          *
@@ -70,6 +71,7 @@
         _getRequest: function _getRequest () {
             return new XMLHttpRequest();
         },
+
         /**
          * converts an object to a string http protocol compliant
          *
@@ -77,12 +79,9 @@
          * @return {string}
          */
         _processParams: function _processParams (paramObj) {
-            var paramArrayString = [];
-            for (var prop in paramObj) {
-                paramArrayString.push(prop + '=' + encodeURI(paramObj[prop]));
-            }
-            return paramArrayString.join('&');
+            return oo.serialize(paramObj);
         },
+        
         /**
          * add the http headers needed to build a proper "post request"
          * @param {[type]} req [description]

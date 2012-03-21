@@ -322,9 +322,25 @@ oo = pline = (function (window) {
             req.send();
 
         },
+        
         _convertNodeListToArray : function _convertNodeListToArray(nL){
             return Array.prototype.slice.call(nL, 0);
+        },
+
+        /**
+         * utility method that converts an object to a string (http protocol compliant)
+         *
+         * @param  {object} paramObj a key/value object
+         * @return {string}
+         */
+        serialize: function _processParams (paramObj) {
+            var paramArrayString = [];
+            for (var prop in paramObj) {
+                paramArrayString.push(prop + '=' + encodeURI( (typeof paramObj[prop] == 'object' ? paramObj[prop].toString() : paramObj[prop]) ));
+            }
+            return paramArrayString.join('&');
         }
+
     };
 
 })(window);
