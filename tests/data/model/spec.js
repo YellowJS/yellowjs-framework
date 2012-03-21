@@ -1,23 +1,23 @@
 describe("oomodel.js", function() {
 
-    var provider = new oo.data.FakeProvider({
-        "name" : "bar"
+    var provider, model;
+
+    beforeEach(function () {
+
+        provider = new oo.data.FakeProvider({
+            "name" : "bar"
+        });
+
+        model = oo.createModel({
+            name : 'post-model',
+            provider: provider
+        });
+
     });
 
-
-    var model = oo.createModel({
-        name : 'post-model',
-        provider: provider
+    afterEach(function () {
+        oo.data.Model.unregister('post-model');
     });
-
-    //must be changed later due to async
-    var dataProvider;
-
-    provider.fetch({success:function(datas){
-        dataProvider = datas;
-    }});
-
-
 
     describe("constructor", function() {
         it('model._id must be equal to "post-model"',function(){
@@ -29,188 +29,179 @@ describe("oomodel.js", function() {
         });
     });
 
-    describe("fetch", function() {
-        var callback = jasmine.createSpy();
-        model.fetch(callback);
-        it('function callback must be executed',function(){
-           expect(callback).toHaveBeenCalled();
-        });
-    });
+    describe("attribute manipulation method", function () {
 
-    describe("save", function() {
-        describe("save with good conf", function() {
-            var obj = {
-                'title' : 'Mon post',
-                'content' : 'Mon article'
-            };
+        describe("setProvider", function () {
+            it ("should update the internal provider", function () {
+                var p =  new oo.data.FakeProvider({
+                    "name" : "foo"
+                });
+                model.setProvider(p);
 
-            it('obj must be in datas provider',function(){
-                var datasP;
-                model.save(obj);
-                provider.fetch({success:function(datas){
-                    dataProvider = datas;
-                    expect(dataProvider).toContain(obj);
-                }});
+                expect(model._provider._name).toEqual('foo');
             });
+        });
+        describe("getModelName", function () {
+            it("should return the name of the model", function() {
+                expect(model.getModelName()).toEqual('post-model');
+            });
+        });
+        describe("setModelName", function () {
+            it("should change the model name", function() {
+                model.setModelName('model2');
+                expect(model.getModelName()).toEqual('model2');
+            });
+        });
 
-            describe("save with callback", function() {
-                var callback = jasmine.createSpy();
-                model.save(obj, callback);
-                it("function callback must be executed", function(){
-                    expect(callback).toHaveBeenCalled();
+        describe('indexes management methods', function () {
+            describe('setIndexes', function () {
+                it('should have an index on firstname', function () {
+                    model.setIndexes(['firstname']);
+
+                    expect(typeof model._indexes.firstname).toEqual('object');
                 });
             });
-        });
 
-        describe("save with wrong conf", function() {
-            it('obj must exit',function(){
-                expect(function(){
-                    model.save();
-                }).toThrow();
+            describe('_resetIndexes', function () {
+                it('should have an empty index on firstname', function () {
+                    model.setIndexes(['firstname']);
+
+                    model._indexes.firstname = 'toto';
+
+                    model._resetIndexes();
+
+                    expect(typeof model._indexes.firstname).toEqual('object');
+                });
             });
 
-            it('obj must be an object',function(){
-                expect(function(){
-                    model.save("toto");
-                }).toThrow();
+            describe('_buildIndex', function () {
+                it('should have an filled index on firstname', function () {
+                    model.setIndexes(['firstname']);
+
+                    var content = {'firstname': 'toto'};
+                    model._buildIndex(content);
+
+                    expect(typeof model._indexes.firstname).toEqual('object');
+                });
+            });
+
+            describe('_removeFromIndex', function () {
+                it('should have an filled index on firstname', function () {
+                    model.setIndexes(['firstname']);
+
+                    var content = {'firstname': 'toto'};
+                    model._buildIndex(content);
+
+                    model._removeFromIndex(content);
+
+                    expect(model._indexes.firstname.toto[0]).toEqual(content);
+                });
+            });
+
+        });
+
+    });
+
+    describe("data manipulation method", function () {
+        var callback = jasmine.createSpy();
+
+        describe("fetch", function() {
+            it('should execute the callback',function(){
+                model.fetch(callback);
+
+                expect(callback).toHaveBeenCalled();
+            });
+
+            it('should have the right number of records', function() {
+                model.fetch(callback);
+
+                expect(model._data.length).toEqual(114);
+
+                model.fetch(callback, true);
+
+                expect(model._data.length).toEqual(218);
+            });
+
+            it ('should trigger the AFTER_FETCH event', function () {
+                model.addListener(oo.data.Model.AFTER_FETCH, callback);
+
+                expect(callback).toHaveBeenCalled();
             });
         });
-    });
 
-    describe('get/set ModelName', function(){
-        var model2 = oo.createModel({
-            name : "modelname",
-            provider : {
-                type: "fake"
-            }
-        });
+        describe("save", function() {
+            it("should have the same data", function () {
+                model.fetch();
+                model.save();
 
-        var name = model2.getModelName();
-        it( 'must return the name of the model', function(){
-          expect(name).toBe("modelname");
-        });
+                for(var i=0, len=model.getData().length; i<len; i++) {
+                    expect(model.getData()[i].key).toEqual(model._provider._data[i].key);
+                }
+            });
 
-        model2.setModelName('newname');
-        it('model name must have been changed', function(){
-            var name = model2.getModelName();
-            expect(name).toBe('newname');
-        });
-    });
+            it('should execute the callback', function () {
+                model.save(callback);
+                expect(callback).toHaveBeenCalled();
+            });
 
-    describe('get(id)', function(){
-        var model = oo.createModel({
-            "name" : "modelajax",
-            "provider": {
-                "type" : "fake"
-            },
-            "indexes" : ["firstname"]
-        });
-
-        //simulate fetch
-        model.fetch(function(data){
+            it('should trigger the AFTER_SAVE event', function () {
+                model.addListener(oo.data.Model.AFTER_SAVE, callback);
+                model.save();
+                expect(callback).toHaveBeenCalled();
+            });
 
         });
 
-        it('errors in key', function(){
-            expect(function(){
-                var item = model.get();
-            }).toThrow("Missing key or key must\'t be an object");
+        describe("filterBy", function () {
+            describe("filter on an indexed field", function () {
+                it ("should return one record", function() {
+                    model.setIndexes(['firstname']);
+                    model.fetch();
 
-            expect(function(){
-                var item = model.get({});
-            }).toThrow("Missing key or key must\'t be an object");
+                    var result = model.filterBy('firstname', 'toto');
+
+                    expect(result.length).toEqual(1);
+                });
+
+                it ("should return several records", function() {
+                    model.setIndexes(['firstname']);
+                    model.fetch();
+
+                    var result = model.filterBy('firstname', 'gg');
+
+                    expect(result.length).toEqual(7);
+                });
+            });
+
+            describe("filter on a non indexed field", function () {
+                it ("should return one record", function() {
+                    model.fetch();
+
+                    var result = model.filterBy('firstname', 'toto');
+
+                    expect(result.length).toEqual(1);
+                });
+
+                it ("should return several record", function() {
+                    model.fetch();
+
+                    var result = model.filterBy('firstname', 'gg');
+
+                    expect(result.length).toEqual(7);
+                });
+
+            });
         });
 
-        it('must return good item', function(){
-            var data = model.get(7);
-            expect(data.key).toBe(7);
-        });
-    });
+        describe("get", function () {
+            it ("should return one record", function() {
+                model.fetch();
+                var result = model.get(7);
+                expect(typeof result).toEqual('object');
 
-    describe('getBy', function(){
-        var model = oo.createModel({
-            "name" : "modelajax",
-            "provider": {
-                "type" : "fake"
-            },
-            "indexes" : ["firstname"]
-        });
-
-        //simulate fetch
-        model.fetch(function(data){
-
-        });
-
-        it('params must exist', function(){
-            expect(function(){
-                var item = model.getBy();
-            }).toThrow('Missing params index or key');
-
-            expect(function(){
-                var item = model.getBy('ml');
-            }).toThrow('Missing params index or key');
-
-            expect(function(){
-                var item = model.getBy(undefined, 'ml');
-            }).toThrow('Missing params index or key');
-        });
-
-        it('first param must be a string', function(){
-            expect(function(){
-                var item = model.getBy(10, "ok");
-            }).toThrow('Param index must be a string');
-            expect(function(){
-                var item = model.getBy( {}, "ok");
-            }).toThrow('Param index must be a string');
-        });
-
-        it('must return the good item', function(){
-            var item = model.getBy("firstname", "claire");
-            expect(item.firstname).toBe("claire");
-        });
-
-        it('must return error when index used are not been declared', function(){
-            expect(function(){
-                var item = model.getBy('title', 'article 10');
-            }).toThrow('Index are not been declared');
-        });
-
-        it('must return null when no matched', function(){
-            expect(model.get(100)).toBe(null);
-            expect(model.getBy("firstname", "clairedfkgldfjglkdfj")).toBe(null);
-        });
-    });
-
-    describe('set', function(){
-        var model = oo.createModel({
-            "name" : "modelajax",
-            "provider": {
-                "type" : "fake"
-            },
-            "indexes" : ["firstname"]
-        });
-
-        //simulate fetch
-        model.fetch(function(data){});
-        it('parameter must exist', function(){
-            expect(function(){
-                model.set();
-            }).toThrow('Parameter must exist and be an object');
-
-            expect(function(){
-                model.set("kljlkj");
-            }).toThrow('Parameter must exist and be an object');
-        });
-
-        it('new item must be saved', function(){
-            var nItem = {'key':60, "firstname":"new item", "nickname":"toto"};
-            model.set(nItem);
-            model.fetch(function(data){});
-
-            var rItem = model.get(60);
-            expect(rItem.key).toBe(60);
-            expect(rItem.firstname).toBe("new item");
-            expect(rItem.nickname).toBe("toto");
+                expect(result.key).toEqual(7);
+                expect(result.firstname).toEqual('gg');
+            });
         });
     });
 });
