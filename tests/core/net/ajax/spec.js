@@ -1,4 +1,4 @@
-describe("oocore.js", function() {
+describe("ooajax.js", function() {
 
     describe ("_processParams", function () {
         it ('should convert object into url encoded string', function () {
@@ -22,22 +22,30 @@ describe("oocore.js", function() {
 
             var success = jasmine.createSpy();
 
-            oo.ajax().post('ajax-json.json', {}, function () {
-                console.log('success ajax');
-                success();
-            }, oo.emptyFn);
-            expect(success).wasCalled();
+            runs(function () {
+                oo.ajax().post('ajax-json.json', {}, success, oo.emptyFn);
+            });
+
+            waits(500);
+
+            runs(function () {
+                expect(success).wasCalled();
+            });
         });
 
         it ("should call the error callback", function () {
 
             var error = jasmine.createSpy();
 
-            oo.ajax().post('ajax-json.jsn', {}, oo.emptyFn, function () {
-                console.log('error ajax');
-                error();
+            runs(function () {
+                oo.ajax().post('ajax-json.jsn', {}, oo.emptyFn, error);
             });
-            expect(error).wasCalled();
+
+            waits(500);
+
+            runs(function () {
+                expect(error).wasCalled();
+            });
         });
 
     });
