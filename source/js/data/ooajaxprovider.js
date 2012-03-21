@@ -96,6 +96,7 @@
                 params: {}
             };
 
+            config = config || {};
             if (typeof config == 'function') {
                 config = {success: config};
             }
