@@ -118,8 +118,11 @@ oo = pline = (function (window) {
          * @return {object}
          */
         override: function override (obj, ext) {
-            for (var prop in ext)
-                obj[prop] = ext[prop];
+            var propNames = Object.getOwnPropertyNames(ext);
+            propNames.forEach(function(name){
+                var desc = Object.getOwnPropertyDescriptor(ext, name);
+                Object.defineProperty(obj, name, desc);
+            });
 
             return obj;
         },
