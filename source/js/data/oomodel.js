@@ -146,7 +146,7 @@
                     if (callback.success)
                         callback.success.call(that);
 
-                    that.triggerEvent(Model.AFTER_FETCH, that);
+                    that.triggerEvent(Model.AFTER_FETCH, [that]);
                 };
 
             this._provider.fetch({success: cb, params: callback.params});
