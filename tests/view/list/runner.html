@@ -18,12 +18,13 @@
   <script type="text/javascript" src="../../../source/js/vendor/mustache.js"></script>
   <script type="text/javascript" src="../../../source/js/core/oocore.js"></script>
   <script type="text/javascript" src="../../../source/js/core/mixins/ooevents.js"></script>
+  <script type="text/javascript" src="../../../source/js/core/mixins/ooscroll.js"></script>
   <script type="text/javascript" src="../../../source/js/core/ootouch.js"></script>  
   <script type="text/javascript" src="../../../source/js/view/oodom.js"></script>
   <script type="text/javascript" src="../../../source/js/view/ooelement.js"></script>
   <script type="text/javascript" src="../../../source/js/view/oomodelelement.js"></script>  
   <script type="text/javascript" src="../../../source/js/data/ooprovider.js"></script>
-  <script type="text/javascript" src="../../../source/js/data/oofakeprovider.js"></script>
+  <script type="text/javascript" src="../../assets/oofakeprovider.js"></script>
   <script type="text/javascript" src="../../../source/js/data/oomodel.js"></script>
   <script type="text/javascript" src="../../../source/js/view/oolist.js"></script>
   <script type="text/javascript" src="../../../source/js/view/templateengine/ootemplate.js"></script>
@@ -60,12 +61,21 @@
       })();
     </script>
 
+    <style>
+      #container {
+        height: 300px;
+        overflow: auto;
+      }
+    </style>
+
   </head>
 
   <body>
       <div id="domtest"></div>
       <div id="another-dom-test"></div>
-      <div id="target"></div>
+      <div id="container">
+        <div id="target"></div>
+      </div>
       <!-- include spec files here... -->
        <script type="text/javascript" src="spec.js"></script>
   </body>

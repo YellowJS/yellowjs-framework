@@ -1,59 +1,86 @@
 (function (oo) {
 
     // shorthand
-    var Dom = oo.view.Dom,
-        Touch = oo.core.Touch,
-        Scroll = oo.core.mixins.Scroll,
-        ns = oo.getNS('oo.view');
+    var Touch = oo.core.Touch;
     
-    var List = ns.List = oo.Class(oo.view.ModelElement, {
+    var List = oo.getNS('oo.view').List = oo.Class(oo.view.ModelElement, {
         STATIC: {
-            EVT_RENDER: 'render',
             EVT_ITEM_PRESSED: 'item-pressed',
             EVT_ITEM_RELEASED: 'item-released'
         },
-        _structTpl: '<ul>{{#data}}<li data-id="{{key}}" class="oo-list-item">{{tpl}}</li>{{/data}}</ul>',
+        _structTpl: '',
         _touchedItem: null,
+        _noStructure: true,
+        _identityField: '',
+        _listItemCls: '',
+        _listItemDataAttrib: '',
         constructor: function constructor(conf) {
-            if (conf.structure) {
-                this._overrideStructure(conf.structure);
-            }
+            var defaultConf = {
+                noStructure: true,
+                structure: '<ul>{{#data}}<li data-id="{{key}}" class="oo-list-item">{{tpl}}</li>{{/data}}</ul>',
+                identityField: 'key',
+                listItemCls: 'flavius-list-item',
+                listItemDataAttrib: 'data-list-item-id'
+            };
+
+            conf = oo.override(defaultConf, conf);
+
+            this._noStructure = !!conf.noStructure;
+            if (!this._noStructure)
+                this._setStructTpl(conf.structure);
+
+            this._identityField = conf.identityField;
+            this._listItemCls = conf.listItemCls;
+            this._listItemDataAttrib = conf.listItemDataAttrib;
+
 
             List.Super.call(this, conf);
 
-            this._initEvents();
             if(conf.scrollable){
                 this.setScrollable(conf.scrollable);
             }
         },
         setTemplate : function setTemplate(tpl){
-            this._tpl = this._structTpl.replace('{{tpl}}', tpl || '');
+
+            if (!this._noStructure)
+                this._tpl = this._genTplWithStructure(tpl);
+            else {
+                var testDiv = oo.view.Dom.createElement('div');
+                testDiv.html(tpl);
+                if (testDiv.children().length !== 1)
+                    throw "Invalid template - the template must have a single root node";
+                
+                testDiv = null;
+                this._tpl = '{{#data}}' + tpl + '{{/data}}';
+            }
+                
+
         },
-        _initEvents: function () {
+        _initEvents: function _initEvents() {
              
+            var that = this,
+                check;
+
             function checkTarget (target) {
                 target = (Node.TEXT_NODE === target.nodeType) ? target.parentNode : target;
-                var t = new Dom(target);
+                var t = new oo.view.Dom(target);
                 var itemId;
-                if (t.classList.hasClass('oo-list-item')) {
-                    itemId = t.getDomObject().getAttribute('data-id') || t.getId();
-                } else {
-                    var altTarget = t.findParentByCls('oo-list-item');
+                if (!t.classList.hasClass(this._listItemCls)) {
+                    var altTarget = t.findParentByCls(that._listItemCls);
                     if (altTarget) {
                         t = altTarget;
-                        itemId = altTarget._dom.getAttribute('data-id') || t.getId();
                     }
                 }
                  
+                itemId = t.getDomObject().getAttribute(that._listItemDataAttrib) || t.getId();
+
                 if (itemId) {
-                    return {id: itemId, dom: t};
+                    return {id: itemId, dom: t, row: (itemId ? that.getModel().getBy(that._identityField, itemId) : null)};
                 }
                  
                 return false;
             }
              
-            var that = this;
-            var check;
             this.getDomObject().addEventListener(Touch.EVENT_START, function (e) {
 
                 this._touchedItem = e.target;
@@ -61,7 +88,7 @@
                 if (false !== check) {
                     check.dom.classList.addClass('active');
                      
-                    that.triggerEvent(List.EVT_ITEM_PRESSED, [check.dom, check.id]);
+                    that.triggerEvent(List.EVT_ITEM_PRESSED, [check.dom, check.id, check.row]);
                 }
             }, false);
             this.getDomObject().addEventListener(Touch.EVENT_MOVE, function (e) {
@@ -76,24 +103,39 @@
                 check = checkTarget(e.target);
                 if (false !== check && this._touchedItem == e.target) {
                     check.dom.classList.removeClass('active');
-                    that.triggerEvent(List.EVT_ITEM_RELEASED, [check.dom, check.id]);
+                    that.triggerEvent(List.EVT_ITEM_RELEASED, [check.dom, check.id, check.row]);
                 }
             }, false);
         },
         prepareData: function prepareData(data) {
             return {'data': data};
         },
-        _overrideStructure : function _overrideStructure(tpl){
+        renderTo: function renderTo(target, data, tpl) {
+            List.Super.prototype.renderTo.call(this, target, data, tpl);
+
+            this.children().forEach(function (item, index) {
+                var d = new oo.view.Dom(item);
+                d.classList.addClass(this._listItemCls);
+                d.getDomObject().setAttribute(this._listItemDataAttrib, this.getModel().getData()[index][this._identityField]);
+            }, this);
+
+            this._initEvents();
+        },
+
+
+        // deprecated
+        _genTplWithStructure: function _genTplWithStructure(tpl) {
+            return this._structTpl.replace('{{tpl}}', tpl || '');
+        },
+        _setStructTpl: function _setStructTpl(tpl){
             
             if(!tpl) {
                 throw Error("Template must be declared");
             }
 
             this._structTpl = tpl;
-        }//,
-        // render : function render(data,tpl){
-        //     this.appendHtml(List.Super.prototype.render.call(this, data,tpl));
-        // }
+        }
+        
     });
     
     oo.view.Element.register(List, 'list');
