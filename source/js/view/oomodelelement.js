@@ -36,7 +36,7 @@
                 this._model = oo.createModel(model);
 
             this._model.addListener(oo.data.Model.AFTER_FETCH, oo.createDelegate(function (model) {
-                this.renderTo(this, model.getData);
+                this.renderTo(this, model.getData());
                 if(this.isScrollable){
                     this.scroll.refresh();
                 }
