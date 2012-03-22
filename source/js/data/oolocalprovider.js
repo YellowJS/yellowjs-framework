@@ -9,19 +9,37 @@
             // /!\ give an empty callback is not the best idea i have never had
             this._store = Lawnchair({name: this._name, record: 'record'}, function () {});
         },
-        save: function save (data, callback) {
+        save: function save (data, config) {
             if (!(data instanceof Array))
                 data = [data];
 
+            var defaultConf = {
+                success: oo.emptyFn
+            };
+
+            if (typeof config == 'function') {
+                config = {success: config};
+            }
+
+            var conf = oo.override(defaultConf, config);
+
             this._store.batch(data);
 
-            if (callback && 'success' in callback)
-                callback.success.call(global, data);
+            conf.success.call(global, data);
         },
-        fetch: function fetch (callback) {
+        fetch: function fetch (config) {
+            var defaultConf = {
+                success: oo.emptyFn
+            };
+
+            if (typeof config == 'function') {
+                config = {success: config};
+            }
+
+            var conf = oo.override(defaultConf, config);
+
             this._store.all(function (data) {
-                if (callback && 'success' in callback)
-                    callback.success.call(global, data);
+                conf.success.call(global, data);
             });
         },
         get: function get (cond, callback) {
