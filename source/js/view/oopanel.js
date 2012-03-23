@@ -8,7 +8,7 @@
  */
 (function (oo) {
 
-    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, oo.core.mixins.Events, oo.core.mixins.Scroll, {
+    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, oo.core.mixins.Scroll, {
         STATIC : {
             ON_SHOW: 'on_show',
             ON_HIDE: 'on_hide'
@@ -28,11 +28,18 @@
                 this.init();
         },
         getEl: function getEl(id) {
-            return this._uiElements[id];
+            return this._uiElements[id] || null;
         },
         addEl: function addEl(el) {
             this._uiElements[el.getId()] = el;
             el.setContainer(this);
+        },
+        removeEl: function removeEl(id) {
+            var el = this.getEl(id);
+            if (null !== el) {
+                this._uiElements.slice(this._uiElements.indexOf(el), 1);
+                el.destroy();
+            }
         },
         // deprecated -> please use "addEl()" method instead
         register: function register(el) {
@@ -118,6 +125,10 @@
             this.translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
                 that.setDisplay('none');
             });
+        },
+        _onEnabled: function _onEnabled() {
+            this.onEnabled();
+            this.initElement();
         },
         refresh: function refresh(){
           var vp = oo.getViewport();

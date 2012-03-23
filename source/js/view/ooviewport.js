@@ -103,11 +103,6 @@
 
             panel.renderTo(this);
 
-            if ('onEnabled' in panel) {
-                panel.onEnabled();
-            }
-            panel.initElement();
-
             this._enabledPanels.push(index);
         },
         /**

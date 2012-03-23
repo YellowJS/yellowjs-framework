@@ -1,64 +1,63 @@
 describe("oopanel.js", function() {
 
-    var fakeEl, p;
+    var  node, p, needToRender = true;
 
     beforeEach(function () {
 
-        p = new oo.view.Panel();
-
-        // mock object
-        fakeEl = {
-            getId: function () {
-                return 2;
+        var pClass = new oo.createPanel({
+            id: 'dummy-panel',
+            init: function () {
+                this.setTemplate('<div id="tester"></div>');
             },
-            needToRender: function () {
-                return this._needToRender;
-            },
-            _needToRender: true,
-            render: oo.emptyFn
-        };
+            onEnabled: function () {
+                node = oo.createElement('node', {el: '#tester', template:'test ok'});
 
-        p.addEl(fakeEl);
+                // for test purpose - not supposed to do that in a real application
+                node._needToRender = needToRender;
+
+                this.addEl(node);
+            }
+        }, true);
+
+        p = new pClass();
 
     });
 
     describe("elem management", function () {
 
+        beforeEach(function () {
+            p.renderTo(new oo.view.Dom('#test-1'));
+        });
+
         it("should have only one element", function () {
-            expect(p._uiElements[fakeEl.getId()]).toBeDefined();
+            expect(p._uiElements[ node.getId()]).toBeDefined();
         });
 
-        it("should have fakeEl stored in its _uiElements member var", function () {
-            expect(p._uiElements[fakeEl.getId()]).toEqual(fakeEl);
+        it("should have  node stored in its _uiElements member var", function () {
+            expect(p._uiElements[ node.getId()]).toEqual( node);
         });
 
-        it("should return fakeEl", function () {
-            expect(p.getEl(fakeEl.getId())).toEqual(fakeEl);
+        it("should return  node", function () {
+            expect(p.getEl( node.getId())).toEqual( node);
         });
     });
 
     describe("rendering", function () {
-        it("should call the render function of the fakeEl object", function () {
-            spyOn(fakeEl, 'render');
+        it("should call the render function of the  node object", function () {
 
-            // override render function for test purpose only
-            oo.view.Panel.Super.prototype.render = oo.emptyFn;
+            p.renderTo(new oo.view.Dom('#test-2'));
 
-            p.render();
-
-            expect(fakeEl.render).toHaveBeenCalled();
+            expect(document.querySelector('#test-2 #tester').innerHTML).toEqual('test ok');
         });
 
-        it("should not call the render function of the fakeEl object", function () {
-            spyOn(fakeEl, 'render');
-
+        it("should not call the render function of the  node object", function () {
+            
             // overrides for test purpose only
-            fakeEl._needToRender = false;
-            p.render = oo.emptyFn;
+            needToRender = false;
 
-            p.render();
+            p.renderTo(new oo.view.Dom('#test-3'));
 
-            expect(fakeEl.render).not.toHaveBeenCalled();
+            expect(document.querySelector('#test-3 #tester').innerHTML).toEqual('');
         });
 
     });

@@ -13,7 +13,7 @@
     var global = this,
         viewRepository = {};
     
-    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, oo.core.mixins.Scroll, {
+    var Element = oo.getNS('oo.view').Element = oo.Class(oo.view.Dom, oo.core.mixins.Events, oo.core.mixins.Scroll, {
         STATIC: {
             APPEND : 'append',
             PREPEND : 'prepend',
@@ -122,10 +122,20 @@
                     methodSuffix = methodSuffix.toLowerCase();
             }
 
-
             currentTarget[methodPrefix + methodSuffix](content);
 
+            this._onEnabled();
+
         },
+
+        _onEnabled: function _onEnabled() {
+            this.onEnabled();
+        },
+
+        onEnabled: function onEnabled() {
+
+        },
+
         /**
          * do exactly the same thing as the oo.createElement, but add a prefix to the el property in order to "scope" the newly created element into the current one (for Dom query performance purpose)
          * @see oo.createElement
