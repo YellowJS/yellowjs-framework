@@ -72,7 +72,7 @@
             //     this._uiElements[id].destroy();
         },
         show: function show(direction) {
-            this.animShow();
+            this.animShow(direction);
             this.triggerEvent(Panel.ON_SHOW, [this]);
         },
         animShow: function animShow (direction) {
@@ -97,10 +97,8 @@
             this.translateTo({x:0}, anim_duration);
         },
         hide: function hide(direction) {
-
             this.animHide(direction);
-
-            this.triggerEvent(Panel.ON_HIDE);
+            this.triggerEvent(Panel.ON_HIDE, [this]);
         },
         animHide: function animHide (direction) {
             var Viewport = oo.view.Viewport, vp = oo.getViewport();

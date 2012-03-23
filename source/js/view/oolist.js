@@ -113,11 +113,14 @@
         renderTo: function renderTo(target, data, tpl) {
             List.Super.prototype.renderTo.call(this, target, data, tpl);
 
-            this.children().forEach(function (item, index) {
-                var d = new oo.view.Dom(item);
-                d.classList.addClass(this._listItemCls);
-                d.getDomObject().setAttribute(this._listItemDataAttrib, this.getModel().getData()[index][this._identityField]);
-            }, this);
+            var datas = this.getModel().getData();
+            if (datas.length) {
+                this.children().forEach(function (item, index) {
+                    var d = new oo.view.Dom(item);
+                    d.classList.addClass(this._listItemCls);
+                    d.getDomObject().setAttribute(this._listItemDataAttrib, datas[index][this._identityField]);
+                }, this);
+            }
 
             this._initEvents();
         },
