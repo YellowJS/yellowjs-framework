@@ -30,7 +30,7 @@
                 var sec = new oo.view.Dom(item);
                 //close each sec
                 that.closeSection(sec);
-                var btnHeader = oo.createElement('button', sec.find('[data-accordionheader]',true));
+                var btnHeader = oo.createElement('button', {el:sec.find('[data-accordionheader]',true)});
                 btnHeader.addListener(oo.view.Button.EVT_RELEASE, function(el){
                     _headerHandler(el, sec);
                 });
