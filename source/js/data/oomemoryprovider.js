@@ -11,16 +11,38 @@
                 this.setData(options.data);
             }
         },
-        save: function save (data, callback) {
+        save: function save (data, config) {
             this.setData(data);
             
-            if (callback) {
-                callback.call(global);
+            var defaultConf = {
+                success: oo.emptyFn
+            };
+
+            config = config || {};
+            if (typeof config == 'function') {
+                config = {success: config};
             }
+
+            var conf = oo.override(defaultConf, config);
+
+            config.success.call(global);
         },
-        fetch: function fetch (callback) {
-            if (callback && 'success' in callback)
-                callback.success.call(global, this._data);
+        fetch: function fetch (config) {
+            var defaultConf = {
+                success: oo.emptyFn
+            };
+
+            config = config || {};
+            if (typeof config == 'function') {
+                config = {success: config};
+            }
+
+            var conf = oo.override(defaultConf, config);
+
+            conf.success.call(global, this._data);
+        },
+        get: function get(key, callback) {
+            callback.call(global, this._data[key] || null);
         },
         setData: function setData(data, clearAll){
             if(!data){
