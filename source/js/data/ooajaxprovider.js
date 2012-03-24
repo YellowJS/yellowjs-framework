@@ -1,7 +1,16 @@
+/**
+ * a data provider connected to a web server via AJAX
+ *
+ * @class AjaxProvider
+ * @namespace oo.data
+ * @requires oo.data.Provider
+ *
+ * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
+ */
 (function (oo) {
     
-    var global = this, ns = oo.getNS('oo.data');
-    var AjaxProvider = ns.AjaxProvider = oo.Class(oo.data.Provider, {
+    var global = this;
+    var AjaxProvider = oo.getNS('oo.data').AjaxProvider = oo.Class(oo.data.Provider, {
         /**
          * an instance of data provider that will be used as cache
          *
@@ -34,6 +43,11 @@
          */
         _url: null,
 
+        /**
+         * a prefix unique for each model in the localstorage
+         *
+         * @type {string}
+         */
         _cachePrefix: '',
 
         constructor: function constructor (options) {
@@ -151,6 +165,11 @@
             this._clearCache();
         },
 
+        /**
+         * generate a a cache key composed with the cachePrefix and the paramString
+         * @param  {string} paramString a string to identify a cache entry (here the query string)
+         * @return {strin}
+         */
         _genCacheKey: function _genCacheKey(paramString) {
             return this._cachePrefix + '|' + (paramString || '');
         },
