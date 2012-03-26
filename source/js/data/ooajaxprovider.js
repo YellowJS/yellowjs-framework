@@ -216,7 +216,9 @@
          */
         _getCache: function _getCache(parameterString, callback) {
             if (-1 !== this._cachedParameterString.indexOf(this._genCacheKey(parameterString))) {
-                this._cacheProvider.fetch(callback);
+                this._cacheProvider.fetch(function(data) {
+                    callback(data.data);
+                });
                 return true;
             }
             else
