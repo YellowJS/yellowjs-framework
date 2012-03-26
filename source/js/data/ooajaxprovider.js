@@ -24,7 +24,7 @@
          * @private
          * @type {String}
          */
-        _cachedParameterString: '',
+        _cachedParameterString: [],
 
         /**
          * the ajax request target
@@ -33,10 +33,13 @@
          * @type {String}
          */
         _url: null,
+
+        _cachePrefix: '',
+
         constructor: function constructor (options) {
 
             var defaultConf = {
-                cacheProvider: 'local'
+                cacheProvider: 'memory'
             };
 
             var opt = oo.override(defaultConf, options);
@@ -48,7 +51,8 @@
 
             AjaxProvider.Super.call(this, {name: opt.name});
 
-            this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider || 'local'))({name: 'flavius-cache__' + opt.name});
+            this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))({name: 'flavius-cache__' + opt.name});
+            this._cachePrefix = oo.generateId();
         },
 
         /**
@@ -104,13 +108,14 @@
             var conf = oo.override(defaultConf, config);
 
             var callback = oo.createDelegate(function (data) {
-                this._clearCache();
-                this._saveCache( data, oo.serialize(conf.params), function () {
+                var paramString = oo.serialize(conf.params);
+                this._clearCache(paramString);
+                this._saveCache( data, paramString, function () {
                     conf.success.call(global, data);
                 } );
             }, this);
 
-            if (!this._getCache(oo.serialize(conf.params), callback))
+            if (clearCache || !this._getCache(oo.serialize(conf.params), callback))
                 oo.ajax().get(this._url, conf.params, callback, conf.error);
 
         },
@@ -125,7 +130,13 @@
         get: function get (cond, callback) {
             var that = this;
 
-            if (!this._getCache(null, function () { that._cacheProvider.get(cond, callback); }))
+            var paramStringFull = cond || (this._cachedParameterString[this._cachedParameterString.length -1]);
+            var paramString = paramStringFull.substr(paramStringFull.indexOf('|') + 1);
+            if (this._getCache(paramString, oo.emptyFn))
+                that._cacheProvider.get(paramStringFull, function (data) {
+                    callback.call(global, data.data);
+                });
+            else
                 throw "please perform a fetch before";
         },
 
@@ -140,15 +151,24 @@
             this._clearCache();
         },
 
+        _genCacheKey: function _genCacheKey(paramString) {
+            return this._cachePrefix + '|' + (paramString || '');
+        },
+
         /**
          * clear the cache
          *
+         * @params {string} paramString  string identifier to clear cache for one precise query
          * @return {void}
          */
-        _clearCache: function _clearCache() {
-            this._cacheProvider.clearAll();
-            this._cachedParameterString = '';
-            this._cacheCleared = true;
+        _clearCache: function _clearCache(paramString) {
+            if (!paramString) {
+                this._cacheProvider.clearAll();
+                this._cachedParameterString = [];
+            }
+            else {
+                this._cachedParameterString.slice(this._cachedParameterString.indexOf(this._genCacheKey(paramString)), 1);
+            }
         },
 
         /**
@@ -160,9 +180,13 @@
          * @return {void}
          */
         _saveCache: function _saveCache(data, parameters, callback) {
-            this._cacheProvider.save(data, callback);
-            this._cachedParameterString = parameters;
-            this._cacheCleared = false;
+            var dataToStore = {};
+            dataToStore.key = this._genCacheKey(parameters);
+            dataToStore.data = data;
+            this._cacheProvider.save(dataToStore, callback);
+            if (-1 === this._cachedParameterString.indexOf(dataToStore.key))
+                this._cachedParameterString.push(dataToStore.key);
+            //this._cacheCleared = false;
         },
 
         /**
@@ -172,7 +196,7 @@
          * @return {bool}
          */
         _getCache: function _getCache(parameterString, callback) {
-            if (!this._cacheCleared && (this._cachedParameterString == parameterString || null === parameterString)) {
+            if (-1 !== this._cachedParameterString.indexOf(this._genCacheKey(parameterString))) {
                 this._cacheProvider.fetch(callback);
                 return true;
             }

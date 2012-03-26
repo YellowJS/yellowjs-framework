@@ -8,9 +8,9 @@ describe("ooAjaxProvider.js", function() {
             expect(function () { var p = new Cls({'name': 'toto'}); }).toThrow('\'url\' property must be set');
         });
 
-        it('should have a LocalProvider as cache', function () {
+        it('should have a MemoryProvider as cache', function () {
             var p = new Cls({'name': 'toto', url: '/toto'});
-            expect(p._cacheProvider instanceof oo.data.LocalProvider).toBeTruthy();
+            expect(p._cacheProvider instanceof oo.data.MemoryProvider).toBeTruthy();
         });
 
         it('should have a FakeProvider as cache', function () {
@@ -27,7 +27,7 @@ describe("ooAjaxProvider.js", function() {
 
         beforeEach(function () {
 
-            p = new Cls({name: 'toto', url: 'toto.php', cacheProvider: 'local'});
+            p = new Cls({name: 'toto', url: 'toto.php', cacheProvider: 'memory'});
             p.clearAll();
         });
 
@@ -37,14 +37,11 @@ describe("ooAjaxProvider.js", function() {
                 runs(function () {
 
                     this.errorCb = jasmine.createSpy();
-                    var successCb = this.successCb = jasmine.createSpy();
+                    this.successCb = jasmine.createSpy();
 
                     p.fetch({
-                        success: function (data) {
-                            successCb();
-                            console.log(data);
-                        },
-                        //error: errorCb,
+                        success: this.successCb,
+                        error: this.errorCb,
                         params: {'param1': 'value', 'bool': true, 'int': 3}
                     });
                 });
@@ -55,8 +52,6 @@ describe("ooAjaxProvider.js", function() {
                     expect(this.successCb).wasCalled();
                 });
                 
-                // check where is the bug...
-                //expect(errorCb).wasCalled();
             });
 
         });
@@ -66,11 +61,15 @@ describe("ooAjaxProvider.js", function() {
             var errorCb = jasmine.createSpy(), successCb = jasmine.createSpy();
 
             it ("should save values", function () {
-                p.save({key:'key3', value:'value3'}, successCb /*function() {
-                    console.log('data have been setn (POST)');
-                }*/);
+                runs(function () {
+                    p.save({key:'key3', value:'value3'}, successCb);
+                });
+                
+                waits(500);
 
-                //expect(successCb).wasCalled();
+                runs(function () {
+                    expect(successCb).wasCalled();
+                });
 
             });
 
@@ -80,17 +79,17 @@ describe("ooAjaxProvider.js", function() {
 
             var errorCb = jasmine.createSpy(), successCb = jasmine.createSpy();
 
-            it ("should return the value store in the provider cache", function () {
-                // by this way, force the get method to be called after a fetch method has been previously called
+            it ("should return the value stored in the provider cache", function () {
                 runs(function () {
+                    // by this way, force the get method to be called after a fetch method has been previously called
                     p.fetch();
                 });
 
                 waits(1500);
 
                 runs(function () {
-                    p.get(1, function(row) {
-                        expect(row.firstname).toEqual('claire');
+                    p.get(null, function(data) {
+                        expect(data[0].firstname).toEqual('claire');
                     });
                 });
             });
@@ -110,14 +109,11 @@ describe("ooAjaxProvider.js", function() {
                 runs(function () {
 
                     this.errorCb = jasmine.createSpy();
-                    var successCb = this.successCb = jasmine.createSpy();
+                    this.successCb = jasmine.createSpy();
 
                     p.fetch({
-                        success: function (data) {
-                            successCb();
-                            console.log(data);
-                        },
-                        //error: errorCb,
+                        success: this.successCb,
+                        error: this.errorCb,
                         params: {'param1': 'value', 'bool': true, 'int': 3}
                     });
                 });
