@@ -42,6 +42,9 @@
             templateEngine : null
         },
 
+        // references elements registered into this view
+        _uiElements: null,
+
         _needToRender: true,
         
         _tpl : null,
@@ -63,6 +66,46 @@
                 delete options.template;
             }
 
+            if (options.hasOwnProperty('onEnabled')) {
+                this.onEnabled = options.onEnabled;
+                delete options.onEnabled;
+            }
+
+            this._uiElements = {};
+
+        },
+        getEl: function getEl(id) {
+            return this._uiElements[id] || null;
+        },
+        addEl: function addEl(el) {
+            this._uiElements[el.getId()] = el;
+            el.setContainer(this);
+        },
+        removeEl: function removeEl(id) {
+            var el = this.getEl(id);
+            if (null !== el) {
+                this._uiElements.slice(this._uiElements.indexOf(el), 1);
+                el.destroy();
+            }
+        },
+        initElement: function initElement() {
+            
+            for (var id in this._uiElements) {
+                var el = this._uiElements[id];
+                if ('needToRender' in el && el.needToRender())
+                    el.renderTo(this);
+            }
+
+            return this;
+        },
+        /**
+         * do exactly the same thing as the oo.view.Element.createElement and automatically add the created element to the current panel
+         * @see oo.view.Element.createElement
+         */
+        createElement: function createElement(type, opt) {
+            var el = oo.createElement(type, opt);
+            this.addEl(el);
+            return el;
         },
         setContainer: function setContainer(container) {
             this._container = container;
@@ -130,6 +173,7 @@
 
         _onEnabled: function _onEnabled() {
             this.onEnabled();
+            this.initElement();
         },
 
         onEnabled: function onEnabled() {
@@ -137,7 +181,10 @@
         },
 
         /**
-         * do exactly the same thing as the oo.createElement, but add a prefix to the el property in order to "scope" the newly created element into the current one (for Dom query performance purpose)
+         * do exactly the same thing as the oo.createElement, but add a prefix
+         * to the el property          * in order to "scope" the newly created
+         * element into the current one (for Dom query performance purpose)
+         *
          * @see oo.createElement
          */
         createElement: function createElement (type, opt) {
