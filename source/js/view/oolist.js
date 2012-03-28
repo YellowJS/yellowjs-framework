@@ -14,6 +14,7 @@
         _identityField: '',
         _listItemCls: '',
         _listItemDataAttrib: '',
+        _eventInitialized: false,
         constructor: function constructor(conf) {
             var defaultConf = {
                 noStructure: true,
@@ -57,7 +58,7 @@
 
         },
         _initEvents: function _initEvents() {
-             
+            
             var that = this,
                 check;
 
@@ -106,6 +107,8 @@
                     that.triggerEvent(List.EVT_ITEM_RELEASED, [check.dom, check.id, check.row]);
                 }
             }, false);
+
+            this._eventInitialized = true;
         },
         prepareData: function prepareData(data) {
             return {'data': data};
@@ -122,7 +125,8 @@
                 }, this);
             }
 
-            this._initEvents();
+            if (!this._eventInitialized)
+                this._initEvents();
         },
 
 

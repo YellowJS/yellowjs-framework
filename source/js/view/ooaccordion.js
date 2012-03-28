@@ -2,10 +2,9 @@
 
     // shorthand
     var Dom = oo.view.Dom,
-        Touch = oo.core.Touch,
-        ns = oo.getNS('oo.view');
+        Touch = oo.core.Touch;
     
-    var Accordion = ns.Accordion = oo.Class(oo.view.Element, {
+    var Accordion = oo.getNS('oo.view').Accordion = oo.Class(oo.view.Element, {
         STATIC: {
             CLS_OPENED: 'accordion-section-opened',
             CLS_CLOSED: 'accordion-section-closed',
