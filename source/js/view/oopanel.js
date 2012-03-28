@@ -8,50 +8,24 @@
  */
 (function (oo) {
 
-    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, oo.core.mixins.Scroll, {
+    var Panel =  oo.getNS('oo.view').Panel = oo.Class(oo.view.Element, {
         STATIC : {
             ON_SHOW: 'on_show',
             ON_HIDE: 'on_hide'
         },
-        // references elements registered into this view
-        _uiElements: null,
-        _data: {},
         constructor: function constructor() {
 
             Panel.Super.call(this, {el: document.createElement('div')});
 
-            this._uiElements = {};
             var that = this;
             //window.addEventListener('orientationchange', that.refresh,false);
             
             if ('init' in this)
                 this.init();
         },
-        getEl: function getEl(id) {
-            return this._uiElements[id] || null;
-        },
-        addEl: function addEl(el) {
-            this._uiElements[el.getId()] = el;
-            el.setContainer(this);
-        },
-        removeEl: function removeEl(id) {
-            var el = this.getEl(id);
-            if (null !== el) {
-                this._uiElements.slice(this._uiElements.indexOf(el), 1);
-                el.destroy();
-            }
-        },
-        // deprecated -> please use "addEl()" method instead
-        register: function register(el) {
-            oo.warn('the method oo.view.Panel.register() is deprecated, please use addEl instead');
-            this.addEl(el);
-        },
-        setData: function setData (data) {
-            this._data = data || {};
-        },
         render: function render() {
             this.classList.addClass('oo-panel');
-            this.appendHtml(Panel.Super.prototype.render.call(this, this._data));
+            this.appendHtml(Panel.Super.prototype.render.call(this));
 
             return this;
         },
@@ -63,16 +37,6 @@
             var el = Panel.Super.prototype.createElement.apply(this, arguments);
             this.addEl(el);
             return el;
-        },
-        initElement: function initElement() {
-            
-            for (var id in this._uiElements) {
-                var el = this._uiElements[id];
-                if ('needToRender' in el && el.needToRender())
-                    el.renderTo(this);
-            }
-
-            return this;
         },
         destroy: function destroy () {
             // for (var id in this._uiElements)
@@ -125,10 +89,6 @@
             this.translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
                 that.setDisplay('none');
             });
-        },
-        _onEnabled: function _onEnabled() {
-            this.onEnabled();
-            this.initElement();
         },
         refresh: function refresh(){
           var vp = oo.getViewport();
