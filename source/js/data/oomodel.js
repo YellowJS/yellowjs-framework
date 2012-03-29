@@ -181,16 +181,18 @@
 
             var indexes = this._indexes, values = [], val;
 
-            if(indexes.hasOwnProperty(index))
+            if(indexes.hasOwnProperty(index)) {
                 val = indexes[index][key];
                 if (undefined !== val)
                     values = val;
-            else
+            }
+            else {
                 this._data.forEach(function (item) {
                     if (item.hasOwnProperty(index))
                         if (item[index] == key)
                             values.push(item);
                 });
+            }
 
             return values;
         },
