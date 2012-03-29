@@ -189,7 +189,7 @@ oo = pline = (function (window) {
          * @param  {bool} noRegister   disable auto registering into the viewport
          * @return {function}          the class of your panel - should not be used without a good reason ;)
          */
-        createPanel: function createPanel(panel, noRegister) {
+        createPanelClass: function createPanelClass(panel, noRegister) {
             if (!(typeof panel == 'object' && 'id' in panel))
                 throw 'Wrong parameter';
 
@@ -205,6 +205,14 @@ oo = pline = (function (window) {
                 oo.getViewport().register(id, p);
 
             return p;
+        },
+
+        /**
+         * @deprecated
+         * @see  createPanelClass
+         */
+        createPanel: function createPanel(panel, noRegister) {
+            return this.createPanelClass(panel, noRegister);
         },
 
         /**
