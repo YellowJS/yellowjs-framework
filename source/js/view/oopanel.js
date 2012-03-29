@@ -1,5 +1,6 @@
 /**
  * Abstract class that should be extended to create panels
+ * use the oo.createPanelClass helper
  *
  * @namespace oo.core
  * @private class
@@ -28,15 +29,6 @@
             this.appendHtml(Panel.Super.prototype.render.call(this));
 
             return this;
-        },
-        /**
-         * do exactly the same thing as the oo.view.Element.createElement and automatically add the created element to the current panel
-         * @see oo.view.Element.createElement
-         */
-        createElement: function createElement() {
-            var el = Panel.Super.prototype.createElement.apply(this, arguments);
-            this.addEl(el);
-            return el;
         },
         destroy: function destroy () {
             // for (var id in this._uiElements)
