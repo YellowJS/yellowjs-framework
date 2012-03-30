@@ -7,7 +7,11 @@
 
     var Model = oo.getNS('oo.data').Model = oo.Class(null, oo.core.mixins.Events,{
         STATIC : {
-            AFTER_SAVE : 'AFTER_SAVE',
+            AFTER_COMMIT : 'AFTER_COMMIT',
+            /**
+             * @deprecated
+             */
+            AFTER_SAVE : 'AFTER_COMMIT',
             AFTER_FETCH : 'AFTER_FETCH',
             register : function register (model) {
                 if (!_registry.hasOwnProperty(model._name))
@@ -30,8 +34,9 @@
                     return _registry[id];
             }
         },
-        _data: [],
-        _indexes: {},
+        _data: null,
+        _indexes: null,
+        _toBeDeleted: null,
 
         constructor: function constructor(options){
             if(!options || (!options.hasOwnProperty('name') || !options.hasOwnProperty('provider')) )
@@ -42,6 +47,10 @@
             };
 
             var conf = oo.override(defaultConf, options);
+
+            this._data = [];
+            this._indexes = {};
+            this._toBeDeleted = [];
 
             this.setModelName(conf.name);
             this.setProvider(conf.provider);
@@ -95,9 +104,11 @@
             var indexedField = Object.getOwnPropertyNames(this._indexes);
             indexedField.forEach(function (field) {
                 if (obj[field]) {
-                    this._indexes[field][obj[field]].slice(this._indexes[field][obj[field]].indexOf(obj), 1);
+                    this._indexes[field][obj[field]].splice(this._indexes[field][obj[field]].indexOf(obj), 1);
                     if (0 === this._indexes[field][obj[field]].length) {
-                        this._indexes[field].slice(this._indexes[field].indexOf(obj[field]), 1);
+                        this._indexes[field][obj[field]] = null;
+                        delete this._indexes[field][obj[field]];
+                        //this._indexes[field].splice(this._indexes[field][obj[field]], 1);
                     }
                 }
             }, this);
@@ -151,12 +162,25 @@
 
             this._provider.fetch({success: cb, params: callback.params});
         },
-        save : function save(callback){
+        /**
+         * deprecated
+         * @see oo.data.Model.commit()
+         */
+        save : function save(callback) {
+            this.commit(callback);
+        },
+        commit : function commit(callback){
             var that = this;
             callback = callback || oo.emptyFn;
+
             this._provider.save(this._data, function () {
-                that.triggerEvent(Model.AFTER_SAVE);
-                callback.call(that);
+                if (that._toBeDeleted.length) {
+                    that._provider.remove(that._toBeDeleted, function () {
+                        that._toBeDeleted = [];
+                        that.triggerEvent(Model.AFTER_COMMIT);
+                        callback.call(that);
+                    });
+                }
             });
         },
 
@@ -237,6 +261,18 @@
 
             this._data.push(obj);
             this._buildIndex(obj);
+        },
+        removeBy: function removeBy(index, key) {
+            var matchingRows = this.filterBy(index, key);
+
+            matchingRows.forEach(function (item) {
+                this._removeFromIndex(item);
+                this._data.splice(this._data.indexOf(item), 1);
+                this._toBeDeleted.push(item.key);
+            }, this);
+        },
+        remove: function remove(key) {
+            return this.removeBy("key", key);
         }
     });
     
