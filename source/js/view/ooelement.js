@@ -116,7 +116,7 @@
         setContainer: function setContainer(container) {
             this._container = container;
         },
-        _getContainer: function _getContainer() {
+        getContainer: function getContainer() {
             return this._container;
         },
         needToRender: function needToRender() {
