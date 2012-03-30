@@ -27,6 +27,10 @@
         setScrollable : function setScrollable(opt){
             this.scroll = null;
             this.scroll = this._createScroll(opt);
+            var that = this;
+            this.addListener(oo.view.Element.REFRESH_CONTENT, function () {
+                that.scroll.refresh();
+            });
             this.isScrollable = true;
         }
     });
