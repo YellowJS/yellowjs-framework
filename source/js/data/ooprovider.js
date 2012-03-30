@@ -42,6 +42,9 @@ var oo = (function (oo) {
         },
         clearAll: function (callback) {
             throw 'Can\'t be called directly from Provider class';
+        },
+        remove: function (data, callback) {
+            throw 'Can\'t be called directly from Provider class';
         }
     });
 
