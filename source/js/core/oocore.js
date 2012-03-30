@@ -350,6 +350,20 @@ oo = pline = (function (window) {
                 paramArrayString.push(prop + '=' + encodeURI( (typeof paramObj[prop] == 'object' ? paramObj[prop].toString() : paramObj[prop]) ));
             }
             return paramArrayString.join('&');
+        },
+
+        /**
+         * utility method with fallback to test if a given object is an array
+         * @param  {[type]}  param [description]
+         * @return {Boolean}       [description]
+         */
+        isArray: function isArray (obj) {
+            var _isArray = Array.isArray;
+            if (_isArray) {
+                return _isArray(obj);
+            } else {
+                return obj.prototype.toString() === "[object Array]";
+            }
         }
 
     };
