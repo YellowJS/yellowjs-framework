@@ -185,25 +185,20 @@
         onEnabled: function onEnabled() {
 
         },
+        triggerBubblingEvent: function triggerBubblingEvent (evtName, params) {
+            if (!oo.isArray(params)) {
+                params = params ? [params] : [];
+            }
+            var _container = this.getContainer(), evt = {
+                bubble: true,
+                stopPropagation: function () { this.bubble = false; }
+            };
+            params.splice(0,0, evt);
+            this.triggerEvent(evtName, params);
 
-        /**
-         * do exactly the same thing as the oo.createElement, but add a prefix
-         * to the el property          * in order to "scope" the newly created
-         * element into the current one (for Dom query performance purpose)
-         *
-         * @see oo.createElement
-         */
-        createElement: function createElement (type, opt) {
-            if (opt.el)
-                opt.el = '#' + this.getId() + ' ' + opt.el;
-            return oo.createElement(type, opt);
+            if (evt.bubble && _container && _container.triggerBubblingEvent)
+                _container.triggerBubblingEvent(evtName, params);
         }
-        //deprecated
-        /*,
-        setScrollable: function setScrollable (orientation) {
-            //if (null === this.getDomObject.querySelector('.content'))
-            var scroll = new oo.view.Scroll(this.getDomObject(), orientation, orientation);
-        }*/
     });
 
     oo.view.Element.register(Element, 'node');
