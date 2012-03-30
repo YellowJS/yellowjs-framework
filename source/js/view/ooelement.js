@@ -17,6 +17,7 @@
         STATIC: {
             APPEND : 'append',
             PREPEND : 'prepend',
+            REFRESH_CONTENT: 'refresh_content',
             register: function register (cls, codename) {
                 if (viewRepository[codename])
                     throw 'Already existing codename';

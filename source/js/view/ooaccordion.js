@@ -12,6 +12,7 @@
             SELET_SECTION:'[data-accordioncontent]'
         },
         _isOpened : true,
+        _needToRender: false,
         constructor: function constructor(conf) {
             Accordion.Super.call(this, conf);
             this._prepareView();
@@ -24,6 +25,7 @@
                 } else {
                     that.openSection(sec);
                 }
+                that.triggerBubblingEvent(oo.view.Element.REFRESH_CONTENT);
             };
             this.children().forEach(function(item){
                 var sec = new oo.view.Dom(item);
