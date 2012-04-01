@@ -15,6 +15,11 @@
     
     var global = this;
     
+    /**
+     * @internal create an object to wrap infos about the listener
+     * @param  {} listener [description]
+     * @return {[type]}          [description]
+     */
     function buildListenerConf(listener) {
         var listenerConf;
         if (typeof listener == 'object' && listener.sc && listener.fn) {
@@ -27,12 +32,22 @@
     }
 
     var Events = oo.getNS('oo.core.mixins').Events = oo.Class({
+
+        /**
+         * get a singleton instance of the listeners array
+         */
         _getListenersArray : function _getListenersArray () {
             if (!this._listeners)
                 this._listeners = {};
 
             return this._listeners;
         },
+        /**
+         * register a listener for a given event name
+         *
+         * @param {string} eventName the name of the evant - in almost all cases use a provided constant
+         * @param {function} listener  [description]
+         */
         addListener : function addListener(eventName, listener){
             var l = this._getListenersArray();
             if (!l[eventName]){
@@ -44,6 +59,14 @@
             l[eventName].push(listenerConf);
 
         },
+        /**
+         * unregister a/all listener(s) attached to a given event name
+         * @todo : to debug - objects provided can not be strictly equal because each is instanciated seperately.
+         *
+         * @param  {string} eventName the name of the event - in almost all cases use a provided constant
+         * @param  {function|object} listener  a particular listener to remove, if none provided consider all registered listeners for the event
+         * @return {void}
+         */
         removeListener : function removeListener(eventName, listener) {
             var l = this._getListenersArray();
 
