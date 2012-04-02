@@ -455,7 +455,7 @@ var oo = (function (oo) {
             }, false);
 
             window.addEventListener("orientationchange",function(){
-                that.refresh.call(that);
+                that.refresh();
             },false);
 
             //swipe
@@ -471,7 +471,7 @@ var oo = (function (oo) {
             
             if(this._transitionType !== "Custom"){
                 listNode.addEventListener('webkitTransitionEnd',function(e){
-                    that.onEndTransition.apply(that);
+                    that.onEndTransition();
                 },false);
             }
             /*listNode.addEventListener('webkitTransitionEnd',function(e){
