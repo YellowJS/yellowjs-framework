@@ -23,22 +23,29 @@ var oo = (function (oo) {
         },
         _initEvents : function _initEvents() {
             this.getDomObject().addEventListener(Touch.EVENT_START, oo.createDelegate(this._onTouch, this), false);
+            this.getDomObject().addEventListener(Touch.EVENT_MOVE, oo.createDelegate(this._onTouchMove, this), false);
             this.getDomObject().addEventListener(Touch.EVENT_END, oo.createDelegate(this._onRelease, this), false);
         },
         _onTouch : function _onTouch(e) {
-            this.setActive(true);            
+            this.setActive(true);
             this.triggerEvent(Button.EVT_TOUCH, [this, e]);
         },
+        _onTouchMove: function _onTouchMove(e) {
+            if (this._active)
+                this.setActive(false);
+        },
         _onRelease : function _onRelease(e) {
-            this.setActive(false);
-            this.triggerEvent(Button.EVT_RELEASE, [this, e]);
+            if (this._active) {
+                this.setActive(false);
+                this.triggerEvent(Button.EVT_RELEASE, [this, e]);
+            }
         },
         isActive : function isActive() {
             return this._active;
         },
         /**
          * set the active state of the button
-         * @param actice {bool} "true" to set as active "false" to not 
+         * @param actice {bool} "true" to set as active "false" to not
          **/
         setActive : function setActive (active) {
             this._active = !!active;
