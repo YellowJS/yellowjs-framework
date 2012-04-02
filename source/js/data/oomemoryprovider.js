@@ -25,7 +25,7 @@
 
             var conf = oo.override(defaultConf, config);
 
-            config.success.call(global);
+            config.success.call(global, data);
         },
         fetch: function fetch (config) {
             var defaultConf = {

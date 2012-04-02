@@ -167,6 +167,7 @@
 
         /**
          * generate a a cache key composed with the cachePrefix and the paramString
+         *
          * @param  {string} paramString a string to identify a cache entry (here the query string)
          * @return {strin}
          */
@@ -210,6 +211,7 @@
 
         /**
          * get the cache return true, if cache is available, false if not
+         *
          * @param  {string}   parameterString specify the paramters we would like to use to ensure the cache is still valid
          * @param  {function} callback        callback function
          * @return {bool}
