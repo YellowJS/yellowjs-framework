@@ -391,7 +391,7 @@ var oo = (function (oo) {
 
             listNode.addEventListener(Touch.EVENT_START, function (e) {
                 if(that._available){
-                    that._startX = Touch.getPositionX(e);
+                    that._startX = this._lastPos = Touch.getPositionX(e);
                     that['_transitionStart'+that._transitionType]();
                     touchMoveTempo = 0;
                     that.triggerEvent(Carousel.EVENT_PRESS);
@@ -401,7 +401,9 @@ var oo = (function (oo) {
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
                 if(e.type == "mousemove") return;
                 if(that._available){
-                    var diff = Touch.getPositionX(e) - that._startX;
+                    this._lastPos = Touch.getPositionX(e);
+                    var diff = this._lastPos - this._startX;
+
                     if(Math.abs(diff) > 70) {
                         that['_transitionMove'+that._transitionType](diff);
                         
@@ -413,8 +415,8 @@ var oo = (function (oo) {
             listNode.addEventListener(Touch.EVENT_END, function () {
                 if(that._available){
                     that._moved = false;
-                    var cVal = that.getTranslateX(),
-                        diff = cVal - that._startTranslate;
+                    var cVal = this._lastPos,
+                        diff = cVal - that._startX;
                         that['_transitionEnd'+that._transitionType](cVal, diff);
                     
                     
@@ -487,7 +489,7 @@ var oo = (function (oo) {
 
         _transitionEndSlide : function _transitionEndSlide(cVal,diff){
             if(Math.abs(diff) > 150){
-                if( cVal - this._startTranslate < 0 ){
+                if( cVal - this._startX < 0 ){
                     this.goToNext();
                 } else {
                     this.goToPrev();
