@@ -33,6 +33,7 @@
             this._panelsDic = [];
             this._enabledPanels = [];
             this._focusedStack = [];
+            this._stages = {};
         },
         /**
          * return true if the panel has already been added
@@ -246,6 +247,59 @@
 
             if (typeof fn == 'function')
                 fn.call(global, this.getPanel(this._identifierToIndex(identifier)));
+        },
+
+        // Stages API
+        //
+        // in constructor
+        // this._stages = {};
+        //
+        _stages: null,
+        _stageDic: null,
+        _getStageDic: function _getStageDic() {
+            this._stageDic || (this._stageDic = {});
+            return this._stageDic;
+        },
+        _stringToStageObj: function _stringToStageObj(str) {
+            var stageObj;
+            if ('string' === typeof stage)
+                // @todo : check to secure the use of eval or remove it
+                eval("stageObj = this._stages." + stage);
+            return stageObj;
+        },
+        createStage: function createStage(name, into) {
+            var re = /^[a-zA-Z]*$/,
+                names = name.split('.'),
+                ns = 'this._stages';
+
+            names.forEach(function (item) {
+                if (re.test(item)) {
+                    ns += '.' + item;
+                    eval(ns + " || (" + ns + " = {})");
+                } else {
+                    throw "Invalid name or namespace for a stage name";
+                }
+            }, this);
+        },
+        addToStage: function addToStage(panel, stage, position) {
+            var stageObj, index = parseInt(position, 10);
+            stageObj = this._stringToStageObj(stage);
+
+            if (stageObj[index])
+                throw "Invalid position for panel";
+                
+            stageObj[index] = panel;
+            // this.getPanel(panel).setStage(stage); ???
+            this._getStageDic()[panel] = stage;
+
+        },
+        removeFromStage: function removeFromStage(panel) {
+            var stageObj, index = parseInt(position, 10);
+            stageObj = this._stringToStageObj(this._getStageDic()[panel]);
+                
+            stageObj[index] = null;
+            delete stageObj[index];
+            // panel.setStage(null); ???
         }
     });
     
