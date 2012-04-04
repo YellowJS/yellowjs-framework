@@ -212,6 +212,7 @@ oo = pline = (function (window) {
          * @see  createPanelClass
          */
         createPanel: function createPanel(panel, noRegister) {
+            console.warn('This method is deprecated, use oo.createPanelClass() instead');
             return this.createPanelClass(panel, noRegister);
         },
 
