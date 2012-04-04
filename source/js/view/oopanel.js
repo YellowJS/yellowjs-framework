@@ -78,7 +78,7 @@
                 //Warning : avoid the cached dom value cause bug in android navigator when orientationchange is fired
             var translateDist = vp.getWidth(false, true) * (direction == Viewport.ANIM_RTL ? -1 : 1);
             var that = this;
-            this.translateTo({x:translateDist}, Viewport.ANIM_DURATION, function () {
+            this.translateTo({x:translateDist}, anim_duration, function () {
                 that.setDisplay('none');
             });
         },
