@@ -15,10 +15,15 @@
     var Viewport = oo.getNS('oo.view').Viewport = oo.Class(oo.view.Dom, {
 
         STATIC : {
-            ANIM_RTL : 'rtl',
-            ANIM_LTR : 'ltr',
+            ANIM_RTL : '1',
+            ANIM_LTR : '2',
+            ANIM_UP : '3',
+            ANIM_DOWN : '4',
+            ANIM_SIBLING : '5',
             NO_ANIM : 'none',
-            ANIM_DURATION : 750
+            ANIM_DURATION : 750,
+            APPEND_TO_STAGE: 'append',
+            PREPEND_TO_STAGE: 'prepend'
         },
         constructor : function constructor(root){
             root = root || oo.getConfig('viewportSelector');
@@ -33,7 +38,8 @@
             this._panelsDic = [];
             this._enabledPanels = [];
             this._focusedStack = [];
-            this._stages = {};
+            // default stage 'main'
+            this._stages = {main: {}};
         },
         /**
          * return true if the panel has already been added
@@ -200,7 +206,7 @@
             var dir, oldP, newP;
 
             if (arguments.length <= 2) {
-                dir = newPanel || Viewport.ANIM_RTL;
+                dir = newPanel;
                 newP = oldPanel;
                 oldP = this._indexToIdentifier(this.getFocusedPanel(true));
             } else {
@@ -209,6 +215,26 @@
                 dir = direction;
             }
                 
+            // uses stages tree to determine which animation to use
+            if (!dir) {
+                var oldPStage = this._getStageDic()[oldP],
+                    newPStage = this._getStageDic()[newP];
+                if (oldPStage == newPStage) {
+                    // for siblings panels
+                    var stageNS = this._stringToStageObj(oldPStage);
+                    if (stageNS.panels.indexOf(oldPStage) > stageNS.panels.indexOf(newPStage)) {
+                        dir = Viewport.ANIM_LTR;
+                    } else {
+                        dir = Viewport.ANIM_RTL;
+                    }
+                }
+                else {
+                    // for non siblings panels
+                    // implement UP/DOWN transition ?
+                    dir = Viewport.NO_ANIM;
+                }
+            }
+
             this.showPanel(newP, dir);
 
             if (oldP)
@@ -221,8 +247,14 @@
          * @param  {oo.view.Panel} p  the panel to register
          * @return {void}
          */
-        register: function register(id, p) {
+        register: function register(id, p, stage, pos) {
             this._panelClasses[id] = p;
+            stage || (stage = "main");
+
+            var conf = oo.override({stage:"main", pos:Viewport.APPEND_TO_STAGE}, {stage:stage, pos:pos});
+
+            if (!this.addToStage(id, conf.stage, conf.pos))
+                throw "The panel has not been added to a stage - it has already been added in another stage";
         },
         /**
          * retunrs the panel object associated with the given identifier
@@ -236,23 +268,16 @@
 
            return this._panels[this._identifierToIndex(identifier)] || false;
         },
-        /**
-         * @deprecated
-         * DO NOT USE IT ANYMORE !!!
-         */
-        show: function show (identifier, fn) {
-            if (!this.hasPanel(identifier)) {
-                this.addPanel(identifier, true);
-            }
-
-            if (typeof fn == 'function')
-                fn.call(global, this.getPanel(this._identifierToIndex(identifier)));
-        },
 
         // Stages API
         //
         // in constructor
         // this._stages = {};
+        //
+        // STATIC: {
+        //   APPEND_TO_STAGE: 'append',
+        //   PREPEND_TO_STAGE: 'prepend'
+        // }
         //
         _stages: null,
         _stageDic: null,
@@ -262,9 +287,9 @@
         },
         _stringToStageObj: function _stringToStageObj(str) {
             var stageObj;
-            if ('string' === typeof stage)
+            if ('string' === typeof str)
                 // @todo : check to secure the use of eval or remove it
-                eval("stageObj = this._stages." + stage);
+                eval("stageObj = this._stages." + str);
             return stageObj;
         },
         createStage: function createStage(name, into) {
@@ -273,32 +298,66 @@
                 ns = 'this._stages';
 
             names.forEach(function (item) {
-                if (re.test(item)) {
+                if (re.test(item) && item != 'panels') {
                     ns += '.' + item;
                     eval(ns + " || (" + ns + " = {})");
                 } else {
                     throw "Invalid name or namespace for a stage name";
                 }
             }, this);
+
+            return ns;
+        },
+        removeStage: function removeStage(stage) {
+            // if remove a nstage containnings children stages, children are not removed properly
+            var stageObj, lastIndex = stage.lastIndexOf('.'), lastPart, parentStage;
+                if (-1 !== lastIndex) {
+                    lastPart = stage.substr(lastIndex + 1);
+                    parentStage = stage.substr(0, lastIndex);
+                    stageObj = this._stringToStageObj(parentStage);
+                } else {
+                    lastPart = stage;
+                    stageObj = this._stages;
+                }
+
+            console.log(lastIndex, lastPart, parentStage);
+
+            stageObj[lastPart] = null;
+            delete stageObj[lastPart];
+            // panel.setStage(null); ???
         },
         addToStage: function addToStage(panel, stage, position) {
+            if (this._getStageDic()[panel])
+                return false;
+
             var stageObj, index = parseInt(position, 10);
             stageObj = this._stringToStageObj(stage);
+            if (!stageObj)
+                stageObj = this.createStage(stage);
 
-            if (stageObj[index])
-                throw "Invalid position for panel";
-                
-            stageObj[index] = panel;
+
+            position = position || Viewport.APPEND_TO_STAGE;
+
+            if (!stageObj.panels) {
+                stageObj.panels = [];
+            }
+
+            position = position == Viewport.APPEND_TO_STAGE ? stageObj.panels.length : position == Viewport.PREPEND_TO_STAGE ? 0 : parseInt(position, 10);
+
+            stageObj.panels.splice(position, 0, panel);
+
             // this.getPanel(panel).setStage(stage); ???
             this._getStageDic()[panel] = stage;
 
+            return true;
         },
         removeFromStage: function removeFromStage(panel) {
-            var stageObj, index = parseInt(position, 10);
+            var stageObj;
             stageObj = this._stringToStageObj(this._getStageDic()[panel]);
                 
-            stageObj[index] = null;
-            delete stageObj[index];
+            stageObj.panels.splice(stageObj.panels.indexOf(panel), 1);
+            this._getStageDic()[panel] = null;
+            delete this._getStageDic()[panel];
             // panel.setStage(null); ???
         }
     });

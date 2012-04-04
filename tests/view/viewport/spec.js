@@ -17,24 +17,47 @@ describe("ooviewport.js", function() {
         });
 
         describe("stage API", function () {
-            it ("should create a stage", function () {
-                v.createStage('main');
 
-                expect(undefined !== v._stages.main).toBeTruthy();
+            describe ("creating/deleting stages", function () {
+                it ("should create a stage", function () {
+                    v.createStage('main');
+
+                    expect(undefined !== v._stages.main).toBeTruthy();
+                });
+
+                it ("should create a nested stages", function () {
+                    v.createStage('main.posts');
+
+                    expect(undefined !== v._stages.main.posts).toBeTruthy();
+                });
+
+                it ("should delete a stage", function () {
+                    v.createStage('main.posts');
+                    v.removeStage('main.posts');
+
+                    console.log(v._stages.main.posts);
+                    expect(undefined === v._stages.main.posts).toBeTruthy();
+                });
+
+                it ("should create sibling stages", function () {
+                    v.createStage('main.posts');
+                    v.createStage('main.videos');
+
+                    expect(undefined !== v._stages.main.posts).toBeTruthy();
+                    expect(undefined !== v._stages.main.videos).toBeTruthy();
+                });
             });
 
-            it ("should create a nested stages", function () {
-                v.createStage('main.posts');
+            describe ("adding/removing panel to/from stages", function () {
+                it("should add the panel toto to the stage \"main\"", function() {
+                    v.addToStage('toto', 'main');
+                    expect(v._stages.main.panels.length).toEqual(1);
+                });
 
-                expect(undefined !== v._stages.main.posts).toBeTruthy();
-            });
-
-            it ("should create sibling stages", function () {
-                v.createStage('main.posts');
-                v.createStage('main.videos');
-
-                expect(undefined !== v._stages.main.posts).toBeTruthy();
-                expect(undefined !== v._stages.main.videos).toBeTruthy();
+                it("should remove the panel from the stage it is registered", function() {
+                    v.removeFromStage('toto');
+                    expect(v._stages.main.panels.length).toEqual(0);
+                });
             });
 
         });
@@ -56,6 +79,11 @@ describe("ooviewport.js", function() {
                 });
             });
 
+            afterEach(function () {
+                v.removeFromStage('panel-1');
+                v.removeFromStage('panel-2');
+            });
+
             it ("should not have the panel", function () {
                 expect(v.hasPanel("panel-test")).toEqual(false);
             });
@@ -66,7 +94,7 @@ describe("ooviewport.js", function() {
             });
 
             it ("should render a dom node and append it", function () {
-                v.show('panel-1');
+                v.showPanel('panel-1');
                 
                 //var s = jasmine.FakeTimer('timeout');
 
@@ -85,7 +113,7 @@ describe("ooviewport.js", function() {
             });
 
             it ("should render a dom node and append it", function () {
-                v.show('panel-2');
+                v.showPanel('panel-2');
                 
                 //var s = jasmine.FakeTimer('timeout');
 
