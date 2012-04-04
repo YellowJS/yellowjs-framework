@@ -222,7 +222,7 @@
                 if (oldPStage == newPStage) {
                     // for siblings panels
                     var stageNS = this._stringToStageObj(oldPStage);
-                    if (stageNS.panels.indexOf(oldPStage) > stageNS.panels.indexOf(newPStage)) {
+                    if (stageNS.panels.indexOf(oldP) > stageNS.panels.indexOf(newP)) {
                         dir = Viewport.ANIM_LTR;
                     } else {
                         dir = Viewport.ANIM_RTL;
@@ -306,7 +306,7 @@
                 }
             }, this);
 
-            return ns;
+            return eval(ns);
         },
         removeStage: function removeStage(stage) {
             // if remove a nstage containnings children stages, children are not removed properly
