@@ -43,7 +43,7 @@
             }, this));
         },
         markAsError: function markAsError() {
-            this.renderTo(this._getContainer());
+            this.renderTo(this.getContainer());
         },
         prepareData: function prepareData(data) {
             return data;

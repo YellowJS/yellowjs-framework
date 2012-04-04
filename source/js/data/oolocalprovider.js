@@ -6,7 +6,7 @@
         constructor: function contructor (options) {
             LocalProvider.Super.call(this, options);
 
-            // /!\ give an empty callback is not the best idea i have never had
+            // /!\ give an empty callback is probably not the best idea
             this._store = Lawnchair({name: this._name, record: 'record'}, function () {});
         },
         save: function save (data, config) {
@@ -44,6 +44,20 @@
         },
         get: function get (cond, callback) {
             this._store.get(cond, callback);
+        },
+        remove: function remove (key, callback) {
+            if (!oo.isArray(key))
+                key = [key];
+
+            var that = this, removedCount = 0, toRemoveLength = key.length, cb = function () {
+                removedCount++;
+                if (removedCount == toRemoveLength)
+                    callback();
+            };
+
+            key.forEach(function (item) {
+                that._store.remove(item, cb);
+            });
         },
         clearAll: function clearAll () {
             this._store.nuke();

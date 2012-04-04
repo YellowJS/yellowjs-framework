@@ -49,11 +49,13 @@
          * @type {string}
          */
         _cachePrefix: '',
+        _noCache: null,
 
         constructor: function constructor (options) {
 
             var defaultConf = {
-                cacheProvider: 'memory'
+                cacheProvider: 'memory',
+                noCache: false
             };
 
             var opt = oo.override(defaultConf, options);
@@ -65,8 +67,14 @@
 
             AjaxProvider.Super.call(this, {name: opt.name});
 
-            this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))({name: 'flavius-cache__' + opt.name});
-            this._cachePrefix = oo.generateId();
+            this._noCache = opt.noCache;
+
+
+            if (!this._noCache) {
+                this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))({name: 'flavius-cache__' + opt.name});
+                //this._cachePrefix = oo.generateId();
+                this._cachePrefix = this._url;
+            }
         },
 
         /**
@@ -92,7 +100,9 @@
             var conf = oo.override(defaultConf, config);
 
             oo.ajax().post(this._url, data, oo.createDelegate(function () {
-                this._clearCache();
+                if (!this._noCache)
+                    this._clearCache();
+
                 conf.success.call(global);
             }, this), conf.error);
         },
@@ -123,13 +133,17 @@
 
             var callback = oo.createDelegate(function (data) {
                 var paramString = oo.serialize(conf.params);
-                this._clearCache(paramString);
-                this._saveCache( data, paramString, function () {
+                if (!this._noCache) {
+                    this._clearCache(paramString);
+                    this._saveCache( data, paramString, function () {
+                        conf.success.call(global, data);
+                    } );
+                } else {
                     conf.success.call(global, data);
-                } );
+                }
             }, this);
 
-            if (clearCache || !this._getCache(oo.serialize(conf.params), callback))
+            if (clearCache || this._noCache || !this._getCache(oo.serialize(conf.params), callback))
                 oo.ajax().get(this._url, conf.params, callback, conf.error);
 
         },
@@ -142,6 +156,10 @@
          * @return {void}
          */
         get: function get (cond, callback) {
+
+            if (this._noCache)
+                throw "This method is available only if cache is activated";
+
             var that = this;
 
             var paramStringFull = cond || (this._cachedParameterString[this._cachedParameterString.length -1]);
@@ -162,6 +180,9 @@
          * @return {void}
          */
         clearAll: function clearAll () {
+            if (this._noCache)
+                throw "This method is available only if cache is activated";
+
             this._clearCache();
         },
 
@@ -182,6 +203,10 @@
          * @return {void}
          */
         _clearCache: function _clearCache(paramString) {
+
+            if (this._noCache)
+                throw "This method is available only if cache is activated";
+
             if (!paramString) {
                 this._cacheProvider.clearAll();
                 this._cachedParameterString = [];
@@ -200,6 +225,10 @@
          * @return {void}
          */
         _saveCache: function _saveCache(data, parameters, callback) {
+
+            if (this._noCache)
+                throw "This method is available only if cache is activated";
+
             var dataToStore = {};
             dataToStore.key = this._genCacheKey(parameters);
             dataToStore.data = data;
@@ -217,6 +246,10 @@
          * @return {bool}
          */
         _getCache: function _getCache(parameterString, callback) {
+            
+            if (this._noCache)
+                throw "This method is available only if cache is activated";
+
             if (-1 !== this._cachedParameterString.indexOf(this._genCacheKey(parameterString))) {
                 this._cacheProvider.fetch(function(data) {
                     callback(data.data);

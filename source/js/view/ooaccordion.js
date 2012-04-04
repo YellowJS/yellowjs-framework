@@ -2,10 +2,9 @@
 
     // shorthand
     var Dom = oo.view.Dom,
-        Touch = oo.core.Touch,
-        ns = oo.getNS('oo.view');
+        Touch = oo.core.Touch;
     
-    var Accordion = ns.Accordion = oo.Class(oo.view.Element, {
+    var Accordion = oo.getNS('oo.view').Accordion = oo.Class(oo.view.Element, {
         STATIC: {
             CLS_OPENED: 'accordion-section-opened',
             CLS_CLOSED: 'accordion-section-closed',
@@ -13,6 +12,7 @@
             SELET_SECTION:'[data-accordioncontent]'
         },
         _isOpened : true,
+        _needToRender: false,
         constructor: function constructor(conf) {
             Accordion.Super.call(this, conf);
             this._prepareView();
@@ -25,6 +25,7 @@
                 } else {
                     that.openSection(sec);
                 }
+                that.triggerBubblingEvent(oo.view.Element.REFRESH_CONTENT);
             };
             this.children().forEach(function(item){
                 var sec = new oo.view.Dom(item);

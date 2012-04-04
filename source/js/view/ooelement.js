@@ -17,6 +17,7 @@
         STATIC: {
             APPEND : 'append',
             PREPEND : 'prepend',
+            REFRESH_CONTENT: 'refresh_content',
             register: function register (cls, codename) {
                 if (viewRepository[codename])
                     throw 'Already existing codename';
@@ -42,6 +43,9 @@
             templateEngine : null
         },
 
+        // references elements registered into this view
+        _uiElements: null,
+
         _needToRender: true,
         
         _tpl : null,
@@ -63,11 +67,57 @@
                 delete options.template;
             }
 
+            if (options.hasOwnProperty('onEnabled')) {
+                this.onEnabled = options.onEnabled;
+                delete options.onEnabled;
+            }
+
+            this._uiElements = {};
+
         },
+        getEl: function getEl(id) {
+            return this._uiElements[id] || null;
+        },
+        addEl: function addEl(el) {
+            this._uiElements[el.getId()] = el;
+            el.setContainer(this);
+        },
+        removeEl: function removeEl(id) {
+            var el = this.getEl(id);
+            if (null !== el) {
+                this._uiElements.slice(this._uiElements.indexOf(el), 1);
+                el.destroy();
+            }
+        },
+        initElement: function initElement() {
+            
+            for (var id in this._uiElements) {
+                var el = this._uiElements[id];
+                if ('needToRender' in el && el.needToRender())
+                    el.renderTo(this);
+            }
+
+            return this;
+        },
+        /**
+         * do exactly the same thing as the oo.createElement, but add a prefix
+         * to the el property in order to "scope" the newly created
+         * element into the current one (for Dom query performance purpose)
+         *
+         * @see oo.createElement
+         */
+        createElement: function createElement (type, opt) {
+            // if (opt.el)
+            //     opt.el = '#' + this.getId() + ' ' + opt.el;
+            var el = oo.createElement(type, opt);
+            this.addEl(el);
+            return el;
+        },
+
         setContainer: function setContainer(container) {
             this._container = container;
         },
-        _getContainer: function _getContainer() {
+        getContainer: function getContainer() {
             return this._container;
         },
         needToRender: function needToRender() {
@@ -130,27 +180,26 @@
 
         _onEnabled: function _onEnabled() {
             this.onEnabled();
+            this.initElement();
         },
 
         onEnabled: function onEnabled() {
 
         },
+        triggerBubblingEvent: function triggerBubblingEvent (evtName, params) {
+            if (!oo.isArray(params)) {
+                params = params ? [params] : [];
+            }
+            var _container = this.getContainer(), evt = {
+                bubble: true,
+                stopPropagation: function () { this.bubble = false; }
+            };
+            params.splice(0,0, evt);
+            this.triggerEvent(evtName, params);
 
-        /**
-         * do exactly the same thing as the oo.createElement, but add a prefix to the el property in order to "scope" the newly created element into the current one (for Dom query performance purpose)
-         * @see oo.createElement
-         */
-        createElement: function createElement (type, opt) {
-            if (opt.el)
-                opt.el = '#' + this.getId() + ' ' + opt.el;
-            return oo.createElement(type, opt);
+            if (evt.bubble && _container && _container.triggerBubblingEvent)
+                _container.triggerBubblingEvent(evtName, params);
         }
-        //deprecated
-        /*,
-        setScrollable: function setScrollable (orientation) {
-            //if (null === this.getDomObject.querySelector('.content'))
-            var scroll = new oo.view.Scroll(this.getDomObject(), orientation, orientation);
-        }*/
     });
 
     oo.view.Element.register(Element, 'node');

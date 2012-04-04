@@ -189,7 +189,7 @@ oo = pline = (function (window) {
          * @param  {bool} noRegister   disable auto registering into the viewport
          * @return {function}          the class of your panel - should not be used without a good reason ;)
          */
-        createPanel: function createPanel(panel, noRegisterOrConf) {
+        createPanelClass: function createPanelClass(panel, noRegisterOrConf) {
             if (!(typeof panel == 'object' && 'id' in panel))
                 throw 'Wrong parameter';
 
@@ -209,6 +209,15 @@ oo = pline = (function (window) {
             
             return p;
             
+        },
+
+        /**
+         * @deprecated
+         * @see  createPanelClass
+         */
+        createPanel: function createPanel(panel, noRegister) {
+            console.warn('This method is deprecated, use oo.createPanelClass() instead');
+            return this.createPanelClass.apply(this, arguments);
         },
 
         /**
@@ -346,6 +355,20 @@ oo = pline = (function (window) {
                 paramArrayString.push(prop + '=' + encodeURI( (typeof paramObj[prop] == 'object' ? paramObj[prop].toString() : paramObj[prop]) ));
             }
             return paramArrayString.join('&');
+        },
+
+        /**
+         * utility method with fallback to test if a given object is an array
+         * @param  {[type]}  param [description]
+         * @return {Boolean}       [description]
+         */
+        isArray: function isArray (obj) {
+            var _isArray = Array.isArray;
+            if (_isArray) {
+                return _isArray(obj);
+            } else {
+                return obj.prototype.toString() === "[object Array]";
+            }
         }
 
     };
