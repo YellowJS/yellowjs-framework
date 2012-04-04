@@ -342,9 +342,12 @@
                 stageObj.panels = [];
             }
 
-            position = position == Viewport.APPEND_TO_STAGE ? stageObj.panels.length : position == Viewport.PREPEND_TO_STAGE ? 0 : parseInt(position, 10);
+            posToInsert = position == Viewport.APPEND_TO_STAGE ? stageObj.panels.length : position == Viewport.PREPEND_TO_STAGE ? 0 : null;
 
-            stageObj.panels.splice(position, 0, panel);
+            if (null === posToInsert)
+                stageObj.panels[parseInt(position, 10)] = panel;
+            else
+                stageObj.panels.splice(posToInsert, 0, panel);
 
             // this.getPanel(panel).setStage(stage); ???
             this._getStageDic()[panel] = stage;
