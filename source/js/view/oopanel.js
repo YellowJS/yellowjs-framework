@@ -14,6 +14,9 @@
             ON_SHOW: 'on_show',
             ON_HIDE: 'on_hide'
         },
+
+        _data: null,
+
         constructor: function constructor() {
 
             Panel.Super.call(this, {el: document.createElement('div')});
@@ -21,12 +24,14 @@
             var that = this;
             //window.addEventListener('orientationchange', that.refresh,false);
             
+            this._data = {}
+
             if ('init' in this)
                 this.init();
         },
         render: function render() {
             this.classList.addClass('oo-panel');
-            this.appendHtml(Panel.Super.prototype.render.call(this));
+            this.appendHtml(Panel.Super.prototype.render.call(this, this._data));
 
             return this;
         },
@@ -86,6 +91,9 @@
           var vp = oo.getViewport();
           vp.getWidth(null, true);
           vp.getHeight(null, true);
+        },
+        setData: function setData (data) {
+            this._data = data;
         }
     });
 
