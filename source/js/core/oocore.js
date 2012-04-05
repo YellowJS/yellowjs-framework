@@ -130,7 +130,13 @@ oo = pline = (function (window) {
         /**
          * create a controller from the class passed in parameter
          */
-        createController: function createController(actions, noRegister) {
+        createController: function createController(identifier, actions) {
+
+            if (1 === arguments.length) {
+                actions = identifier;
+                identifier = null;
+            }
+
             if(!actions && ( 'object' !== typeof actions)){
                 throw new Error('Wrong parameter');
             }
@@ -142,8 +148,8 @@ oo = pline = (function (window) {
 
             var c = oo.Class(oo.router.Controller, actions);
 
-            // if (!noRegister)
-            //     this.getRouter().addController(identifier, c);
+            if (identifier)
+                this.getRouter().addController(identifier, c);
 
             return c;
         },

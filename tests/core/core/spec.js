@@ -117,12 +117,24 @@ describe("oocore.js", function() {
             }).toThrow('Wrong parameter');
         });
 
-        var c = oo.createController({
-            'indexAction' : function indexAction(){
-            }
+        it('must return a function and register the controller', function(){
+
+            var c = oo.createController('index', {
+                'indexAction' : function indexAction(){
+                }
+            });
+
+            expect( 'function' === typeof c).toBeTruthy();
+            expect( undefined !== oo.getRouter()._controllers.index ).toBeTruthy();
         });
 
-        it('must return a function', function(){
+        it('must return a function but not register the controller', function(){
+
+            var c = oo.createController({
+                'indexAction' : function indexAction(){
+                }
+            });
+            
             expect( 'function' === typeof c).toBeTruthy();
         });
 
