@@ -1,1 +1,1 @@
-java -jar ./compiler/JSBuilder2/JSBuilder2.jar --projectFile ./compiler/config-plinejs-n.json --homeDir .
+java -jar ./compiler/JSBuilder2/JSBuilder2.jar --projectFile ./compiler/config-yellowjs-n.json --homeDir .

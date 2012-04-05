@@ -1,12 +1,12 @@
 {
-    "projectName" : "PlineJs",
+    "projectName" : "YellowJs",
     "deployDir" : "build",
-    "licenseText": "PlineJS v0.4 - mobile framework\nhttp://plinejs.org",
+    "licenseText": "YellowJS v0.5 - mobile framework\nhttp://yellowjs.org",
     "resources": [],
     "pkgs" : [
         {
-            "name" : "plinejspkg",
-            "file" : "plinejs-0.4-n.js",
+            "name" : "yellowjspkg",
+            "file" : "yellowjs-0.5-n.js",
             "isDebug" : true,
             "fileIncludes" : [
                 {
