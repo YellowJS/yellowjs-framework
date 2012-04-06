@@ -11,7 +11,7 @@
     var Touch = oo.core.Touch;
     //Events = oo.Events;
      
-    var Button = oo.getNS('oo.view').Button = oo.Class(oo.view.Dom, oo.core.mixins.Events, {
+    var Button = oo.getNS('oo.view').Button = oo.Class(oo.view.Element, {
         STATIC : {
             EVT_TOUCH : 'touch',
             EVT_RELEASE : 'release'
@@ -25,10 +25,12 @@
             if(!opt.hasOwnProperty('el'))
                 throw "call Element constructor but \"el\" property of object options is missing";
 
-            Button.Super.call(this, opt.el);
-
-            if (opt.hasOwnProperty('onrelease') && typeof opt.onrelease === 'function')
+            if (opt.hasOwnProperty('onrelease') && typeof opt.onrelease === 'function') {
                 this.onRelease = opt.onrelease;
+                delete opt.onRelease;
+            }
+
+            Button.Super.call(this, opt);
 
             this._active = false;
             this._initEvents();
