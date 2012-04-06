@@ -174,7 +174,9 @@ var oo = (function (oo) {
             var s = (id < this._activePanel ? +1 : -1 );
             this["_setTransition"+this._transitionType](id, s);
             
-            this.triggerEvent(Carousel.EVENT_GOTO, [this._newPanel]);
+            var oldOne = this._activePanel ? this._getItem(this._activePanel) : null,
+                newOne = this._getItem(this._newPanel);
+            this.triggerEvent(Carousel.EVENT_GOTO, [this._newPanel, oldOne, newOne]);
             this._updatePager(this._newPanel);
 
             if (this._newPanel === this._activePanel) {
@@ -389,7 +391,7 @@ var oo = (function (oo) {
 
             listNode.addEventListener(Touch.EVENT_START, function (e) {
                 if(that._available){
-                    that._startX = Touch.getPositionX(e);
+                    that._startX = this._lastPos = Touch.getPositionX(e);
                     that['_transitionStart'+that._transitionType]();
                     touchMoveTempo = 0;
                     that.triggerEvent(Carousel.EVENT_PRESS);
@@ -399,18 +401,22 @@ var oo = (function (oo) {
             listNode.addEventListener(Touch.EVENT_MOVE, function (e) {
                 if(e.type == "mousemove") return;
                 if(that._available){
-                    var diff = Touch.getPositionX(e) - that._startX;
-                    that['_transitionMove'+that._transitionType](diff);
-                    
-                    that._moved = true;
+                    this._lastPos = Touch.getPositionX(e);
+                    var diff = this._lastPos - this._startX;
+
+                    if(Math.abs(diff) > 70) {
+                        that['_transitionMove'+that._transitionType](diff);
+                        
+                        that._moved = true;
+                    }
                 }
             }, false);
 
             listNode.addEventListener(Touch.EVENT_END, function () {
                 if(that._available){
                     that._moved = false;
-                    var cVal = that.getTranslateX(),
-                        diff = cVal - that._startTranslate;
+                    var cVal = this._lastPos,
+                        diff = cVal - that._startX;
                         that['_transitionEnd'+that._transitionType](cVal, diff);
                     
                     
@@ -451,7 +457,7 @@ var oo = (function (oo) {
             }, false);
 
             window.addEventListener("orientationchange",function(){
-                that.refresh.call(that);
+                that.refresh();
             },false);
 
             //swipe
@@ -467,7 +473,7 @@ var oo = (function (oo) {
             
             if(this._transitionType !== "Custom"){
                 listNode.addEventListener('webkitTransitionEnd',function(e){
-                    that.onEndTransition.apply(that);
+                    that.onEndTransition();
                 },false);
             }
             /*listNode.addEventListener('webkitTransitionEnd',function(e){
@@ -482,8 +488,8 @@ var oo = (function (oo) {
         },
 
         _transitionEndSlide : function _transitionEndSlide(cVal,diff){
-            if(Math.abs(diff) > 50){
-                if( cVal - this._startTranslate < 0 ){
+            if(Math.abs(diff) > 150){
+                if( cVal - this._startX < 0 ){
                     this.goToNext();
                 } else {
                     this.goToPrev();

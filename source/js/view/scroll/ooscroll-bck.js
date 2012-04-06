@@ -1,12 +1,3 @@
-/**
- * emulate the overflow:auto
- *
- * @namespace oo.view
- * @class Scroll
- * @requires oo.view.Dom, oo.core.Touch
- *
- * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
- */
 (function (oo) {
 
     // shorthand
@@ -194,10 +185,10 @@
                     for (var i=that._sections.y.length - 1 ; i>=0 && -newPos < that._sections.y[i]; i--);
 
                     currentSection = (i <= 0 ? 0 : i);
-                    if (currentSection !== that._currentSection.y)
+                    if (that._sections.y[currentSection] !== that._currentSection.y)
                         that.triggerEvent('sectionChange', [currentSection, that._currentSection.y]);
 
-                    that._currentSection.y = currentSection;
+                    that._currentSection.y = that._sections.y[currentSection];
 
                     that._content.setTranslateY(newPos);
                     that._vscrollbar.setTranslateY(that._determineScrollbarTranslate(newPos, Scroll.VERTICAL));
@@ -219,22 +210,22 @@
                     for (var j=that._sections.x.length - 1 ; j>=0 && -newPos < that._sections.x[j]; j--);
 
                     currentSection = (j <= 0 ? 0 : j);
-                    if (currentSection !== that._currentSection.x)
+                    if (that._sections.y[currentSection] !== that._currentSection.x)
                         that.triggerEvent('sectionChange', [currentSection, that._currentSection.x]);
 
-                    that._currentSection.x = currentSection;
+                    that._currentSection.x = that._sections.x[currentSection];
 
                     that._content.setTranslateX(newPos);
                     that._hscrollbar.setTranslateX(that._determineScrollbarTranslate(newPos, Scroll.HORIZONTAL));
                 }
 
                 touchMoveTempo++;
-                // if (touchMoveTempo > 300) {
+                if (touchMoveTempo > 100) {
                     that._touchInterY = Touch.getPositionY(e);
                     that._touchInterX = Touch.getPositionX(e);
-                //     that._startTime = (new Date()).getTime();
-                //     touchMoveTempo = 0;
-                // }
+                    that._startTime = (new Date()).getTime();
+                    touchMoveTempo = 0;
+                }
 
                 e.preventDefault();
 
@@ -246,7 +237,7 @@
                 var stopTime = (new Date()).getTime();
                 var duration = stopTime - that._startTime;
                 var deceleration = 0.006;
-                var newTime = 500;
+                var newTime = 700;
 
                 function adjustPos (orientation) {
                     var cVal = that._content[['getTranslate', (Scroll.VERTICAL == orientation ? 'Y' : 'X')].join('')](false, true);
@@ -294,19 +285,39 @@
             }, false);
         },
         scrollTo: function scrollTo (val, direction) {
-            var coord = {};
+            var coord = {}, scrollCoord = {}, _this = this;
             if (2 === arguments.length)
                 coord[(Scroll.VERTICAL == direction && (direction == this._orientation || this._orientation == Scroll.BOTH) ? 'y' : 'x')] = - val;
             else if (typeof val === 'object')
                 coord = val;
 
             if ('x' in coord || 'y' in coord) {
-                if ('x' in coord)
+                if ('x' in coord) {
                     coord.x = Math.max(Math.min(coord.x , 0), this._maxhTranslate);
-                if ('y' in coord)
+                    scrollCoord.x = this._determineScrollbarTranslate(coord.x, 'h');
+                }
+                if ('y' in coord) {
                     coord.y = Math.max(Math.min(coord.y , 0), this._maxvTranslate);
+                    scrollCoord.y = this._determineScrollbarTranslate(coord.y, 'v');
+                }
 
                 this._content.translateTo(coord, 1000);
+                if (this._vscrollbar)
+                    this._vscrollbar.translateTo({y:scrollCoord.y},
+                                                  1000,
+                                                  function () {
+                                                    _this._vscrollbar.stopAnimation();
+                                                  },
+                                                  'ease-out');
+                if (this._hscrollbar)
+                    this._hscrollbar.translateTo({x:scrollCoord.x},
+                                                  1000,
+                                                  function () {
+                                                    _this._hscrollbar.stopAnimation();
+                                                  },
+                                                  'ease-out');
+
+
             }
 
         },

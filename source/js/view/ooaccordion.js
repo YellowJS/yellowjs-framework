@@ -13,6 +13,7 @@
         },
         _isOpened : true,
         _needToRender: false,
+        _openedSection : null,
         constructor: function constructor(conf) {
             Accordion.Super.call(this, conf);
             this._prepareView();
@@ -43,8 +44,11 @@
             section.classList.addClass(Accordion.CLS_CLOSED);
         },
         openSection : function openSection(section){
+            if (this._openedSection !== null)
+                this.closeSection(this._openedSection);
             section.classList.removeClass(Accordion.CLS_CLOSED);
             section.classList.addClass(Accordion.CLS_OPENED);
+            this._openedSection = section;
         }
     });
     

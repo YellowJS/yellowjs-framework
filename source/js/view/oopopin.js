@@ -15,6 +15,7 @@
         _isOpened : true,
         onOpen : null,
         onClose : null,
+        closeOnTap:false,
         constructor: function constructor(conf) {
             Popin.Super.call(this, conf);
 
@@ -22,9 +23,16 @@
                 this._createButtonClose(conf.close);
             }
 
+            if(conf.hasOwnProperty('closeOnTap')){
+                this.closeOnTap = conf.closeOnTap;
+            }
+
             if(!this.classList){
                 this.setDomObject();
             }
+
+            this.onOpen = conf.onOpen || oo.emptyFn;
+            this.onClose = conf.onClose || oo.emptyFn;
 
             this._initEvents();
 
@@ -95,6 +103,13 @@
             this.getDomObject().addEventListener('webkitTransitionEnd',function(){
                 that[!that._isOpened ? "_setClosed": "_setOpened"]();
             },false);
+
+            if(this.closeOnTap){
+              var touchendHandler = function touchendHandler(){
+                that.close();
+              };
+              this.getDomObject().addEventListener(oo.core.Touch.EVENT_END,touchendHandler,false);
+            }
         }
 
     });
@@ -102,3 +117,4 @@
     oo.view.Element.register(Popin, 'popin');
     
 })(oo || {});
+
