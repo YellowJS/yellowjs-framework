@@ -20,7 +20,7 @@ describe("oomodelelement.js", function() {
 
         describe("setModel", function() {
            it('_model must an instance of oo.data.Model', function() {
-                el.setModel({name:'test', provider: 'fake'});
+                el.setModel({name:'test1', provider: 'fake'});
                 expect(el._model instanceof oo.data.Model).toBeTruthy();
             });
         });
@@ -32,7 +32,7 @@ describe("oomodelelement.js", function() {
         });
 
         var model = oo.createModel({
-            'name' : "test",
+            'name' : "test2",
             'provider' : provider
         });
 
