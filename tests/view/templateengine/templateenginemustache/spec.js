@@ -5,7 +5,7 @@ describe("ootemplateenginemustache.js", function() {
  
     describe('render',function(){
      var tpl = '{{#datas}}<li>{{nickname}}</li>{{/datas}}';
-      var predatas = (new oo.data.FakeProvider({'name' : "test"}))._data;
+      var predatas = (new oo.data.FakeProvider({'name' : "test", "data": [{"nickname": "Claire_So"}, {"nickname": "FreakDev"}]}))._data;
  
       var datas = {
         'datas' : predatas
@@ -23,7 +23,7 @@ describe("ootemplateenginemustache.js", function() {
       });
  
       it('list items length must be equal to 2', function(){
-         expect(items.length).toEqual(10);
+         expect(items.length).toEqual(2);
       });
  
       it('first item content must be value1', function(){
