@@ -72,6 +72,16 @@
                 delete options.onEnabled;
             }
 
+            // more consistant API
+            // if (options.hasOwnProperty('onenabled')) {
+            //     this.onEnabled = options.onenabled;
+            //     delete options.onEnabled;
+            // }
+
+            if(options.hasOwnProperty('scrollable')){
+                this.setScrollable(conf.scrollable);
+            }
+
             this._uiElements = {};
 
         },
