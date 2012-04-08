@@ -4,7 +4,12 @@ describe("mixin ooScroll.js", function() {
     model = oo.createModel({
         name : "model-list",
         provider : {
-            type:"fake"
+            type:"fake",
+            data: [{
+                'title': 'super developer'
+            }, {
+                'title': 'js ninja'
+            }]
         }
     });
 
@@ -13,7 +18,7 @@ describe("mixin ooScroll.js", function() {
         list = oo.createElement('list', {
             el : "#listscroll",
             model : model,
-            template: "{{title}}"
+            template: "<ul>{{#loop}}<li>{{title}}</li>{{/loop}}</ul>"
         });
         model.fetch();
         
@@ -36,7 +41,7 @@ describe("mixin ooScroll.js", function() {
             list = oo.createElement('list', {
                 el : "#listscroll",
                 model : model,
-                template: "{{title}}"
+                template: "<ul>{{#loop}}<li>{{title}}</li>{{/loop}}</ul>"
             });
             model.fetch();
             list.setScrollable({
