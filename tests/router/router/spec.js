@@ -205,14 +205,15 @@ describe("oorouter.js", function() {
             runs(function(){
                 var r = oo.getRouter();
                 r.load('/ctl11/c11');
+                this.previousUrl = window.location.href;
                 r.load('/ctl22/c22');
                 //warning : dependencies with the previous test
                 r.back();
             });
-            waits(1000);
+            waits(500);
             runs(function(){
                 var url = window.location.href;
-                this.expect(url).toEqual("http://pline-reader.local/vendor/flavius/tests/router/router/runner.html#/ctl11/c11");
+                expect(url).toEqual(this.previousUrl);
             });
         });
     });
