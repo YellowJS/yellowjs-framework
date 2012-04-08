@@ -13,34 +13,16 @@
     
     //var Events = {};
     
-    var global = this;
-    
-    /**
-     * @internal create an object to wrap infos about the listener
-     * @param  {} listener [description]
-     * @return {[type]}          [description]
-     */
-    function buildListenerConf(listener) {
-        var listenerConf;
-        if (typeof listener == 'object' && listener.sc && listener.fn) {
-            listenerConf = {fn:listener.fn, sc: listener.sc};
-        } else {
-            listenerConf = {fn:listener, sc: global};
-        }
-
-        return listenerConf;
-    }
-
     var Events = oo.getNS('oo.core.mixins').Events = oo.Class({
 
         /**
          * get a singleton instance of the listeners array
          */
         _getListenersArray : function _getListenersArray () {
-            if (!this._listeners)
-                this._listeners = {};
+            if (!this._eventListeners)
+                this._eventListeners = {};
 
-            return this._listeners;
+            return this._eventListeners;
         },
         /**
          * register a listener for a given event name
@@ -49,14 +31,16 @@
          * @param {function} listener  [description]
          */
         addListener : function addListener(eventName, listener){
+
+            if ('function' !== typeof listener)
+                throw "listener must be a function";
+
             var l = this._getListenersArray();
             if (!l[eventName]){
                 l[eventName] = [];
             }
 
-            var listenerConf = buildListenerConf(listener);
-
-            l[eventName].push(listenerConf);
+            l[eventName].push(listener);
 
         },
         /**
@@ -68,28 +52,26 @@
          * @return {void}
          */
         removeListener : function removeListener(eventName, listener) {
+
+            if ('function' !== typeof listener)
+                throw "listener must be a function";
+
             var l = this._getListenersArray();
 
             if (l[eventName]){
-                var listenerConf = buildListenerConf(listener);
-                var index = l[eventName].indexOf(listenerConf);
-                if (-1 != index) {
+                var index = l[eventName].indexOf(listener);
+                if (-1 != index)
                     l[eventName].splice(index, 1);
-                }
             }
         },
+
         /**
-         * the folowing signature is deprecated - sender is not taken into account anymore
-         * trigerEvent(eventName, sender, params)
-         *
-         * use this one instead
-         * trigerEvent(eventName, params)
+         * triggers an event registered listeners will be called
+         * @param  {string} eventName the name of the event to trigger
+         * @param  {array}  params    params that will be provided to the listeners
+         * @return {void}
          */
         triggerEvent : function triggerEvent(eventName, params){
-            // backward compatibility
-            if ((typeof params != 'array') && 3 == arguments.length) {
-                params = arguments[2];
-            }
 
             var l = this._getListenersArray();
 
@@ -97,7 +79,7 @@
                 for (var i = 0, len = l[eventName].length; i<len; i++) {
                     var listener = l[eventName][i];
 
-                    listener.fn.apply(listener.sc, params);
+                    listener.apply(this, params);
                 }
             }
         }

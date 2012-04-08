@@ -10,28 +10,32 @@ describe("ooevents.js", function() {
         modifiedByListener = {message: 'Hello World', scope: that};
     };
 
+    obj.addListener('toto', listener);
+
     describe('add a listener', function () {
-        obj.addListener('toto', listener);
 
         it('should be an object', function () {
-            expect(obj._listeners instanceof Object).toBeTruthy();
+            expect(obj._eventListeners instanceof Object).toBeTruthy();
         });
 
         it('should have a property named \'toto\'', function () {
-            expect(('toto' in obj._listeners)).toBeTruthy();
+            expect(('toto' in obj._eventListeners)).toBeTruthy();
         });
 
         it('should be an array', function () {
-            expect(obj._listeners.toto instanceof Array).toBeTruthy();
+            expect(obj._eventListeners.toto instanceof Array).toBeTruthy();
         });
 
         it('should return the \'listener\' function', function () {
-            expect(obj._listeners.toto[0].fn).toBe(listener);
+            console.log(obj._eventListeners.toto);
+            expect(obj._eventListeners.toto[0]).toBe(listener);
         });
     });
 
     describe('trigger event', function () {
-        obj.triggerEvent('toto');
+        beforeEach( function () {
+            obj.triggerEvent('toto');
+        });
 
         it('should not be null', function () {
             expect(null !== modifiedByListener).toBeTruthy();
@@ -39,10 +43,12 @@ describe("ooevents.js", function() {
     });
 
     describe('remove event listener', function () {
-        obj.removeListener('toto', listener);
+        beforeEach( function () {
+            obj.removeListener('toto', listener);
+        });
 
         it('should not have any more listener', function() {
-            expect(obj._listeners.toto.length).toEqual(0);
+            expect(obj._eventListeners.toto.length).toEqual(0);
         });
     });
 
