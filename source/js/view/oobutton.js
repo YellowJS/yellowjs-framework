@@ -35,6 +35,7 @@
             this._active = false;
             this._initEvents();
         },
+        _needToRender : false,
         _initEvents : function _initEvents() {
             this.getDomObject().addEventListener(Touch.EVENT_START, oo.createDelegate(this._onTouch, this), false);
             this.getDomObject().addEventListener(Touch.EVENT_MOVE, oo.createDelegate(this._onMove, this), false);
