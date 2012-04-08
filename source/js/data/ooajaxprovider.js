@@ -71,7 +71,7 @@
 
 
             if (!this._noCache) {
-                this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))({name: 'flavius-cache__' + opt.name});
+                this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))({name: 'yellowjs-cache__' + opt.name});
                 //this._cachePrefix = oo.generateId();
                 this._cachePrefix = this._url;
             }
