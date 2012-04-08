@@ -1,12 +1,12 @@
 /**
  * @namespace oo.view.scroll
  * @class IScroll
- * @requires oo.view.Dom, oo.core.Touch
+ * @requires oo.view.Dom
  */
 (function (oo) {
 
     // shorthand
-    var Dom = oo.view.Dom, Touch = oo.core.Touch, Scroll = oo.view.scroll.Scroll;
+    var Dom = oo.view.Dom, Scroll = oo.view.scroll.Scroll;
     
     var IScroll = oo.getNS('oo.view.scroll').IScroll = oo.Class(Scroll, {
         _scroll : null,
@@ -20,20 +20,18 @@
             delete opt.el;
              
             //test if el is an identifier, a dom Node or a oo.view.Dom
-            if("string" !== typeof this.el && "undefined" === typeof this.el.nodeType && !(this._isOoDom())){
+            var isNotOoDom = !(this.el instanceof Dom);
+            if("string" !== typeof this.el && "undefined" === typeof this.el.nodeType && isNotOoDom){
                 throw new Error("el must be a Dom object, a oo.view.Dom or an identifier");
             }
 
-            if(!(this.el instanceof oo.view.Dom)){
-                this.el = new oo.view.Dom(this.el);
+            if(isNotOoDom){
+                this.el = new Dom(this.el);
             }
 
             IScroll.Super.call(this);
 
             this._scroll = new iScroll(this.el.getId(), opt);
-        },
-        _isOoDom : function _isOoDom(){
-            return this.el instanceof(oo.view.Dom);
         },
         refresh : function refresh(){
             this._scroll.refresh();
