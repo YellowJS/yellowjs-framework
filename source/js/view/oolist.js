@@ -18,10 +18,10 @@
         constructor: function constructor(conf) {
             var defaultConf = {
                 noStructure: true,
-                structure: '<ul>{{#data}}<li data-id="{{key}}" class="oo-list-item">{{tpl}}</li>{{/data}}</ul>',
+                structure: '<ul>{{#loop}}<li data-yellowjs-list-item-id="{{key}}" class="yellowjs-list-item">{{tpl}}</li>{{/loop}}</ul>',
                 identityField: 'key',
-                listItemCls: 'flavius-list-item',
-                listItemDataAttrib: 'data-list-item-id'
+                listItemCls: 'yellowjs-list-item',
+                listItemDataAttrib: 'data-yellowjs-list-item-id'
             };
 
             conf = oo.override(defaultConf, conf);
@@ -34,25 +34,18 @@
             this._listItemCls = conf.listItemCls;
             this._listItemDataAttrib = conf.listItemDataAttrib;
 
-
             List.Super.call(this, conf);
-
-            if(conf.scrollable){
-                this.setScrollable(conf.scrollable);
-            }
         },
         setTemplate : function setTemplate(tpl){
 
             if (!this._noStructure)
                 this._tpl = this._genTplWithStructure(tpl);
             else {
-                var testDiv = oo.view.Dom.createElement('div');
-                testDiv.html(tpl);
-                if (testDiv.children().length !== 1)
-                    throw "Invalid template - the template must have a single root node";
-                
-                testDiv = null;
-                this._tpl = '{{#data}}' + tpl + '{{/data}}';
+                var re = /.*\{\{#loop\}\}.*\{\{\/loop\}\}.*/;
+                if (!re.test(tpl)) {
+                    throw "Invalid template - template should have a \"loop\" pattern";
+                }
+                this._tpl = tpl;
             }
                 
 
@@ -111,7 +104,7 @@
             this._eventInitialized = true;
         },
         prepareData: function prepareData(data) {
-            return {'data': data};
+            return {'loop': data};
         },
         renderTo: function renderTo(target, data, tpl) {
             List.Super.prototype.renderTo.call(this, target, data, tpl);
