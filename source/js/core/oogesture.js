@@ -13,16 +13,16 @@
             var that = this;
             //attach events to document
             document.addEventListener(Touch.EVENT_START, function(e){
-                that.startGesture.call(that, e);
+                that.startGesture(e);
             }, false);
             
             document.addEventListener(Touch.EVENT_MOVE, function(e){
                 e.preventDefault();
-                that.moveGesture.call(that, e);
+                that.moveGesture(e);
             }, false);
             
             document.addEventListener(Touch.EVENT_END, function(e){
-                that.stopGesture.call(that, e);
+                that.stopGesture(e);
             }, false);
         },
         getPos : function getPos(e){
@@ -88,9 +88,9 @@
                 var deltaX = this.touchFlags.lastX - this.touchFlags.startX,
                     deltaY = this.touchFlags.lastY - this.touchFlags.startY;
 
-                if ( (Event.HAS_TOUCH && event.targetTouches.length == 1) || !Event.HAS_TOUCH ){
+                if ( (Touch.HAS_TOUCH && e.targetTouches.length == 1) || !Touch.HAS_TOUCH ){
                     if (Math.abs(deltaX) > 30 && Math.abs(deltaY) < 100 ) {
-                        if ( deltaX > 0 ) {
+                        if ( deltaX < 0 ) {
                             this.fireEvent(that.touchFlags.el, "swipeLeft", true, true);
                         } else {
                             this.fireEvent(that.touchFlags.el, "swipeRight", true, true);
