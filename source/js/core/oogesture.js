@@ -88,7 +88,8 @@
                 var deltaX = this.touchFlags.lastX - this.touchFlags.startX,
                     deltaY = this.touchFlags.lastY - this.touchFlags.startY;
 
-                if ( (Touch.HAS_TOUCH && e.targetTouches.length == 1) || !Touch.HAS_TOUCH ){
+                  // removed because it is useless and breaks the gesture detection
+//                if ( (Touch.HAS_TOUCH && e.targetTouches.length == 1) || !Touch.HAS_TOUCH ){
                     if (Math.abs(deltaX) > 30 && Math.abs(deltaY) < 100 ) {
                         if ( deltaX < 0 ) {
                             this.fireEvent(that.touchFlags.el, "swipeLeft", true, true);
@@ -96,7 +97,7 @@
                             this.fireEvent(that.touchFlags.el, "swipeRight", true, true);
                         }
                     }
-                }
+//                }
             } else {
                //https://github.com/madrobby/zepto/blob/master/src/touch.js
                that.touchFlags.timeout = window.setTimeout(function(){
