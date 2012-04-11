@@ -55,9 +55,7 @@
             if (clearAll)
                 this.clearAll();
 
-            data.forEach(function (val) {
-                this._data[val.key] = val;
-            }, this);
+            this._data = data;
         },
         clearAll : function clearAll(){
             this._data = {};
