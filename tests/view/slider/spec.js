@@ -1,4 +1,4 @@
-describe("oocarousel.js", function() {
+describe("ooslider.js", function() {
     
 
     describe('constructor', function(){
@@ -16,7 +16,7 @@ describe("oocarousel.js", function() {
             el:"#slider",
             model : model,
             cursor:"#slider > .cursor",
-            items : {el: "#slider > .items", template : '<i></i>'},
+            items : {el: "#slider > .items", template : '{{#loop}}<i></i>{{/loop}}'},
             translate:{x:true,y:false},
             overlay : '#overlay'
         });
