@@ -5,11 +5,11 @@
  * @items : Array of Panel object
  */
 
-var oo = (function (oo) {
+(function (oo) {
     
-    var Dom = oo.view.Dom, Touch = oo.core.Touch, Events = oo.core.mixins.Events, Button = oo.view.Button, ns = oo.getNS('oo.view');
+    var Button = oo.view.Button;
 
-    var PagerPrevNext = ns.PagerPrevNext = oo.Class(null, Events, {
+    var PagerPrevNext = oo.getNS('oo.view').PagerPrevNext = oo.Class(null, oo.core.mixins.Events, {
         buttonPrev : null,
         buttonNext : null,
         STATIC : {
@@ -59,5 +59,4 @@ var oo = (function (oo) {
 
     oo.view.Element.register(PagerPrevNext, 'pagerPrevNext');
 
-    return oo;
-})(oo);
+})(oo || {});

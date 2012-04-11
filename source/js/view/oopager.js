@@ -5,11 +5,8 @@
  * @items : Array of Panel object
  */
 
-var oo = (function (oo) {
-    
-    var Touch = oo.core.Touch, List = oo.view.List, Events = oo.core.mixins.Events, ns = oo.getNS('oo.view');
-
-    var Pager = ns.Pager = oo.Class(List, Events, {
+(function (oo) {
+    var Pager = oo.getNS('oo.view').Pager = oo.Class(oo.view.List, oo.core.mixins.Events, {
         STATIC : {
             NAVIGATE:'navigate'
         },
@@ -42,5 +39,4 @@ var oo = (function (oo) {
 
     oo.view.Element.register(Pager, 'pager');
 
-    return oo;
-})(oo);
+})(oo||{});
