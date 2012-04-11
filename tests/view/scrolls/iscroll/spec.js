@@ -12,7 +12,7 @@ describe("ooiscroll.js", function() {
         list = oo.createElement('list', {
             el : "#listscroll",
             model : model,
-            template: "{{title}}"
+            template: "<ul>{{#loop}}<li>{{title}}</li>{{/loop}}</ul>"
         });
         model.fetch();
         //list.setScrollable();
