@@ -17,7 +17,7 @@ describe("oopager.js", function() {
     var opt = {
         el : '#pager',
         model : modelArticle,
-        template : '<img src="{{picture}}" />'
+        template : '<ul>{{#loop}}<li><img src="{{picture}}" /></li>{{/loop}}</ul>'
     };
 
     var pager = oo.createElement('pager',opt);
