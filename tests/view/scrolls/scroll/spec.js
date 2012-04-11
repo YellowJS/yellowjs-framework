@@ -11,7 +11,7 @@ describe("ooscroll.js", function() {
         
         it("should return a IScroll", function () {
             var cls = oo.view.scroll.Scroll.get('iscroll');
-            var obj = new cls();
+            var obj = new cls({el:"#domtest1"});
             expect(obj instanceof oo.view.scroll.IScroll).toBeTruthy();
         });
 
