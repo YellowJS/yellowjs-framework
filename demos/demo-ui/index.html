@@ -1,0 +1,187 @@
+<!doctype html>
+<!-- Conditional comment for mobile ie7 blogs.msdn.com/b/iemobile/ -->
+<!--[if IEMobile 7 ]>    <html class="no-js iem7" lang="en"> <![endif]-->
+<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>YellowJS Demo</title>
+  <meta name="description" content="">
+
+  <!-- Mobile viewport optimization h5bp.com/ad -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width">
+
+  <!-- Home screen icon  Mathias Bynens mathiasbynens.be/notes/touch-icons -->
+  <!-- For iPhone 4 with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/h/apple-touch-icon.png">
+  <!-- For first-generation iPad: -->
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/m/apple-touch-icon.png">
+  <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon-precomposed" href="img/l/apple-touch-icon-precomposed.png">
+  <!-- For nokia devices: -->
+  <link rel="shortcut icon" href="img/l/apple-touch-icon.png">
+
+  <!-- iOS web app, delete if not needed. https://github.com/h5bp/mobile-boilerplate/issues/94 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <script>(function(){var p,l,r=window.devicePixelRatio;if(navigator.platform==="iPad"){p=r===2?"img/startup-tablet-portrait-retina.png":"img/startup-tablet-portrait.png";l=r===2?"img/startup-tablet-landscape-retina.png":"img/startup-tablet-landscape.png";document.write('<link rel="apple-touch-startup-image" href="'+l+'" media="screen and (orientation: landscape)"/><link rel="apple-touch-startup-image" href="'+p+'" media="screen and (orientation: portrait)"/>');}else{p=r===2?"img/startup-retina.png":"img/startup.png";document.write('<link rel="apple-touch-startup-image" href="'+p+'"/>');}})()</script>
+  
+  <!-- The script prevents links from opening in mobile safari. https://gist.github.com/1042026 -->
+  <script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>
+  
+  <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+  <meta http-equiv="cleartype" content="on">
+
+  <!-- more tags for your 'head' to consider h5bp.com/d/head-Tips -->
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+  <div id="container">
+    <header>
+
+    </header>
+    <div id="main" role="main">
+
+    </div>
+
+    <footer>
+
+    </footer>
+  </div> <!--! end of #container -->
+
+  <script id="tpl-standard" type="text/x-template">
+    <header class="toolbar">
+      <h1 class="heading-1">{{title}}</h1>
+    </header>
+    <article class="content">
+    </article>
+  </script>
+
+  <script id="tpl-buttons" type="text/x-template">
+    <header class="toolbar">
+      <div class="btn btn-back btn-left">Retour</div><h1 class="heading-1">{{title}}</h1>
+    </header>
+    <article class="content align-center">
+      <button data-name="'button tag'" class="btn btn-wide">This is a button tag</button>
+      <div class="clear"></div>
+      <span data-name="'button tag'" class="btn btn-wide">This is a span tag</span>
+      <div class="clear"></div>
+      <div data-name="'div tag'" class="btn btn-wide">This is a div tag</div>
+      <div class="clear"></div>
+    </article>
+  </script>
+
+  <script id="tpl-accordion" type="text/x-template">
+    <header class="toolbar">
+      <div class="btn btn-back btn-left">Retour</div><h1 class="heading-1">{{title}}</h1>
+    </header>
+    <article class="content align-center">
+        <div id="accordion" class="accordion">
+          <section>
+            <h3 data-accordionheader="true" class="heading-3">
+              Lorem
+            </h3>
+            <div data-accordioncontent="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+          </section>
+          <section>
+            <h3 data-accordionheader="true" class="heading-3">
+              Ipsum
+            </h3>
+            <div data-accordioncontent="true">Nam et quam nibh. Vestibulum fringilla vehicula eleifend.</div>
+          </section>
+          <section>
+            <h3 data-accordionheader="true" class="heading-3">
+              Dolor
+            </h3>
+            <div data-accordioncontent="true">Aliquam egestas ornare massa, vitae convallis nibh euismod eu.</div>
+          </section>          
+      </div>
+    </article>
+  </script>
+
+  <script id="tpl-touch" type="text/x-template">
+    <header class="toolbar">
+      <div class="btn btn-back btn-left">Retour</div><h1 class="heading-1">{{title}}</h1>
+    </header>
+    <article class="content">
+      Touch in the first rectangle
+      <div class="touch-pad"></div>
+      <div class="console"></div>
+    </article>
+  </script>
+
+  <script id="tpl-scroll" type="text/x-template">
+    <header class="toolbar">
+      <div class="btn btn-back btn-left">Retour</div><h1 class="heading-1">{{title}}</h1>
+    </header>
+    <article class="content">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam et quam nibh. Vestibulum fringilla vehicula eleifend. 
+        Aliquam egestas ornare massa, vitae convallis nibh euismod eu. Nunc quis dictum libero. Morbi velit lectus, varius 
+        eget malesuada eget, porta aliquet lacus. Etiam id nisl nisl, quis blandit nulla. Etiam non luctus turpis. Curabitur 
+        ultricies malesuada nunc, eu fringilla quam elementum id. Aliquam mattis arcu quis ante tempor gravida. Maecenas 
+        hendrerit rhoncus elementum. Cras egestas felis nec leo convallis eu sagittis nibh feugiat.
+      </p><p>
+        Phasellus dapibus molestie pretium. Vestibulum pellentesque commodo pharetra. Vivamus consequat facilisis scelerisque. 
+        Pellentesque sed nulla nulla, vitae fringilla velit. Curabitur diam neque, lobortis sit amet lacinia ut, pulvinar a lacus. 
+        Vestibulum sodales sapien ac lorem tempor consectetur. Ut egestas congue est, vel volutpat augue luctus et. In lectus ante, 
+        aliquam et tempor vel, ornare id magna. Praesent fermentum eleifend nisl, sed adipiscing eros dapibus in. Mauris nisi odio, 
+        gravida vel adipiscing dictum, viverra et eros. Fusce in libero non dui iaculis feugiat sit amet id nisl. Morbi pharetra 
+        ante id sem viverra nec malesuada odio laoreet. Cras dapibus nulla non tellus elementum tempor. Nulla lacus massa, 
+        suscipit ut vulputate at, laoreet malesuada risus.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam et quam nibh. Vestibulum fringilla vehicula eleifend. 
+        Aliquam egestas ornare massa, vitae convallis nibh euismod eu. Nunc quis dictum libero. Morbi velit lectus, varius 
+        eget malesuada eget, porta aliquet lacus. Etiam id nisl nisl, quis blandit nulla. Etiam non luctus turpis. Curabitur 
+        ultricies malesuada nunc, eu fringilla quam elementum id. Aliquam mattis arcu quis ante tempor gravida. Maecenas 
+        hendrerit rhoncus elementum. Cras egestas felis nec leo convallis eu sagittis nibh feugiat.
+      </p><p>
+        Phasellus dapibus molestie pretium. Vestibulum pellentesque commodo pharetra. Vivamus consequat facilisis scelerisque. 
+        Pellentesque sed nulla nulla, vitae fringilla velit. Curabitur diam neque, lobortis sit amet lacinia ut, pulvinar a lacus. 
+        Vestibulum sodales sapien ac lorem tempor consectetur. Ut egestas congue est, vel volutpat augue luctus et. In lectus ante, 
+        aliquam et tempor vel, ornare id magna. Praesent fermentum eleifend nisl, sed adipiscing eros dapibus in. Mauris nisi odio, 
+        gravida vel adipiscing dictum, viverra et eros. Fusce in libero non dui iaculis feugiat sit amet id nisl. Morbi pharetra 
+        ante id sem viverra nec malesuada odio laoreet. Cras dapibus nulla non tellus elementum tempor. Nulla lacus massa, 
+        suscipit ut vulputate at, laoreet malesuada risus.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam et quam nibh. Vestibulum fringilla vehicula eleifend. 
+        Aliquam egestas ornare massa, vitae convallis nibh euismod eu. Nunc quis dictum libero. Morbi velit lectus, varius 
+        eget malesuada eget, porta aliquet lacus. Etiam id nisl nisl, quis blandit nulla. Etiam non luctus turpis. Curabitur 
+        ultricies malesuada nunc, eu fringilla quam elementum id. Aliquam mattis arcu quis ante tempor gravida. Maecenas 
+        hendrerit rhoncus elementum. Cras egestas felis nec leo convallis eu sagittis nibh feugiat.
+      </p><p>
+        Phasellus dapibus molestie pretium. Vestibulum pellentesque commodo pharetra. Vivamus consequat facilisis scelerisque. 
+        Pellentesque sed nulla nulla, vitae fringilla velit. Curabitur diam neque, lobortis sit amet lacinia ut, pulvinar a lacus. 
+        Vestibulum sodales sapien ac lorem tempor consectetur. Ut egestas congue est, vel volutpat augue luctus et. In lectus ante, 
+        aliquam et tempor vel, ornare id magna. Praesent fermentum eleifend nisl, sed adipiscing eros dapibus in. Mauris nisi odio, 
+        gravida vel adipiscing dictum, viverra et eros. Fusce in libero non dui iaculis feugiat sit amet id nisl. Morbi pharetra 
+        ante id sem viverra nec malesuada odio laoreet. Cras dapibus nulla non tellus elementum tempor. Nulla lacus massa, 
+        suscipit ut vulputate at, laoreet malesuada risus.
+      </p>      
+    </article>
+  </script>
+
+  <!-- JavaScript at the bottom for fast page loading -->
+  <script src="../../build/yellowjs-0.5-n-debug.js"></script>
+
+  <script src="js/yellowjs-app/models.js"></script>
+  <script src="js/yellowjs-app/views.js"></script>
+  <script src="js/yellowjs-app/controllers.js"></script>
+  <script src="js/yellowjs-app/bootstrap.js"></script>
+
+  <!-- scripts concatenated and minified via ant build script -->
+  <script src="js/helper.js"></script>
+  <!-- end concatenated and minified scripts-->
+
+</body>
+</html>
