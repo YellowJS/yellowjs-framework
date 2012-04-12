@@ -79,7 +79,7 @@
             // }
 
             if(options.hasOwnProperty('scrollable')){
-                this.setScrollable(options.scrollable);
+                this.setScrollable(conf.scrollable);
             }
 
             this._uiElements = {};
