@@ -22,6 +22,10 @@
                     "path" : "../source/js/vendor/"
                 },
                 {
+                    "text" : "iscroll.js",
+                    "path" : "../source/js/vendor/"
+                },
+                {
                     "text" : "oocore.js",
                     "path" : "../source/js/core/"
                 },
