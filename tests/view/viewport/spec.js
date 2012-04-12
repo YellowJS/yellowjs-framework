@@ -35,7 +35,7 @@ describe("ooviewport.js", function() {
                     v.createStage('main.posts');
                     v.removeStage('main.posts');
 
-                    console.log(v._stages.main.posts);
+                    // console.log(v._stages.main.posts);
                     expect(undefined === v._stages.main.posts).toBeTruthy();
                 });
 
@@ -45,6 +45,17 @@ describe("ooviewport.js", function() {
 
                     expect(undefined !== v._stages.main.posts).toBeTruthy();
                     expect(undefined !== v._stages.main.videos).toBeTruthy();
+                });
+
+                it ("should return the stage content (panels property)", function () {
+                    var parr = v.getStage('main');
+                    expect(oo.isArray(parr)).toBeTruthy();
+
+
+                    v.createStage('main.posts');
+                    parr = v.getStage('main.posts');
+
+                    expect(oo.isArray(parr)).toBeTruthy();
                 });
             });
 

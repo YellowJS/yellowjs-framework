@@ -292,6 +292,9 @@
                 eval("stageObj = this._stages." + str);
             return stageObj;
         },
+        getStage: function getStage(stage) {
+            return this._stringToStageObj(stage).panels || [];
+        },
         createStage: function createStage(name, into) {
             var re = /^[a-zA-Z]*$/,
                 names = name.split('.'),
@@ -320,7 +323,7 @@
                     stageObj = this._stages;
                 }
 
-            console.log(lastIndex, lastPart, parentStage);
+            // console.log(lastIndex, lastPart, parentStage);
 
             stageObj[lastPart] = null;
             delete stageObj[lastPart];
