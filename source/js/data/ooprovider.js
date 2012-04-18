@@ -31,7 +31,7 @@ var oo = (function (oo) {
             else
                 throw 'Config object must contain a name property';
         },
-        save: function (callback) {
+        save: function (data, callback) {
             throw 'Can\'t be called directly from Provider class';
         },
         fetch: function (callback) {
