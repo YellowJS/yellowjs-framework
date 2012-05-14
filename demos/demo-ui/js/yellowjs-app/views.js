@@ -117,7 +117,7 @@ oo.createPanelClass({
     id:'scroll',
     init: function init () {
         this.setTemplate(document.querySelector('#tpl-scroll').text);
-        this.setData({title: "Accordion"});
+        this.setData({title: "Scroll"});
     },
     onEnabled: function onEnabled () {
 
@@ -128,12 +128,8 @@ oo.createPanelClass({
             }
         });
 
-        var node = this.createElement('node', {
-            el: "#scroll"
-        });
-
-        node.setScrollable({
-            el: "#scroll .content"
+        this.setScrollable({
+            el: "#scroll-container"
         });
     }
 
