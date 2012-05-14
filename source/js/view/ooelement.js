@@ -78,6 +78,7 @@
             //     delete options.onEnabled;
             // }
 
+            // to strong dependency on mixins
             if(options.hasOwnProperty('scrollable')){
                 this.setScrollable(conf.scrollable);
             }
@@ -191,11 +192,12 @@
         _onEnabled: function _onEnabled() {
             this.onEnabled();
             this.initElement();
+
+            this.triggerBubblingEvent(oo.view.Element.REFRESH_CONTENT);
         },
 
-        onEnabled: function onEnabled() {
-
-        },
+        onEnabled: function onEnabled() { },
+        
         triggerBubblingEvent: function triggerBubblingEvent (evtName, params) {
             if (!oo.isArray(params)) {
                 params = params ? [params] : [];
