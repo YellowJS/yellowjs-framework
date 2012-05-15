@@ -80,7 +80,7 @@
 
             // to strong dependency on mixins
             if(options.hasOwnProperty('scrollable')){
-                this.setScrollable(conf.scrollable);
+                this.setScrollable(options.scrollable);
             }
 
             this._uiElements = {};
