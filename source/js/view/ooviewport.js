@@ -21,7 +21,7 @@
             ANIM_DOWN : '4',
             ANIM_SIBLING : '5',
             NO_ANIM : 'none',
-            ANIM_DURATION : 750,
+            ANIM_DURATION : 350,
             APPEND_TO_STAGE: 'append',
             PREPEND_TO_STAGE: 'prepend'
         },
