@@ -232,9 +232,14 @@
             var dataToStore = {};
             dataToStore.key = this._genCacheKey(parameters);
             dataToStore.data = data;
-            this._cacheProvider.save(dataToStore, callback);
+
+            // only one query could be cached at a time
+            // todo : multiple cache may be implemented
+            this._cachedParameterString = [];
+
             if (-1 === this._cachedParameterString.indexOf(dataToStore.key))
                 this._cachedParameterString.push(dataToStore.key);
+            this._cacheProvider.save(dataToStore, callback);
             //this._cacheCleared = false;
         },
 
