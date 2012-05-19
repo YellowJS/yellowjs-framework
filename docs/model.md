@@ -24,7 +24,7 @@ Description
 Events
 ------
 
-  AFTER_FETCH  - this event is triggered when the fatch operation is done  
+  AFTER_FETCH  - this event is triggered when the fetch operation is done  
   AFTER_COMMIT - this event is triggered when the commit operation is done
 
 
@@ -33,7 +33,7 @@ Methods
 
   _- static register()_
 
-  in order to access your model everywhere in your application, you should register it via this metod, then you may use the "oo.getModel" function to retrieve it from every where.
+  in order to access your model everywhere in your application, you should register it via this metod, then you may use the "oo.getModel" function to retrieve it from anywhere.
 
   _Note_: if you use the "oo.createModel" function, you won't have to register your model
 
