@@ -314,6 +314,10 @@ oo = pline = (function (window) {
                 window.addEventListener('load', start);
         },
 
+        dom: function dom (selector) {
+            return new oo.view.Dom(selector.toString());
+        },
+
         /**
          * provide an easy way to do ajax call
          *
