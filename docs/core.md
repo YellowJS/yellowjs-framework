@@ -113,6 +113,10 @@ Methods
   did my app ready is? give as parameter a callback function that will automatically call it at the right moment
 
 
+  _- dom(selector)_
+
+  return a oo.view.Dom object (a dom node wrapped into an helper)
+
 
   _- ajax()_
 
