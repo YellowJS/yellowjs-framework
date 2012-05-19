@@ -345,10 +345,14 @@
             return this;
         },
         html: function html (htmlString) {
-            this.clear();
-            this.appendHtml(htmlString);
+            if (htmlString) {
+                this.clear();
+                this.appendHtml(htmlString.toString());
 
-            return this;
+                return this;
+            } else {
+                return this.getDomObject.innerHTML;
+            }
         },
         removeChild : function removeChild(node){
             this.getDomObject().removeChild(node);

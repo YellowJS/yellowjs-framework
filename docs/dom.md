@@ -47,12 +47,12 @@ Methods
 
   for the setters the first argument is the value (usually an integer), and the second is the unit
 
-  ex : p.setDisplay = function(val, [unit]) {
+  ex : p.setDisplay (val, [unit])
 
 
   for the getters, the first and the second arguments are boolean. The first one determine if the returned value is an int without unit or a string containing the unit
 
-  ex : p.getWidth = function([unit, [noCache]]) {
+  ex : p.getWidth ([unit, [noCache]])
 
 
 
