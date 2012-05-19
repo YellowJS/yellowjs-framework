@@ -127,7 +127,7 @@
             } else {
                 throw "Fatal Error : No identifier !";
             }
-            this.generateAccessor();
+            this._generateAccessor();
         },
         // destructor
         destroy : function destroy (){
@@ -141,7 +141,7 @@
             document.removeElement(this._dom);
             this._dom = null;
         },
-        generateAccessor : function generateAccessor (){
+        _generateAccessor : function generateAccessor (){
             var p = this, i, len;
             // generates accessors fonction
             for (i=0, len=prop.readOnly.length; i<len; i++) {
@@ -241,33 +241,46 @@
             return this._dom;
         },
         // find a child element of the current node according to the given selector
-        // @todo : shouldn't returnDom be called notReturnDom
-        find : function find (selector, returnDom) {
+        find : function find (selector, returnNativeDom) {
             var n = this.getDomObject().querySelector(selector);
             if (null === n)
                 return null;
             else
-                return (!returnDom) ? new Dom(n) : n;
+                return (returnNativeDom) ? n : new Dom(n);
         },
-        findAll : function findAll (selector, returnDom) {
+        findAll : function findAll (selector, returnNativeDom) {
             var n = this.getDomObject().querySelectorAll(selector), res = [];
             if (null === n){
                 return null;
             } else{
                 oo._convertNodeListToArray(n).forEach(function(item){
-                    res.push( (returnDom) ? item : new Dom(item));
+                    res.push( (returnNativeDom) ? item : new Dom(item));
                 });
                 
                 return res;
             }
                 
         },
-        parent : function parent(){
-            return new Dom(this.getDomObject().parentNode);
+        parent : function parent(cls, returnNativeDom){
+            if (arguments.length < 2) {
+                returnNativeDom = cls;
+                cls = false;
+            }
+            var retVal = cls ? this.findParentByCls(cls.toString()) : this.getDomObject().parentNode;
+            return (returnNativeDom) ? retVal : new Dom(retVal);
         },
-        children : function children(){
-            var c = this.getDomObject().children;
-            return oo._convertNodeListToArray(c);
+        children : function children(returnNativeDom){
+            var res;
+            
+            res = oo._convertNodeListToArray(this.getDomObject().children);
+            if (returnNativeDom) {
+                var r = [];
+                res.forEach(function (item) {
+                    r.push(new Dom(item));
+                });
+                res = r;
+            }
+            return res;
         },
         findParentByCls : function findParentByCls (cls) {
             var p = this.getDomObject().parentNode;
@@ -308,7 +321,7 @@
 
             return this;
         },
-        // append a node on top to the current node children list
+        // prepend a node on top to the current node children list
         // can be a native DOMObject or a oo.Dom object
         prependChild : function prependChild (node) {
             if (node instanceof Dom)
@@ -334,9 +347,13 @@
         html: function html (htmlString) {
             this.clear();
             this.appendHtml(htmlString);
+
+            return this;
         },
         removeChild : function removeChild(node){
             this.getDomObject().removeChild(node);
+
+            return this;
         },
         clear : function clear () {
             this.getDomObject().innerHTML = '';
@@ -399,6 +416,8 @@
         getId: function getId(id) {
             return this.getDomObject().id;
         },
+
+        // deprecated ?
         setTemplate : function setTemplate (tpl) {
             this._template = tpl;
 
@@ -419,62 +438,9 @@
     
             return this;
         }
-        /*animate : function animate(obj){
-            
-            if('object' != typeof obj){
-                throw new Error("Paramerter must be in an object");
-            }
 
-            for ( var key in obj){
-                if (obj.hasOwnProperty(key)){
-                    //cancel all duration
-                    this.setWebkitTransitionDuration(0, "ms");
-                    this.setWebkitTransitionTimingFunction(obj[key].timingFunction || "ease");
-                    //this.setWebkitTransitionDelay(obj[key].delay || 0, "ms");
-                    this["set" + key.charAt(0).toUpperCase()+key.slice(1)](obj[key]["value"]);
-                    this.getDomObject().style.WebkitTransitionDuration = obj[key].duration || 0;
-                    this.getDomObject().style.WebkitTransitionProperty = key;
+        // @todo animate other properties (ex: width, height, opacity)
 
-                    
-                    
-                }
-            }
-        },
-        setWebkitTransition : function setWebkitTransition(property, duration, delay, timingFunction){
-            //this.getWebkitTransition(property);
-            this.getDomObject().style.webkitTransition = [property, duration, delay, timingFunction].join(' ');
-
-
-        }
-        getWebkitTransition : function getWebkitTransition (property, noCache) {
-            if (!this._cached.webkitTransition || this._cached.webkitTransition.indexOf(property) === -1  || noCache) {
-
-                var properties = window.getComputedStyle(this.getDomObject()).WebkitTransitionProperty;
-                
-                if(properties.indexOf(property) != -1){
-                    var index = properties.split(', ').indexOf(property);
-                    //[property, duration, delay, timingFunction]
-                    //var pattern = //g;
-                    //console.log(window.getComputedStyle(this.getDomObject()).WebkitTransitionTimingFunction.match(pattern));
-
-                    var values = [
-                        property,
-                        window.getComputedStyle(this.getDomObject()).WebkitTransitionDuration.split(', ')[index],
-                        window.getComputedStyle(this.getDomObject()).WebkitTransitionDelay.split(', ')[index]
-                        //window.getComputedStyle(this.getDomObject()).WebkitTransitionTimingFunction.split(', ')[index]
-                    ];
-
-                    console.log(values);
-                }
-                
-
-
-
-               
-                this._cached.webkitTransition[property] = window.getComputedStyle(this.getDomObject()).webkitTransform;
-            }
-            return this._cached.webkitTransform;
-        }*/
-    }); 
+    });
     
 })(oo);
