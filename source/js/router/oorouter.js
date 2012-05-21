@@ -29,6 +29,8 @@
             for (var prop in routes){
                 this.addRoute(prop, routes[prop]);
             }
+
+            return this;
         },
         addRoute : function addRoute(name, props){
             if(!name || !props.hasOwnProperty('url') || !props.hasOwnProperty('controller') || !props.hasOwnProperty('action')){
