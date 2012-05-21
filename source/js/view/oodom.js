@@ -351,7 +351,7 @@
 
                 return this;
             } else {
-                return this.getDomObject.innerHTML;
+                return this.getDomObject().innerHTML;
             }
         },
         removeChild : function removeChild(node){
