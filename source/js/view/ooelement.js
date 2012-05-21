@@ -90,7 +90,7 @@
             return this._uiElements[id] || null;
         },
         addEl: function addEl(el) {
-            this._uiElements[el.getId()] = el;
+            this._uiElements[el.getUUID()] = el;
             el.setContainer(this);
         },
         removeEl: function removeEl(id) {

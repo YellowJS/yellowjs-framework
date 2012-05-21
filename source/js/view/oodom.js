@@ -105,6 +105,9 @@
             createElement: function createElement (tag) { return new Dom(document.createElement(tag)); }
         },
         constructor : function constructor (identifier) {
+
+            this._uuid = oo.generateId();
+
             /**
              * underlying dom node object
              */
@@ -419,6 +422,9 @@
         },
         getId: function getId(id) {
             return this.getDomObject().id;
+        },
+        getUUID: function getId(id) {
+            return this._uuid;
         },
 
         // deprecated ?
