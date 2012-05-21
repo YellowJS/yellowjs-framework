@@ -1,10 +1,10 @@
 oo.createController('IndexController', {
     indexAction : function indexAction(){
-        this.getViewport().switchPanel('home');
+        this._viewport.switchPanel('home');
     },
     detailAction : function detailAction(params) {
 
-        this.getViewport().switchPanel(params.feature);
+        this._viewport.switchPanel(params.feature);
 
     }
 });
