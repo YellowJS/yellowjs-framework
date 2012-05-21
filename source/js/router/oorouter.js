@@ -10,10 +10,14 @@
 (function(oo){
 
     var Router = oo.getNS('oo.router').Router = oo.Class({
+        STATIC: {
+            POPSTATE: "popstate"
+        },
         constructor : function constructor(){
             this._routes = {};
             this._registeredControllers = {};
             this._controllers = {};
+            this._baseUrl = '';
 
             var that = this;
 
@@ -77,43 +81,64 @@
             }
         },
         init : function init(){
-            var that = this, wl = window.location, f = false;
+            var that = this, wl = window.location;
 
+            this._extractBaseUrl();
 
-            var callback = function callback(route){
-              that.dispatch(route);
+            var callbackMaker = function(){
+                var url;
+                if (that._usePushState())
+                    propName = 'pathname';
+                else
+                    propName = 'hash';
+
+                return function (event) {
+                    that.dispatch(wl[propName]);
+                };
             };
 
             if( this._usePushState() && window.history && window.history.pushState){
-              this.hasHistory = true;
-              window.addEventListener('popstate',function(event){
-                 f = true;
-                 callback(wl.pathname);
-              });
-            
-              //setTimeout force fire popstate
-              window.setTimeout(function(){
-                if(!f){
-                  that.dispatch(wl.pathname);
-                }
-              },1);
+                this.hasHistory = true;
+                window.addEventListener("popstate", callbackMaker(Router.POPSTATE), false);
             } else {
-              window.addEventListener("hashchange", function(e) {
-                  callback(wl.hash.slice(1));
-              }, false);
+                window.addEventListener("hashchange", callbackMaker(), false);
 
-              callback(wl.hash.slice(1));
+                (callbackMaker())();
             }
         },
         load : function load(route){
+            var routeFull = this._addBaseUrl(route);
             if( !this._usePushState() || !this.hasHistory){
-              window.location.hash = route;
+                window.location.hash = routeFull;
             } else {
-              history.pushState({},"",route);
-              //this.dispatch(route);
+                // var stateCount = history
+                history.pushState({},"", routeFull);
+                this.dispatch(routeFull);
+            }
+        },
+        _cleanUrl: function _cleanUrl(url) {
+            var baseUrl = this._getBaseUrl();
+            if(this._usePushState()) {
+                return 0 === url.indexOf(baseUrl) ? url.substring(baseUrl.length) : url;
+            } else {
+                return url.slice(1);
+            }
+        },
+        _addBaseUrl: function _addBaseUrl(url) {
+            return this._getBaseUrl() + (url.substring(0, 1) === '/' ? '' : '/') + url;
+        },
+        _getBaseUrl: function _getBaseUrl() {
+            return this._baseUrl;
+        },
+        _extractBaseUrl: function _extractBaseUrl() {
+            this._baseUrl = '';
+            if(this._usePushState()) {
+                var wl = window.location.pathname;
+                this._baseUrl = wl.substring(-1, 1) !== '/' ? wl : wl.substring(0, wl.length - 1);
             }
         },
         dispatch: function dispatch (hash) {
+            hash = this._cleanUrl(hash);
             this.parseRoute(hash);
             if (this.requestParams) {
                 var ctrlClass   = [this.requestParams.controller.charAt(0).toUpperCase(), this.requestParams.controller.substring(1), 'Controller'].join('');
