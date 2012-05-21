@@ -75,8 +75,9 @@ oo.createPanelClass({
         });
 
         this.createElement('accordion', {
-            el: "#accordion #accordion"
+            el: "#accordion #accordion-wrapper"
         });
+
     }
 
 }, {stage: "main"});
