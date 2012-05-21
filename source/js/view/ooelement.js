@@ -102,7 +102,7 @@
         },
         initElement: function initElement() {
             
-            for (var id in this._uiElements) {
+            for( var id in this._uiElements ) {
                 var el = this._uiElements[id];
                 if ('needToRender' in el && el.needToRender())
                     el.renderTo(this);
@@ -111,9 +111,8 @@
             return this;
         },
         /**
-         * do exactly the same thing as the oo.createElement, but add a prefix
-         * to the el property in order to "scope" the newly created
-         * element into the current one (for Dom query performance purpose)
+         * do exactly the same thing as the oo.createElement,
+         * but add the created element has a child to the current one
          *
          * @see oo.createElement
          */
