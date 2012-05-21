@@ -130,7 +130,7 @@ oo = pline = (function (window) {
         /**
          * create a controller from the class passed in parameter
          */
-        createController: function createController(identifier, actions) {
+        createControllerClass: function createControllerClass(identifier, actions) {
 
             if (1 === arguments.length) {
                 actions = identifier;
@@ -153,6 +153,12 @@ oo = pline = (function (window) {
 
             return c;
         },
+
+        // deprecated - use createControllerClass instead
+        createController: function createController() {
+            this.createControllerClass.apply(this, arguments);
+        },
+
         /**
          * make the router singleton instance accessible from anywhere
          * @return {oo.router.Router}
