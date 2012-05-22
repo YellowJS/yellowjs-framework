@@ -414,6 +414,10 @@
 
             this.setTranslations(coord.x, coord.y);
 
+            if (0 === duration) {
+                endListener();
+            }
+
             return this;
         },
         setId: function setId(id) {
