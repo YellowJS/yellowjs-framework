@@ -1,4 +1,4 @@
-oo.createController('IndexController', {
+oo.createControllerClass('IndexController', {
     indexAction : function indexAction(){
         this._viewport.switchPanel('home');
     },
