@@ -220,7 +220,7 @@
             if (typeof domNode == 'string') {
                 var n = document.querySelector(domNode);
                 if (null === n)
-                    throw "Invalid selector node doesn't exists";
+                    throw "Invalid selector node doesn't exists ('" + domNode + "' given as selector)";
 
                 domNode = n;
             }
@@ -286,14 +286,13 @@
             return res;
         },
         findParentByCls : function findParentByCls (cls) {
-            var p = this.getDomObject().parentNode;
-            var pattern = new RegExp(cls);
-            while (p && (Node.DOCUMENT_NODE !== p.nodeType) && !pattern.test(p.getAttribute('class'))) {
-                p = p.parentNode;
+            var p = this.parent();
+            while (p && (Node.DOCUMENT_NODE !== p.getDomObject().nodeType) && !p.classList.hasClass(cls)) {
+                p = p.parent();
             }
 
-            if (p && (Node.DOCUMENT_NODE !== p.nodeType)) {
-                return new Dom(p);
+            if (p && (Node.DOCUMENT_NODE !== p.getDomObject().nodeType) && p.classList.hasClass(cls)) {
+                return p;
             } else {
                 return false;
             }
@@ -423,7 +422,7 @@
         getId: function getId(id) {
             return this.getDomObject().id;
         },
-        getUUID: function getId(id) {
+        getUUID: function getUUID(id) {
             return this._uuid;
         },
 
