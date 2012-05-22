@@ -424,7 +424,14 @@
             this.getDomObject().id = id;
         },
         getId: function getId(id) {
-            return this.getDomObject().id;
+            var domId;
+            try {
+                domId = this.getDomObject().id;
+            } catch (e) {
+                domId = false;
+            }
+
+            return domId;
         },
         getUUID: function getUUID(id) {
             return this._uuid;
