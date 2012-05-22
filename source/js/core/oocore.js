@@ -321,7 +321,11 @@ oo = pline = (function (window) {
         },
 
         dom: function dom (selector) {
-            return new oo.view.Dom(selector.toString());
+            if (!selector) {
+                return oo.view.Dom;
+            } else {
+                return new oo.view.Dom(selector.toString());
+            }
         },
 
         /**
