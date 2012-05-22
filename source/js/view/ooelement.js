@@ -78,7 +78,7 @@
             //     delete options.onEnabled;
             // }
 
-            // to strong dependency on mixins
+            // too strong dependency on mixins
             if(options.hasOwnProperty('scrollable')){
                 this.setScrollable(options.scrollable);
             }
