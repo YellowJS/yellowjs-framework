@@ -24,14 +24,14 @@
             var that = this;
             //window.addEventListener('orientationchange', that.refresh,false);
             
-            this._data = {}
+            this._data = {};
 
             if ('init' in this)
                 this.init();
         },
         render: function render() {
             this.classList.addClass('oo-panel');
-            this.appendHtml(Panel.Super.prototype.render.call(this, this._data));
+            this.html(Panel.Super.prototype.render.call(this, this._data));
 
             return this;
         },
