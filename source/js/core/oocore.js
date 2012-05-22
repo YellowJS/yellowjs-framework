@@ -156,7 +156,7 @@ oo = pline = (function (window) {
 
         // deprecated - use createControllerClass instead
         createController: function createController() {
-            this.createControllerClass.apply(this, arguments);
+            return this.createControllerClass.apply(this, arguments);
         },
 
         /**
