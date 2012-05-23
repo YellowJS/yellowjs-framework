@@ -387,7 +387,7 @@
             return this;
         },
         html: function html (htmlString) {
-            if (htmlString) {
+            if (1 == arguments.length) {
                 this.clear();
                 this.appendHtml(htmlString.toString());
 
