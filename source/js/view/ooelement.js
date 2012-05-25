@@ -89,8 +89,8 @@
         getEl: function getEl(id) {
             return this._uiElements[id] || null;
         },
-        addEl: function addEl(el) {
-            this._uiElements[el.getUUID()] = el;
+        addEl: function addEl(el, identifier) {
+            this._uiElements[identifier || el.getUUID()] = el;
             el.setContainer(this);
         },
         removeEl: function removeEl(id) {
@@ -120,7 +120,7 @@
             // if (opt.el)
             //     opt.el = '#' + this.getId() + ' ' + opt.el;
             var el = oo.createElement(type, opt);
-            this.addEl(el);
+            this.addEl(el, opt.id || null);
             return el;
         },
 
@@ -197,19 +197,27 @@
 
         onEnabled: function onEnabled() { },
         
-        triggerBubblingEvent: function triggerBubblingEvent (evtName, params) {
+        triggerBubblingEvent: function triggerBubblingEvent (evtName, params, id) {
             if (!oo.isArray(params)) {
                 params = params ? [params] : [];
             }
-            var _container = this.getContainer(), evt = {
-                bubble: true,
-                stopPropagation: function () { this.bubble = false; }
-            };
-            params.splice(0,0, evt);
+
+            var _container = this.getContainer(), evt = params[0] || null;
+
+            if (!id) {
+                 evt = {
+                    id: oo.generateId(),
+                    bubble: true,
+                    stopPropagation: function () { this.bubble = false; }
+                };
+
+                params.splice(0,0, evt);
+            }
+
             this.triggerEvent(evtName, params);
 
             if (evt.bubble && _container && _container.triggerBubblingEvent)
-                _container.triggerBubblingEvent(evtName, params);
+                _container.triggerBubblingEvent(evtName, params, evt.id);
         }
     });
 
