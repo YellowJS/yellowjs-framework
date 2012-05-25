@@ -42,7 +42,7 @@
                 this._tpl = this._genTplWithStructure(tpl);
             else {
                 var re = /.*\{\{#loop\}\}.*\{\{\/loop\}\}.*/;
-                if (!re.test(tpl)) {
+                if (!re.test(tpl.replace(/\n/g, ''))) {
                     throw "Invalid template - template should have a \"loop\" pattern";
                 }
                 this._tpl = tpl;
