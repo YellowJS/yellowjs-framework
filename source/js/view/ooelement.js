@@ -78,9 +78,13 @@
             //     delete options.onEnabled;
             // }
 
-            // too strong dependency on mixins
+            // @todo: too strong dependency on mixins
+            // @todo: check if the "{ ... ,scrollable:true}" synthax works
             if(options.hasOwnProperty('scrollable')){
-                this.setScrollable(options.scrollable);
+                if (true === options.scrollable)
+                    this.setScrollable({el: this.parent()});
+                else
+                    this.setScrollable(options.scrollable);
             }
 
             this._uiElements = {};
