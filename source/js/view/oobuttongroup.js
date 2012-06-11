@@ -1,4 +1,4 @@
-var oo = (function (oo) {
+(function (oo) {
 
     var Dom = oo.view.Dom, Touch = oo.core.Touch, Events = oo.core.mixins.Events, Button = oo.view.Button;
     
@@ -54,6 +54,4 @@ var oo = (function (oo) {
     var exports = oo.getNS('oo.View');
     exports.ButtonGroup = ButtonGroup;
     
-    return oo;
-
-})(oo || {});
+})(yellowjs || {});

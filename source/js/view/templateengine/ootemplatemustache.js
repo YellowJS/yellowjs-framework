@@ -1,4 +1,4 @@
-var oo = (function (oo){
+(function (oo){
     var global = this;
     var tplEngine = oo.getNS('oo.view.templateengine');
 
@@ -17,6 +17,4 @@ var oo = (function (oo){
 
     tplEngine.Template.register(templateEngineMustache, 'mustache');
     
-    return oo;
-
-})(oo || {});
+})(yellowjs || {});

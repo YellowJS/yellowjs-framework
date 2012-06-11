@@ -40,4 +40,4 @@
 
     Scroll.register(IScroll, 'iscroll');
 
-})(oo || {});
+})(yellowjs || {});

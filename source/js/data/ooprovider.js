@@ -1,4 +1,4 @@
-var oo = (function (oo) {
+(function (oo) {
     
     var global = this;
     var data = oo.getNS('oo.data');
@@ -48,6 +48,4 @@ var oo = (function (oo) {
         }
     });
 
-    return oo;
-
-})(oo || {});
+})(yellowjs || {});

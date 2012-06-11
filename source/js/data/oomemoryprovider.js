@@ -64,4 +64,4 @@
 
     oo.data.Provider.register(MemoryProvider, 'memory');
 
-})(oo || {});
+})(yellowjs || {});

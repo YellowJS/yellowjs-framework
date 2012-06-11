@@ -71,4 +71,4 @@
      
     oo.view.Element.register(Button, 'button');
      
-})(oo || {});
+})(yellowjs || {});

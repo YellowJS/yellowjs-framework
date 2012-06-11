@@ -140,4 +140,4 @@
     
     oo.view.Element.register(List, 'list');
     
-})(oo || {});
+})(yellowjs || {});

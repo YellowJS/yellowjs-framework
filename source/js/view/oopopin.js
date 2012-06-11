@@ -116,5 +116,5 @@
     
     oo.view.Element.register(Popin, 'popin');
     
-})(oo || {});
+})(yellowjs || {});
 

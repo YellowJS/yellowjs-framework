@@ -5,7 +5,7 @@
  * @items : Array of Panel object
  * 
  */
-var oo = (function (oo) {
+(function (oo) {
 
     // shorthand
     var Dom = oo.view.Dom, Touch = oo.core.Touch, ns = oo.getNS('oo.view');
@@ -632,7 +632,5 @@ var oo = (function (oo) {
     
 
     oo.view.Element.register(Carousel, 'carousel');
-    
-    return oo;
-    
-})(oo || {});
+        
+})(yellowjs || {});

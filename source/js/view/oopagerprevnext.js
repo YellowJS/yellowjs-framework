@@ -59,4 +59,4 @@
 
     oo.view.Element.register(PagerPrevNext, 'pagerPrevNext');
 
-})(oo || {});
+})(yellowjs || {});

@@ -205,4 +205,4 @@
     var exports = oo.getNS('oo.core');
     exports.Touch = Touch;
          
-})(oo || {});
+})(yellowjs || {});

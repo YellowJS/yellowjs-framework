@@ -268,4 +268,4 @@
 
     oo.data.Provider.register(AjaxProvider, 'ajax');
 
-})(oo || {});
+})(yellowjs || {});

@@ -6,8 +6,7 @@
  *
  * @author Mathias Desloges <m.desloges@gmail.com> || @freakdev
  */
-var pline, oo;
-oo = pline = (function (window) {
+var yellowjs = (function (window) {
 
     var _globalConfig = {
         templateEngine: 'mustache',
@@ -16,7 +15,10 @@ oo = pline = (function (window) {
         scroll : 'iscroll'
     };
 
-    return {
+    var _oo = window.oo;
+    var oo, _yellowjs, _noConflict = false;
+
+    _yellowjs = oo = {
         /**
          * @var {oo.net.Ajax} _ajaxRequestObject instance of oo.net.Ajax class
          */
@@ -72,6 +74,9 @@ oo = pline = (function (window) {
         getNS: function getNS (ns, base) {
             var names = ns.split('.');
             var parent = window;
+            if (_noConflict && 'oo' == names[0])
+                names[0] = 'yellowjs';
+            
             for (var i=0, len=names.length; i<len; i++) {
                     if ('object' != typeof(parent[names[i]]) ) {
                             parent[names[i]] = {};
@@ -389,8 +394,17 @@ oo = pline = (function (window) {
             } else {
                 return obj.prototype.toString() === "[object Array]";
             }
+        },
+        noConflict: function noConflict () {
+            window.oo = _oo;
+
+            window.yellowjs = _yellowjs;
+
+            _noConflict = true;
         }
 
     };
+
+    return (window.oo = _yellowjs);
 
 })(window);

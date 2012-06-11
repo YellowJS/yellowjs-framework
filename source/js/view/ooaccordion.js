@@ -54,4 +54,4 @@
     
     oo.view.Element.register(Accordion, 'accordion');
     
-})(oo || {});
+})(yellowjs || {});

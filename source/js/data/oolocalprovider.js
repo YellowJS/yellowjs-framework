@@ -66,4 +66,4 @@
 
     oo.data.Provider.register(LocalProvider, 'local');
 
-})(oo || {});
+})(yellowjs || {});
