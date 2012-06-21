@@ -22,6 +22,12 @@
         getViewport: function getViewport() {
             console.warn('the getViewport method of the class Controller is deprecated !');
             return oo.getViewport();
+        },
+        getPanel: function getPanel (identifier) {
+            return this._viewport.getPanel(identifier);
+        },
+        panelIsEnabled: function PanelIsEnabled (identifier) {
+            return this._viewport.panelIsEnable(identifier);
         }
     });
  
