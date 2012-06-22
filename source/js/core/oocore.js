@@ -87,6 +87,33 @@ var yellowjs = (function (window) {
             return parent;
         },
 
+        getLocal: function getLocal(){
+            var lang;
+            // PhoneGap on Android would always return EN in navigator.*language.
+            // Parse userAgent instead
+            // Mozilla/5.0 (Linux; U; Android 2.2; de-ch; HTC Desire Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1
+            if ( navigator && navigator.userAgent &&
+                 (lang = navigator.userAgent.match(/android.*\W(\w\w)-(\w\w)\W/i))
+            ) {
+                lang = lang[1];
+            }
+            
+            if (!lang && navigator) {
+                if (navigator.language) {
+                    lang = navigator.language;
+                } else if (navigator.browserLanguage) {
+                    lang = navigator.browserLanguage;
+                } else if (navigator.systemLanguage) {
+                    lang = navigator.systemLanguage;
+                } else if (navigator.userLanguage) {
+                    lang = navigator.userLanguage;
+                }
+                lang = lang.substr(0, 2);
+            }
+            
+            return lang;
+        }
+
         /**
          * bind a scope to a function
          *
