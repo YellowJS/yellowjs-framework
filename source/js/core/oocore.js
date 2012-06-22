@@ -112,7 +112,7 @@ var yellowjs = (function (window) {
             }
             
             return lang;
-        }
+        },
 
         /**
          * bind a scope to a function
