@@ -18,28 +18,28 @@ Description
 Methods
 -------
 
-  _- define()_
+  * define()
 
   When you will start your application, you could define some configuration. For that, use the “define” function. Below, the list of attributes that could be defined :
 
-  * templateEngine
+  \- templateEngine  
       When templateEngine is defined, the “_setTemplateEngine” function of “oo.core” is called. This function create a new instance of your “templateEngine” class then store your template engine in the Element class. For more information see Template class.
 
       Exemple of usage: 
       oo.define({templateEngine : “mustache”});
 
     
-  * scroll
+  \- scroll  
       The scroll library to use in your project. By default : “iscroll”.
 
-  * viewportSelector
+  \- viewportSelector  
       a css selector in wich the viewport will be rendered - the default value is “body”
 
-  * pushState
+  \- pushState  
       should the router use the pushState API - by default, the value is false
 
 
-  _- getConfig()_
+  * getConfig()
 
   get regitered value of the global config.
 
@@ -49,7 +49,7 @@ Methods
 
 
 
-  _- log() / warn()_
+  * log() / warn()
 
   use these method to write logs or warnings in the developer’s console, these metod will “silently fail” if there is no console in your environnement.
 
@@ -57,14 +57,14 @@ Methods
 
 
 
-  _- Class()_
+  * Class()
 
   this method is made to create class. It can takes up to three parameters
-  * if there is one parameter : it should be a object that contains the methods and members of the class
+  \- if there is one parameter : it should be a object that contains the methods and members of the class  
 
-  * if there is two parameters the second parameter is an object that contains the methods and members of the class, the first paramter should be the parent class
+  \- if there is two parameters the second parameter is an object that contains the methods and members of the class, the first paramter should be the parent class  
 
-  * if there is three parameters the first paramter is still the parent class, the third parameter is a class or an object that will be mixed in the class
+  \- if there is three parameters the first paramter is still the parent class, the third parameter is a class or an object that will be mixed in the class  
 
   in all of these case if the object that represents the class, the “constructor” keyword used as key in the object will be used as the class constructor.
 
@@ -84,54 +84,54 @@ Methods
 
 
 
-  _- getNS()_
+  * getNS()
 
   returns a object representing the namspace matching the string parameter given as parameter
 
 
 
-  _- createDelegate()_
+  * createDelegate()
 
   creates a function and bind it a scope
 
 
 
-  _- emptyFn()_
+  * emptyFn()
 
   return an empty function (used for callback default value)
 
 
 
-  _- override()_
+  * override()
 
   takes two objects as parameter. The first one will be used as a is and will be overriden by the second one. in fact value form the second object will overrides the one from the first, and they do not exists in the firt object will be created. This method is mainly used to manage config with mandatory default value. 
 
 
 
-  _- bootstrap()_
+  * bootstrap()
 
   did my app ready is? give as parameter a callback function that will automatically call it at the right moment
 
 
-  _- dom(selector)_
+  * dom(selector)
 
   return a oo.view.Dom object (a dom node wrapped into an helper)
 
 
-  _- ajax()_
+  * ajax()
 
   perform a ajax call
 
 
 
-  _- createController()_
+  * createController()
 
   _Note_: oo.createController() will be deprecate soon and will be replaced with oo.createControllerClass()
 
   This function takes up to 2 parameters:
 
-  * an optional identifier that will be used when registering the controller class into the router - if none provided, it will not be registered into the router
-  * the body of the class itself that consist of a litteral object containning only function that will be added as controller’s actions.
+  \- an optional identifier that will be used when registering the controller class into the router - if none provided, it will not be registered into the router  
+  \- the body of the class itself that consist of a litteral object containning only function that will be added as controller’s actions.
 
   it returns a function (used as class)
 
@@ -150,53 +150,53 @@ Methods
 
 
 
-  _- generateId()_
+  * generateId()
 
   generate a uniq id
 
 
 
-  _- getRouter()_
+  * getRouter()
 
   get the singleton instance of the router
 
 
 
-  _- serialize()_
+  * serialize()
 
   transform a litteral objcet into an url complient list of parameters (string)
 
 
 
-  _- isArray()_
+  * isArray()
 
   test wether the given argument is an array
 
 
-  _- createModel()_
+  * createModel()
 
   create and register an oo.data.Model. Uses the litteral object given as argument to configure the resulting model (will use it as arguement for the oo.data.Model constructor).
 
   for detailed documentation about the configuration option of an oo.data.Model see the specific class documentation
 
 
-  _- getModel()_
+  * getModel()
 
   anywhere in your application retrieve a previously registered model via this helper method. give it as single argument the name property of the desired model
 
 
 
-  _- getViewport()_
+  * getViewport()
 
   returns the viewport instance 
 
 
 
-  _- createPanelClass()_
+  * createPanelClass()
 
 
 
-  _- createElement()_
+  * createElement()
 
 
 

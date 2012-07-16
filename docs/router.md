@@ -37,7 +37,7 @@ Description
 Methods
 -------
 
-  _- addRoutes()_
+  * addRoutes()
   
   the parameters given to the "addRoutes" method should be an object containning named routes. Each route should be itself an object describing the triplet “expected url schema” / “controller” / “action” as shown in the example below :
 
@@ -58,7 +58,7 @@ Methods
 
 
 
-  _- addRoute()_
+  * addRoute()
     
     Used to add one route
 
@@ -69,7 +69,7 @@ Methods
 
 
 
-  _- addController()_
+  * addController()
 
   This method is used to register controllers and takes 2 parameters the first one is an identifier used to register the controller.
 
@@ -91,7 +91,7 @@ Methods
   
 
 
-  _- addControllers()_
+  * addControllers()
   
   The controllersList is an object containing named controller classes (key will be used as controller name.
 
@@ -108,12 +108,12 @@ Methods
   This way if your url is : _/index.html#/toggle-folder_ and you have configured the router's routes with the configuration given as example previously, the router will find that your url match the route named "folder-toggle-route" it will then check if it has a controller registered with the "FolderController" identifier and invoke the action "toogleAction".
 
 
-  _- back()_
+  * back()
   
   performs an history back
 
 
-  _- url()_
+  * url()
 
   Takes a route name (string) as first parameter and a returns a string that can be used to load a particular url with the given set of parameters
 
@@ -123,12 +123,12 @@ Methods
     // will return : /folder-toggle/foo/bar
 
 
-  _- load()_
+  * load()
 
   Takes an url (string) as parameter and will update the browser url, it will automatically use the hash (with the # symbol) or not depending on what configuration has been set
 
   This will trigger a hash change and then a "navigation"
 
-  _- init()_
+  * init()
 
   Method to call when all configuration has been set, the router starts to listen at the hash change after this method has been invoked.

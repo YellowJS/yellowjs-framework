@@ -18,10 +18,28 @@ Description
 
   In order to make your controller usable (make you app aware of your controller) you have to register it in the router (cf Router class)
 
+    // create controller
+    // note : by usgin this method the controller is automatically registered
+    //
+    oo.createControllerClass('IndexController', {
+      indexAction : function indexAction(){
+        // do your stuff ...
+      }
+    });  
 
 Methods
 -------
 
-  _- getViewport()_
+  * getViewport()
 
   returns an instance (singleton) of the viewport
+
+
+  * getPanel(identifier)
+
+  returns a panel instance according to the indentifier given as argument
+
+
+  * panelIsEnabled(identifier)
+
+  returns true or false if the panel (according to the indentifier given as argument) has already been anabled

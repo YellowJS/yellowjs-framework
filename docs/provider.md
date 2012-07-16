@@ -20,7 +20,7 @@ Description
 Methods
 -------
 
-  _- constructor()_
+  * constructor()
 
   The constructor of this class takes a single object used as a configuration parameter. This object should have a property name.
 
@@ -28,13 +28,13 @@ Methods
 
 
 
-  _- save()_
+  * save()
 
   Saves given data to the data source of the provider. The save method takes the data to save as first parameter, and a callback as second parameter.
 
 
 
-  _- fetch()_
+  * fetch()
 
   And both takes a config object and/or a callback as parameter (second and third parameter for method “save()” and first and second parameter for “fetch()”. 
 
@@ -48,19 +48,19 @@ Methods
 
 
 
-  _- get()_
+  * get()
 
   get a single value 
 
 
 
-  _- clearAll()_
+  * clearAll()
 
   clear all values stored into the data source of the provider
   
 
 
-  _- remove()_
+  * remove()
 
   remove a single value
   

@@ -31,7 +31,7 @@ Events
 Methods
 -------
 
-  _- static register()_
+  * static register()
 
   in order to access your model everywhere in your application, you should register it via this metod, then you may use the "oo.getModel" function to retrieve it from anywhere.
 
@@ -39,19 +39,19 @@ Methods
 
 
 
-  _- static unregister()_
+  * static unregister()
 
   unregister a model from the model repository
 
 
 
-  _- static get()_
+  * static get()
 
   mainly used internally to get registered model instance. give the model name as argument to this method and it will return the right instance, you can use the "oo.getModel" instead.
 
 
 
-  _- constructor_
+  * constructor
 
   The constructor class expect a configuration object in order to pre configure your model. This configuration object must contains at least a "name" and a "provider" property.
 
@@ -71,31 +71,31 @@ Methods
 
 
 
-  _- setProvider()_
+  * setProvider()
 
   set a provider depending on the argument given. This arguments can be a either an object that will be used as argument for the provider constructor, or an instance of oo.data.Provider.
 
 
 
-  _- getModelName()_
+  * getModelName()
 
   get the name of the model
 
 
 
-  _- setModelName()_
+  * setModelName()
 
   set the name of the model
 
 
 
-  _- setIndexes()_
+  * setIndexes()
 
   set the indexes if there were not set via the constructor, and trigger a indexes update
 
 
 
-  _- fetch()_
+  * fetch()
 
   send a "request" to the provider to refresh internal stored data, it accepts one arguments that is mandatory but can be either a function used as a callback or a config object that may contain the properties "success" and "params". "success" must be a function that will be used as callback and params must be an object (but is optional) that describe parameters that will be sent to the data provider.
 
@@ -107,31 +107,31 @@ Methods
     myModel.fetch();
 
 
-  _- commit()_
+  * commit()
 
   commit update made on internal data via the data provider
 
 
 
-  _- getData()_
+  * getData()
 
   returns the array of data internally stored into the instance
 
 
 
-  _- setData()_
+  * setData()
 
   set the array of data to the internal store of the instance
 
 
 
-  _- clearAll()_
+  * clearAll()
 
   clear data from the internal store
 
 
 
-  _- filterBy()_
+  * filterBy()
 
   returns a subset (array) of the internal stored data filtered with the given parameters. This function has 2 arguments, the first one is key on which filter will be applied, and the second is the value that should be matched
 
@@ -143,37 +143,37 @@ Methods
 
     
 
-  _- getBy()_
+  * getBy()
 
   returns an object representing data stored into the internal storage. it works the same way the function "filterBy" do but returns a single record
 
 
 
-  _- get()_
+  * get()
 
   returns an object representing data stored into the internal storage. it works the same way the "getBy" function do, but consider the "property" against which it will test the given value (as argument) is always "key"
 
 
 
-  _- set()_
+  * set()
 
   set data in order to update an already existing key, or add a new one (if not exists) into the storage. Use the "key" property to identify a uniq record. You'll need to "commit" changes to make them persist
 
 
 
 
-  _- add()_
+  * add()
 
   add a record to the internal storage work the same way as the set, but perform only add operation and throw an error when trying to add a record with an already existing "key" property
 
 
 
-  _- removeBy()_
+  * removeBy()
 
   find and remove record(s) from the internal storage. use its arguments the same way it does for functions "getBy" and "filterBy"
 
 
 
-  _- remove()_
+  * remove()
 
   find and remove a single record from the internal storage. use its arguments the same way it does for the "get" function

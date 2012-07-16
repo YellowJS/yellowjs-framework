@@ -22,13 +22,13 @@ Events
 Methods
 -------
 
-  _- static createElement()_
+  * static createElement()
 
   Returns a newly created dom node
 
 
 
-  _- constructor()_
+  * constructor()
 
   The constructor expect a native DOM object, or a css selector as string
 
@@ -56,7 +56,7 @@ Methods
 
 
 
-  _- getTranslations()_
+  * getTranslations()
 
   Get the current translation values of the current dom object
 
@@ -64,13 +64,13 @@ Methods
 
 
 
-  _- setTranslations()_
+  * setTranslations()
 
   Defines values for translation on the two axis : x value as first argument, y value as second argument; the third argument is the unit if none is provide it will use 'px';
 
 
 
-  _- getWebkitTransform()_
+  * getWebkitTransform()
 
   Get the transform matrix applied to the current dom object
 
@@ -80,59 +80,59 @@ Methods
 
 
 
-  _- setWebkitTransform()_
+  * setWebkitTransform()
 
   Set a transform matrix to the current dom object.
   You will most probably not need to use this method 
 
 
 
-  _- getTranslateX (unit, [noCache])_
+  * getTranslateX (unit, [noCache])
 
   Get the value of the translation on the X axis, the second parameter determine if it could come from cache
 
 
 
-  _- getTranslateY (unit, noCache)_
+  * getTranslateY (unit, noCache)
 
   Get the value of the translation on the Y axis, the second parameter determine if it could come from cache
 
 
 
-  _- setTranslateX (val)_
+  * setTranslateX (val)
 
   Set the value of the translation on the X axis
 
 
 
-  _- setTranslateY (val)_
+  * setTranslateY (val)
 
   Set the value of the translation on the Y axis
 
 
 
-  _- setDomObject (domNode)_
+  * setDomObject (domNode)
 
   Setter for internal dom object (may not be used directly)
   A native dom object is expected as single argument
 
 
 
-  _- getDomObject ()_
+  * getDomObject ()
 
   Getter for internal dom object
   Returns a native dom object
 
 
 
-  _- find (selector, [booleanVal])_
+  * find (selector, [booleanVal])
 
   Find a child element of the current node according to the given selector
   If a falsy value is given as second argument it will return a oo.view.Dom Object
 
 
 
-  _- findAll (selector, returnDom)_
+  * findAll (selector, returnDom)
 
   Find all children elements of the current node according to the given selector
   If a falsy value is given as second argument it will return an array of oo.view.Dom Objects
@@ -140,83 +140,83 @@ Methods
 
 
 
-  _- function parent()_
+  * function parent()
 
   Return the parent node of the current one
 
 
 
-  _- children()_
+  * children()
 
   Return the children nodes of the current one
 
 
 
-  _- findParentByCls (cls)_
+  * findParentByCls (cls)
 
   Return the first parent node of the current one that has the cls given as argument
 
 
 
-  _- appendDomNode (domNode)_
+  * appendDomNode (domNode)
 
   append a node to the current node's children list
   a native dom object is expected as arguemnt
 
 
 
-  _- prependDomNode (domNode)_
+  * prependDomNode (domNode)
 
   prepend a node on top to the current node's children list
   a native dom object is expected as arguemnt
 
 
 
-  _- appendChild (node)_
+  * appendChild (node)
 
   append a node to the current node children list
   can be a native DOMObject or a oo.Dom object
 
 
 
-  _- prependChild (node)_
+  * prependChild (node)
 
   prepend a node on top to the current node children list
   can be a native DOMObject or a oo.Dom object
 
 
 
-  _- appendHtml (html)_
+  * appendHtml (html)
 
   append html (given as string) to the current node innerHTML property
 
 
 
-  _- html (htmlString)_
+  * html (htmlString)
 
   replace the current node innerHTML property by the htmlString argument (given as string)
 
 
 
-  _- removeChild(node)_
+  * removeChild(node)
 
   remove the child node `node` (given as native node object)
 
 
 
-  _- clear ()_
+  * clear ()
 
   clear html content of a node (this method DO NOT unregister listener or other object linked to the dom)
 
 
 
-  _- stopAnimation ()_
+  * stopAnimation ()
 
   stop animation by setting the duration to 0
 
 
 
-  _- translateTo (coord, duration, listener, timingFunction)_
+  * translateTo (coord, duration, listener, timingFunction)
 
   apply a animated translation on an object
   you may define a set of duration, animation end callback, for one shot
@@ -228,13 +228,13 @@ Methods
 
 
 
-  _- setId(id)_
+  * setId(id)
 
   set the id property of the node
 
 
 
-  _- getId(id)_
+  * getId(id)
 
   get the id property of the node
 
