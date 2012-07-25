@@ -359,7 +359,7 @@ var yellowjs = (function (window) {
                 }
             };
 
-            if ('PhoneGap' in window && PhoneGap.available)
+            if ('PhoneGap' in window || 'Cordova' in window)
                 document.addEventListener('deviceready', start);
             else
                 window.addEventListener('load', start);
