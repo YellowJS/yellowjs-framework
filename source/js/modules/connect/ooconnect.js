@@ -29,10 +29,13 @@
             
         },
         login : function login(){
-            throw 'Can\'t be called directly from Scroll class';
+            throw 'Can\'t be called directly from Connect class';
         },
         logout : function logout(){
-            throw 'Can\'t be called directly from Scroll class';
+            throw 'Can\'t be called directly from Connect class';
+        },
+        getLoginStatus:function getLoginStatus(){
+           throw 'Can\'t be called directly from Connect class';
         }
     });
 
