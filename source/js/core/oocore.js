@@ -441,6 +441,24 @@ var yellowjs = (function (window) {
             window.yellowjs = _yellowjs;
 
             _noConflict = true;
+        },
+        getConnect: function getConnect(param){
+            if(!param){
+                throw new Error("Missing parameter");
+            }
+            
+            //create entries to store all instances connexion
+            if(!oo.modules.connect._store){
+                oo.modules.connect._store = {};
+            }
+
+            //create and init instance of connexion
+            if(!oo.modules.connect._store[param]){
+                oo.modules.connect._store[param] = new (oo.modules.connect.Connect.get(param))();
+            }
+
+            return oo.modules.connect._store[param];
+
         }
 
     };

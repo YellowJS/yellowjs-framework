@@ -162,4 +162,27 @@ describe("oocore.js", function() {
         });
     });
 
+    describe('getConnect',function(){
+        it('Must throw error if param does not exist',function(){
+            expect(function(){
+                yellowjs.getConnect();
+            }).toThrow("Missing parameter");
+        });
+
+        it('Must throw error if param is not a valid keycode',function(){
+            expect(function(){
+                yellowjs.getConnect("test");
+            }).toThrow();
+        });
+
+        it('Must be a facebook connect',function(){
+            expect(yellowjs.getConnect("facebook") instanceof oo.modules.connect.FBConnect).toBeTruthy();
+        });
+
+        it('Must be a local connect',function(){
+            expect(yellowjs.getConnect("local") instanceof oo.modules.connect.LocalConnect).toBeTruthy();
+        });
+        
+    });
+
 });
