@@ -445,13 +445,21 @@ var yellowjs = (function (window) {
         getConnect: function getConnect(param){
             return oo.modules.connect._store || null;
         },
-        createConnect: function createConnect(param, opts){
-            if(!param){
-                throw new Error("Missing parameter");
+        createConnect: function createConnect(opts){
+            if(!opts) {
+                opts = {};
+            }
+
+            if(opts && "object" !== typeof opts){
+                throw new Error("Wrong parameter");
+            }
+            
+            if(!opts.type){
+                opts.type = "facebook";
             }
             
             //create, init and store instance of connexion
-            oo.modules.connect._store = new (oo.modules.connect.Connect.get(param))(opts || {});
+            oo.modules.connect._store = new (oo.modules.connect.Connect.get(opts.type))(opts || {});
 
             return oo.modules.connect._store;
         }

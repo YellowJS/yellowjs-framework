@@ -25,8 +25,12 @@
                 delete connectRepository[codename];
             }
         },
-        constructor : function constructor() {
-            
+        _type:null,
+        constructor : function constructor(opts) {
+            this._type = opts.type;
+        },
+        getType: function getType(){
+            return this._type;
         },
         login : function login(){
             throw 'Can\'t be called directly from Connect class';

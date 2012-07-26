@@ -164,24 +164,28 @@ describe("oocore.js", function() {
 
 
     describe('createConnect',function(){
-        it('Must throw error if param does not exist',function(){
-            expect(function(){
-                yellowjs.createConnect();
-            }).toThrow("Missing parameter");
-        });
-
-        it('Must throw error if param is not a valid keycode',function(){
+        it('Must throw error if opts is not an object',function(){
             expect(function(){
                 yellowjs.createConnect("test");
             }).toThrow();
         });
 
+        it('Must throw error if opts.account is not a valide codename',function(){
+            expect(function(){
+                yellowjs.createConnect({type:"test"});
+            }).toThrow();
+        });
+
+        it('Must be a facebook connect by default',function(){
+            expect(yellowjs.createConnect() instanceof oo.modules.connect.FBConnect).toBeTruthy();
+        });
+
         it('Must be a facebook connect',function(){
-            expect(yellowjs.createConnect("facebook") instanceof oo.modules.connect.FBConnect).toBeTruthy();
+            expect(yellowjs.createConnect({type:"facebook"}) instanceof oo.modules.connect.FBConnect).toBeTruthy();
         });
 
         it('Must be a local connect',function(){
-            expect(yellowjs.createConnect("local") instanceof oo.modules.connect.LocalConnect).toBeTruthy();
+            expect(yellowjs.createConnect({type:"local"}) instanceof oo.modules.connect.LocalConnect).toBeTruthy();
         });
         
     });
@@ -194,12 +198,12 @@ describe("oocore.js", function() {
         });
 
         it('must be a facebook connect', function(){
-            yellowjs.createConnect('facebook');
+            yellowjs.createConnect({type:'facebook'});
             expect(yellowjs.getConnect() instanceof oo.modules.connect.FBConnect).toBeTruthy();
         });
 
         it('must be a local connect', function(){
-            yellowjs.createConnect('local');
+            yellowjs.createConnect({type:'local'});
             expect(yellowjs.getConnect() instanceof oo.modules.connect.LocalConnect).toBeTruthy();
         });
     });
