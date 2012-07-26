@@ -443,7 +443,7 @@ var yellowjs = (function (window) {
             _noConflict = true;
         },
         getConnect: function getConnect(param){
-            return oo.modules.connect._store[param] || null;
+            return (oo.modules.connect._store && oo.modules.connect._store[param]) ? oo.modules.connect._store[param] : null;
         },
         createConnect: function createConnect(param, opts){
             if(!param){
