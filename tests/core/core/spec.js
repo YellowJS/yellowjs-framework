@@ -162,27 +162,46 @@ describe("oocore.js", function() {
         });
     });
 
-    describe('getConnect',function(){
+
+    describe('createConnect',function(){
         it('Must throw error if param does not exist',function(){
             expect(function(){
-                yellowjs.getConnect();
+                yellowjs.createConnect();
             }).toThrow("Missing parameter");
         });
 
         it('Must throw error if param is not a valid keycode',function(){
             expect(function(){
-                yellowjs.getConnect("test");
+                yellowjs.createConnect("test");
             }).toThrow();
         });
 
         it('Must be a facebook connect',function(){
-            expect(yellowjs.getConnect("facebook") instanceof oo.modules.connect.FBConnect).toBeTruthy();
+            expect(yellowjs.createConnect("facebook") instanceof oo.modules.connect.FBConnect).toBeTruthy();
         });
 
         it('Must be a local connect',function(){
-            expect(yellowjs.getConnect("local") instanceof oo.modules.connect.LocalConnect).toBeTruthy();
+            expect(yellowjs.createConnect("local") instanceof oo.modules.connect.LocalConnect).toBeTruthy();
         });
         
+    });
+
+    describe('getConnect',function(){
+        it('must be null if the connect has not been already created', function(){
+            //delete reference store
+            yellowjs.modules.connect._store = [];
+            expect(yellowjs.getConnect('facebook')).toBeNull();
+        });
+
+        it('must be a facebook connect', function(){
+            yellowjs.createConnect('facebook');
+            expect(yellowjs.getConnect("facebook") instanceof oo.modules.connect.FBConnect).toBeTruthy();
+        });
+
+        it('must be a local connect', function(){
+            yellowjs.createConnect('local');
+            expect(yellowjs.getConnect("local") instanceof oo.modules.connect.LocalConnect).toBeTruthy();
+        });
     });
 
 });

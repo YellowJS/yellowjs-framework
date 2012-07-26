@@ -443,6 +443,9 @@ var yellowjs = (function (window) {
             _noConflict = true;
         },
         getConnect: function getConnect(param){
+            return oo.modules.connect._store[param] || null;
+        },
+        createConnect: function createConnect(param, opts){
             if(!param){
                 throw new Error("Missing parameter");
             }
@@ -454,11 +457,10 @@ var yellowjs = (function (window) {
 
             //create and init instance of connexion
             if(!oo.modules.connect._store[param]){
-                oo.modules.connect._store[param] = new (oo.modules.connect.Connect.get(param))();
+                oo.modules.connect._store[param] = new (oo.modules.connect.Connect.get(param))(opts || {});
             }
 
             return oo.modules.connect._store[param];
-
         }
 
     };
