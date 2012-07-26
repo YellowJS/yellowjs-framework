@@ -144,6 +144,18 @@
                 {
                     "text" : "ooiscroll.js",
                     "path" : "../source/js/view/scroll/"
+                },
+                {
+                    "text" : "ooconnect.js",
+                    "path" : "../source/js/modules/connect/"
+                },
+                {
+                    "text" : "oofbconnect.js",
+                    "path" : "../source/js/modules/connect/"
+                },
+                {
+                    "text" : "oolocalconnect.js",
+                    "path" : "../source/js/modules/connect/"
                 }
             ]
         }
