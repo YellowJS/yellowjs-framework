@@ -443,24 +443,17 @@ var yellowjs = (function (window) {
             _noConflict = true;
         },
         getConnect: function getConnect(param){
-            return (oo.modules.connect._store && oo.modules.connect._store[param]) ? oo.modules.connect._store[param] : null;
+            return oo.modules.connect._store || null;
         },
         createConnect: function createConnect(param, opts){
             if(!param){
                 throw new Error("Missing parameter");
             }
             
-            //create entries to store all instances connexion
-            if(!oo.modules.connect._store){
-                oo.modules.connect._store = {};
-            }
+            //create, init and store instance of connexion
+            oo.modules.connect._store = new (oo.modules.connect.Connect.get(param))(opts || {});
 
-            //create and init instance of connexion
-            if(!oo.modules.connect._store[param]){
-                oo.modules.connect._store[param] = new (oo.modules.connect.Connect.get(param))(opts || {});
-            }
-
-            return oo.modules.connect._store[param];
+            return oo.modules.connect._store;
         }
 
     };

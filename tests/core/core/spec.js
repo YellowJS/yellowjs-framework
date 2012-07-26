@@ -189,18 +189,18 @@ describe("oocore.js", function() {
     describe('getConnect',function(){
         it('must be null if the connect has not been already created', function(){
             //delete reference store
-            yellowjs.modules.connect._store = [];
-            expect(yellowjs.getConnect('facebook')).toBeNull();
+            yellowjs.modules.connect._store = null;
+            expect(yellowjs.getConnect()).toBeNull();
         });
 
         it('must be a facebook connect', function(){
             yellowjs.createConnect('facebook');
-            expect(yellowjs.getConnect("facebook") instanceof oo.modules.connect.FBConnect).toBeTruthy();
+            expect(yellowjs.getConnect() instanceof oo.modules.connect.FBConnect).toBeTruthy();
         });
 
         it('must be a local connect', function(){
             yellowjs.createConnect('local');
-            expect(yellowjs.getConnect("local") instanceof oo.modules.connect.LocalConnect).toBeTruthy();
+            expect(yellowjs.getConnect() instanceof oo.modules.connect.LocalConnect).toBeTruthy();
         });
     });
 
