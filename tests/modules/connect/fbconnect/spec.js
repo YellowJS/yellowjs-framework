@@ -32,4 +32,12 @@ describe("module ooconnect.js", function() {
             console.log(response);
         });
     },false);
+
+    document.querySelector('#fb-getuser').addEventListener('click',function(e){
+        e.preventDefault();
+        yellowjs.getConnect().getUser(function(response){
+            console.log('callback executed');
+            console.log(response);
+        });
+    },false);
 });

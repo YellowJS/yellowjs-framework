@@ -38,6 +38,14 @@
             FB.getLoginStatus(function(response){
                 callback(response);
             });
+        },
+        getUser: function getUser(callback){
+            if(!callback){
+                callback = oo.emptyFn;
+            }
+            FB.api('/me', function(response) {
+                callback(response);
+            });
         }
     });
 
