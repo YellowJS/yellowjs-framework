@@ -70,6 +70,10 @@
                     "path" : "../source/js/data/"
                 },
                 {
+                    "text" : "oofiletransferprovider.js",
+                    "path" : "../source/js/data/"
+                },
+                {
                     "text" : "oomodel.js",
                     "path" : "../source/js/data/"
                 },
@@ -144,6 +148,10 @@
                 {
                     "text" : "ooiscroll.js",
                     "path" : "../source/js/view/scroll/"
+                },
+                {
+                    "text" : "oofileinput.js",
+                    "path" : "../source/js/view/form/"
                 },
                 {
                     "text" : "ooconnect.js",

@@ -180,6 +180,8 @@
                         that.triggerEvent(Model.AFTER_COMMIT);
                         callback.call(that);
                     });
+                } else {
+                    callback.call(that);
                 }
             });
         },

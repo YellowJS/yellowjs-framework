@@ -35,7 +35,9 @@
 
             var defaultConf = {
                 success: oo.emptyFn,
-                error: oo.emptyFn
+                error: function(){
+                    console.log('something wring!');
+                }
             };
 
             if (typeof config == 'function') {
@@ -48,7 +50,7 @@
                 if(!el.fileURI) return;
                 self._opt.fileName=el.fileURI.substr(el.fileURI.lastIndexOf('/')+1);
 
-                //this._ft.upload(el.fileURI, this._url, conf.success, conf.error,  this._opt);  
+                self._ft.upload(el.fileURI, self._url, conf.success, conf.error, self._opt);  
             });
             //this._ft.upload(fileURI, this._url, conf.success, conf.error, options);
             /*this._store.batch(data);
