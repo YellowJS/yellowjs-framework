@@ -118,6 +118,10 @@
                     "path" : "../source/js/view/"
                 },
                 {
+                    "text" : "oobuttoncapture.js",
+                    "path" : "../source/js/view/"
+                },
+                {
                     "text" : "oocarousel.js",
                     "path" : "../source/js/view/"
                 },
