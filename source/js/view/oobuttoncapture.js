@@ -34,7 +34,7 @@
 
             this._conf = yellowjs.override(defaultConf, opt);
             this._conf.destinationType = this._destinationType[this._conf.destinationType];
-            this._conf.sourceType = this._pictureSource[this._conf.pictureSource];
+            this._conf.sourceType = this._pictureSource[this._conf.pictureSource.toUpperCase()];
 
         },
         _onRelease : function _onRelease(e) {
@@ -56,7 +56,9 @@
             }
 
             this._file = prefix+filePath;
-            this._afterRelease(this._file,e);
+
+            var response = {filepath:this._file};
+            this._afterRelease(response,e);
         },
         _error: function error(code,e){
             this._afterRelease(code,e);
