@@ -85,7 +85,7 @@ describe("oomodel.js", function() {
                 });
             });
 
-            /*describe('_removeFromIndex', function () {
+            describe('_removeFromIndex', function () {
                 it('should have an filled index on firstname', function () {
                     model.setIndexes(['firstname']);
 
@@ -95,7 +95,7 @@ describe("oomodel.js", function() {
                     model._removeFromIndex(content);
                     expect(model._indexes.firstname.toto[0]).toEqual(content);
                 });
-            });*/
+            });
 
         });
 
@@ -111,7 +111,7 @@ describe("oomodel.js", function() {
                 expect(callback).toHaveBeenCalled();
             });
 
-            /*it('should have the right number of records', function() {
+            it('should have the right number of records', function() {
                 model.fetch(callback);
 
                 expect(model._data.length).toEqual(114);
@@ -119,7 +119,7 @@ describe("oomodel.js", function() {
                 model.fetch(callback, true);
 
                 expect(model._data.length).toEqual(218);
-            });*/
+            });
 
             it ('should trigger the AFTER_FETCH event', function () {
                 model.addListener(oo.data.Model.AFTER_FETCH, callback);
@@ -213,7 +213,6 @@ describe("oomodel.js", function() {
                 }).toThrow("Missing index or index must be a number");
             });
             it('should return the good data', function(){
-                //model.fetch();
                 var data = model.at(0);
                 expect(data).toBeUndefined();
                 model.fetch();
