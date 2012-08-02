@@ -275,6 +275,12 @@
         },
         remove: function remove(key) {
             return this.removeBy("key", key);
+        },
+        at: function at(index){
+            if(undefined === index || isNaN(index)){
+                throw new Error("Missing index or index must be a number");
+            }
+            return this._data[0];
         }
     });
     
