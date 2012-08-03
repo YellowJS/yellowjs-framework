@@ -44,42 +44,41 @@
                 config = {success: config};
             }
 
-            var conf = oo.override(defaultConf, config);
+            var conf = oo.override(defaultConf, config),
+                resData;
 
             data.forEach(function(el){
                 if(!el.fileURI) return;
                 self._opt.fileName=el.fileURI.substr(el.fileURI.lastIndexOf('/')+1);
+                var params = {};
+                params.id = el.key;
+                self._opt.params = params;
 
-                self._ft.upload(el.fileURI, self._url, conf.success, conf.error, self._opt);  
+                self._ft.upload(el.fileURI, self._url, function(response){
+                    resData = self.toJSON(self.decode(response.response));
+                    self.onsuccess(resData, conf.success);
+                }, function(response){
+                    resData = self.toJSON(self.decode(response.response));
+                    self.onerror(resData, conf.error);
+                }, self._opt);
             });
             //this._ft.upload(fileURI, this._url, conf.success, conf.error, options);
             /*this._store.batch(data);
 
             conf.success.call(global, data);*/
+        },
+        onsuccess: function onsuccess(response, callback){
+            callback(response);
+        },
+        onerror: function onerror(response, callback){
+            callback(response);
+        },
+        decode: function decode(data){
+          return decodeURIComponent(data);
+        },
+        toJSON: function toJSON(data){
+          return JSON.parse(data);
         }
-        /*,
-        fetch: function fetch (config, clearCache) {
-            FileTransferProvider.Super.prototype.fetch.call(this, config, clearCache);
-            var defaultConf = {
-                success: oo.emptyFn
-            };
-
-            if (typeof config == 'function') {
-                config = {success: config};
-            }
-
-            var conf = oo.override(defaultConf, config);
-
-            this._store.all(function (data) {
-                conf.success.call(global, data);
-            });
-        },
-        get: function get (cond, callback) {
-            FileTransferProvider.Super.prototype.fetch.call(this, cond, callback);
-        },
-        clearAll: function clearAll () {
-            //this._store.nuke();
-        }*/
     });
 
     oo.data.Provider.register(FileTransferProvider, 'filetransfer');
