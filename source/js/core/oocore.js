@@ -272,8 +272,33 @@ var yellowjs = (function (window) {
          * @return {oo.data.Model}
          */
         createModel : function createModel(model){
-            var m = new oo.data.Model(model);
+            return this.createModelClass.apply(this, arguments);
+        },
+        createModelClass : function createModelClass(model){
+            if(!model || (!model.hasOwnProperty('name') || !model.hasOwnProperty('provider')) )
+                throw "Either property \"name\" or \"provider\" is missing in the options given to the Model constructor";
+
+            var options = {
+                "name" : model.name,
+                "provider" : model.provider
+            },
+                Tmp,
+                mC,
+                m;
+
+            delete model.name;
+            delete model.provider;
+
+
+            Tmp = model.constructor = function (opt) {
+                Tmp.Super.call(this, opt);
+            };
+
+            mC = oo.Class(oo.data.Model, model);
+            m = new mC(options);
+                
             oo.data.Model.register(m);
+
             return m;
         },
 
