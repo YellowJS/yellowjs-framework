@@ -162,6 +162,24 @@ describe("oocore.js", function() {
         });
     });
 
+    describe('createModelClass', function(){
+        var callback = jasmine.createSpy();
+        var modelCls = oo.createModelClass({
+          "name" : "test2",
+          "provider" : {
+              "name" : "testprovider",
+              "type" : "fake",
+              "data" : [{title:"test"}]
+          },
+          commit : callback
+        });
+
+        it("commit must be override",function(){
+            modelCls.commit();
+            expect(callback).toHaveBeenCalled();
+        });
+    });
+
 
     describe('createConnect',function(){
         it('Must throw error if opts is not an object',function(){
