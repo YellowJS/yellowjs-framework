@@ -340,8 +340,11 @@ var yellowjs = (function (window) {
          * @return {string|number|bool}
          */
         getConfig : function getConfig(key){
-            if (key && key in _globalConfig)
-                return _globalConfig[key];
+            if (key)
+                if (key in _globalConfig)
+                    return _globalConfig[key];
+                else
+                    return null;
             else
                 return _globalConfig;
         },
@@ -384,7 +387,7 @@ var yellowjs = (function (window) {
                 }
             };
 
-            if ('PhoneGap' in window || 'Cordova' in window)
+            if (!this.getConfig('forceDesktop') && ('PhoneGap' in window || 'Cordova' in window))
                 document.addEventListener('deviceready', start);
             else
                 window.addEventListener('load', start);
