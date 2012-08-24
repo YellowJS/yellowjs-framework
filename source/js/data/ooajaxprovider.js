@@ -65,16 +65,21 @@
 
             this._url = opt.url;
 
+
+
             AjaxProvider.Super.call(this, {name: opt.name});
+
 
             this._noCache = opt.noCache;
 
+            
 
             if (!this._noCache) {
                 this._cacheProvider = new (oo.data.Provider.get(opt.cacheProvider))({name: 'yellowjs-cache__' + opt.name});
                 //this._cachePrefix = oo.generateId();
                 this._cachePrefix = this._url;
             }
+
         },
 
         /**
@@ -115,7 +120,6 @@
          * @return {void}
          */
         fetch: function fetch (config, clearCache) {
-
             var method = 'GET';
 
             var defaultConf = {

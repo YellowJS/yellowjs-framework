@@ -93,7 +93,6 @@ describe("oomodel.js", function() {
                     model._buildIndex(content);
 
                     model._removeFromIndex(content);
-
                     expect(model._indexes.firstname.toto[0]).toEqual(content);
                 });
             });
@@ -201,6 +200,25 @@ describe("oomodel.js", function() {
 
                 expect(result.key).toEqual(7);
                 expect(result.firstname).toEqual('gg');
+            });
+        });
+
+        describe('at', function(){
+            it('should return error', function(){
+                expect(function(){
+                    model.at();
+                }).toThrow("Missing index or index must be a number");
+                expect(function(){
+                    model.at("test");
+                }).toThrow("Missing index or index must be a number");
+            });
+            it('should return the good data', function(){
+                var data = model.at(0);
+                expect(data).toBeUndefined();
+                model.fetch();
+
+                data = model.at(0);
+                expect(data.firstname).toEqual("claire");
             });
         });
     });
