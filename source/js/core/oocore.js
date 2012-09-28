@@ -216,12 +216,12 @@ var yellowjs = (function (window) {
          *
          * @return {oo.view.Viewport}
          */
-        getViewport: function getViewport() {
+        getViewport: function getViewport(identifier) {
             var ns = this.getNS('oo.view');
             if (ns.viewport) {
                 return ns.viewport;
             } else {
-                return this.initViewport();
+                return this.initViewport(identifier);
             }
         },
 
