@@ -21,7 +21,7 @@
         // deprecated - use the class member instead
         getViewport: function getViewport() {
             console.warn('the getViewport method of the class Controller is deprecated !');
-            return oo.getViewport();
+            return this._viewport;
         },
         getPanel: function getPanel (identifier) {
             return this._viewport.getPanel(identifier);

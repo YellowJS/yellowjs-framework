@@ -131,9 +131,12 @@ describe("ooviewport.js", function() {
                 // let the browser refresh/repaint content
                 setTimeout(function () {
                     //expect(document.querySelector('#panel-1') !== null).toBeTruthy();
-                    var nodeExists = document.querySelector('#panel-2') !== null;
+                    var nodeExists = document.querySelector('#panel-2');
                     if (!nodeExists)
                         throw "Node not appended";
+
+                    if (nodeExists.parentNode.id != 'viewport')
+                        throw "Node not appended into the right node";
                         
                     //console.log(nodeExists);
                     //s.call(this, nodeExists);
