@@ -15,7 +15,7 @@
         _viewport: null,
         _Viewport: null,
         constructor : function constructor(){
-            this._viewport = oo.getViewport();
+            this._viewport = oo.getViewport(oo.getConfig('viewportSelector'));
             this._Viewport = oo.view.Viewport;
         },
         // deprecated - use the class member instead
