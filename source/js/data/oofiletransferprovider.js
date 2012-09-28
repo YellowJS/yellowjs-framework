@@ -68,9 +68,11 @@
             conf.success.call(global, data);*/
         },
         onsuccess: function onsuccess(response, callback){
+            response.status = "success";
             callback(response);
         },
         onerror: function onerror(response, callback){
+            response.status = "error";
             callback(response);
         },
         decode: function decode(data){
